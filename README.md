@@ -1,5 +1,5 @@
 # Esp32MidiPlayer
-Benötigte Libs:
-    fortyseveneffects/MIDI Library
-    knolleary/PubSubClient
+Benötigte Libs:<br>
+    fortyseveneffects/MIDI Library<br>
+    knolleary/PubSubClient<br>
     
