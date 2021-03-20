@@ -32,6 +32,7 @@ uint32_t songTimeoutSeconds = 16;  // Song time out in seconds (Maximum song len
 uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
 uint32_t vierBeatZeit = 1000;
+uint32_t timeout = 0;
 String song;
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -249,7 +250,7 @@ void playSong(String input, uint32_t timeOutSeconds){
 
     pch = strtok((char*)input.c_str(), " ");
 
-    uint32_t timeout = millis() + timeOutSeconds * 1000;
+    timeout = millis() + timeOutSeconds * 1000;
 
     if(parserV2){
       while ((pch != NULL) && (millis() < timeout)) {
@@ -438,6 +439,9 @@ void parser(String buffer)
 void parser1_1(String buffer){
   Serial.printf("Parser1.1: %s\n", buffer.c_str());
 
+  if(millis() > timeout)
+    return;
+
   if(isNumber(buffer.charAt(0))){
     uint32_t length = readNumber(buffer);
     if(length == 0)
@@ -475,6 +479,9 @@ void parser1_1(String buffer){
 
 void parser2(String buffer){
   Serial.printf("Parser2: %s\n", buffer.c_str());
+
+  if(millis() > timeout)
+    return;
 
   if(isNumber(buffer.charAt(0))){
     uint32_t length = readNumber(buffer);
