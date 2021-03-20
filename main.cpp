@@ -15,7 +15,7 @@ IPAddress dns(192, 168, 178, 1);
 
 #define PING_TIMEOUT 120 * 1000
 #define DEFALT_MIDI_CHANAL 1
-#define DEFALT_BPM 60
+#define DEFALT_BPM 240
 #define MIDI_INSTRUMENT_piano 0
 #define MIDI_INSTRUMENT_vibes 11
 #define MIDI_INSTRUMENT_organ 19
@@ -31,7 +31,7 @@ uint8_t currentChanal = DEFALT_MIDI_CHANAL;
 uint32_t songTimeoutSeconds = 16;  // Song time out in seconds (Maximum song length)
 uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
-uint32_t beatTime = 1000;
+uint32_t vierBeatZeit = 1000;
 String song;
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -239,7 +239,7 @@ void playSong(String input, uint32_t timeOutSeconds){
       MIDI.sendProgramChange(MIDI_INSTRUMENT_brass,currentChanal);
     }
 
-    beatTime = (int) ((float) (60000) / ((float) bpm));
+    vierBeatZeit = (int) ((float) (240000) / ((float) bpm));
 
     while (input.startsWith(" "))
       input.remove(0,1);
@@ -307,7 +307,7 @@ void playMIDINote(byte channel, byte note, byte velocity)
 void playNote(uint16_t note, uint8_t length)
 {
   MIDI.sendNoteOn(note, 127, currentChanal);
-  delay(beatTime/length);
+  delay(vierBeatZeit/length);
   MIDI.sendNoteOff(note, 0, currentChanal);
 }
 
@@ -442,9 +442,9 @@ void parser1_1(String buffer){
     uint32_t length = readNumber(buffer);
     if(length == 0)
       length = 4;
-    delay(beatTime/length);
+    delay(vierBeatZeit/length);
     if(buffer.charAt(0) == '.'){
-      delay((beatTime/length) / 2);
+      delay((vierBeatZeit/length) / 2);
       buffer.remove(0,1);
     }
     return;
@@ -469,7 +469,7 @@ void parser1_1(String buffer){
   if(buffer.length() != 0)
     parser1_1(buffer); 
   else{
-    delay(beatTime/4);
+    delay(vierBeatZeit/4);
   }
 }
 
@@ -480,9 +480,9 @@ void parser2(String buffer){
     uint32_t length = readNumber(buffer);
     if(length == 0)
       length = 4;
-    delay(beatTime/length);
+    delay(vierBeatZeit/length);
     if(buffer.charAt(0) == '.'){
-      delay((beatTime/length) / 2);
+      delay((vierBeatZeit/length) / 2);
       buffer.remove(0,1);
     }
     if(buffer.length() != 0)

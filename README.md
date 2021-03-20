@@ -35,7 +35,7 @@ z.B.: -brass ...
 
 ### <ins> BPM </ins>
 
-Setzt die BPM des Liedes, wenn nicht angegeben 60.<br>
+Setzt die BPM des Liedes, wenn nicht angegeben 240.<br>
 
 bpm\<bpm als zahl\>
 
