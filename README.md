@@ -7,7 +7,7 @@ knolleary/PubSubClient<br>
 
 ## <ins> Playmidi Syntax </ins>
 
-\[Erweitertermodus\] \<Instrument\> \<Noten\>
+\[Erweitertermodus\] \[BPM\] \<Instrument\> \<Noten\>
 
 <br>
 
@@ -33,6 +33,14 @@ z.B.: -brass ...
 
 ---
 
+### <ins> BPM </ins>
+
+Setzt die BPM des Liedes, wenn nicht angegeben 60.<br>
+
+bpm\<bpm als zahl\>
+
+---
+
 ### <ins> Noten </ins>
 
 \<Note\> \<Note\> ...
@@ -40,15 +48,16 @@ z.B.: -brass ...
 
 #### <ins> Notenbestnteile </ins>
 ##### <ins> Länge </ins>
-Die Länge ist eine Ganzzahl und gibt an eine wieviltel Note das ist.<br>
+Die Länge ist eine Ganzzahl und gibt an eine wieviltel Note das ist. Es kann ein „.“ agehängt werden um die 1,5 fache länge zu bekommen.<br>
 z.B.: 1 - ganze Note<br>
     2 - halbe Note<br>
     4 - virtel <br>
     8 - achtel Note<br>
-    16 - sechszehntel Note
+    16 - sechszehntel Note<br>
+    2. - sind 3x4
 ##### <ins> Ton </ins>
-Bei den Tönen sind Halbtöne nur mit „#“ möglich und man kann bis zu drei Oktavenzeichen setzen „'“.<br>
-Tonleiter: C C# D D# E F F# G G# A A# H c c# d d# e f f# g g# a a# h
+Bei den Tönen sind Halbtöne unterstützt \(# und b\) und man kann bis zu drei Oktavenzeichen setzen „'“.<br>
+Tonleiter ohne Oktavenzeichen: C C#/Db D D#/Eb E F F#/Gb G G#/Ab A A#/Hb H c c#/db d d#/eb e f f#/gb g g#/ab a a#/hb h
 #### <ins> Note im „Standartmodus“ </ins>
 Hir werden die Töne für die angegebene Länge **gemeinsam** gespielt. **Es ist wichtig wenn sie zu sammen gespielt werden sollen darf kein „ “ (Lehrzeichen) vorhanden seien.**<br>
 z.B.: G'H'D

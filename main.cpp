@@ -15,6 +15,7 @@ IPAddress dns(192, 168, 178, 1);
 
 #define PING_TIMEOUT 120 * 1000
 #define DEFALT_MIDI_CHANAL 1
+#define DEFALT_BPM 60
 #define MIDI_INSTRUMENT_piano 0
 #define MIDI_INSTRUMENT_vibes 11
 #define MIDI_INSTRUMENT_organ 19
@@ -29,6 +30,8 @@ bool parserV2 = false;
 uint8_t currentChanal = DEFALT_MIDI_CHANAL;
 uint32_t songTimeoutSeconds = 16;  // Song time out in seconds (Maximum song length)
 uint32_t activeNotes[129];
+uint32_t bpm = DEFALT_BPM;
+uint32_t beatTime = 1000;
 String song;
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -45,6 +48,11 @@ void parser2note(uint16_t note);
 void parser2allOFF();
 bool isNumber(char c);
 void playSong(String input, uint32_t timeOutSeconds);
+uint8_t readOktaveOffset(String &s);
+uint32_t readNumber(String &s);
+void readHalbton(String &s, bool &halbtonC, bool &halbtonB);
+uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &noteDown);
+uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool habtonB, bool allowHabtonC, bool allowHabtonB, bool noteDown);
 
 
 WiFiClient wiFiClient;
@@ -180,24 +188,26 @@ void playSong(String input, uint32_t timeOutSeconds){
 
     while (input.startsWith(" "))
       input.remove(0,1);
+
+    if(input.startsWith("bpm")){
+      input.remove(0,3);
+      if(isNumber(input.charAt(0))){
+        bpm = readNumber(input);
+      }else{
+        bpm = DEFALT_BPM;
+      }
+    }else{
+      bpm = DEFALT_BPM;
+    }
+
+    while (input.startsWith(" "))
+      input.remove(0,1);
     
-    uint32_t midiInstrument = 128;
     if (isNumber(input.charAt(0))){
-      midiInstrument = atoi(input.substring(0,1).c_str());
-      input.remove(0,1);
+      uint32_t midiInstrument = readNumber(input);
+      if(midiInstrument < 128)
+        MIDI.sendProgramChange(midiInstrument, currentChanal);
     }
-    if (isNumber(input.charAt(0))){
-      midiInstrument *= 10;
-      midiInstrument += atoi(input.substring(0,1).c_str());
-      input.remove(0,1);
-    }
-    if (isNumber(input.charAt(0))){
-      midiInstrument *= 10;
-      midiInstrument += atoi(input.substring(0,1).c_str());
-      input.remove(0,1);
-    }
-    if(midiInstrument < 128)
-      MIDI.sendProgramChange(midiInstrument, currentChanal);
 
     if(input.startsWith("piano"))
     {
@@ -228,6 +238,8 @@ void playSong(String input, uint32_t timeOutSeconds){
       input.remove(0,6);
       MIDI.sendProgramChange(MIDI_INSTRUMENT_brass,currentChanal);
     }
+
+    beatTime = (int) ((float) (60000) / ((float) bpm));
 
     while (input.startsWith(" "))
       input.remove(0,1);
@@ -295,7 +307,7 @@ void playMIDINote(byte channel, byte note, byte velocity)
 void playNote(uint16_t note, uint8_t length)
 {
   MIDI.sendNoteOn(note, 127, currentChanal);
-  delay(1000/length);
+  delay(beatTime/length);
   MIDI.sendNoteOff(note, 0, currentChanal);
 }
 
@@ -427,124 +439,37 @@ void parser1_1(String buffer){
   Serial.printf("Parser1.1: %s\n", buffer.c_str());
 
   if(isNumber(buffer.charAt(0))){
-    uint8_t length = atoi(buffer.c_str());
-
-    if(length==0)
-      length=4;
-    delay(1000 / length);
-
+    uint32_t length = readNumber(buffer);
+    if(length == 0)
+      length = 4;
+    delay(beatTime/length);
+    if(buffer.charAt(0) == '.'){
+      delay((beatTime/length) / 2);
+      buffer.remove(0,1);
+    }
     return;
   }
 
   char note = buffer.charAt(0);
   buffer.remove(0,1);
   
-  int8_t oktaveOffset = 0;
-  if(buffer.charAt(0) == '\''){
-    oktaveOffset++;
-    buffer.remove(0,1);
-  }
-  if(buffer.charAt(0) == '\''){
-    oktaveOffset++;
-    buffer.remove(0,1);
-  }
-  if(buffer.charAt(0) == '\''){
-    oktaveOffset++;
-    buffer.remove(0,1);
-  }
-
-  bool istHalbton = 0;
-  if(buffer.charAt(0) == '#'){
-    istHalbton = true;
-    buffer.remove(0,1);
-  }
-  bool noteUp = true;
-  bool doHalbton = true;
+  int8_t oktaveOffset = readOktaveOffset(buffer);
+  bool habtonC = false;
+  bool habtonB = false;
+  readHalbton(buffer, habtonC, habtonB);
+  bool noteDown = true;
+  bool allowHabtonC = true;
+  bool allowHabtonB = true;
+  uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
   bool play = true;
-  uint16_t noteID = 0;
-  switch(note) {
-  case 'p':
-  case 'P':
+  if(note == 'p' || note == 'P')
     play = false;
-  break;
-  case 'C':
-    noteUp = false;
-    doHalbton = true;
-    noteID = 48;
-  break;
-  case 'D':
-    noteUp = false;
-    doHalbton = true;
-    noteID = 50;
-  break;
-  case 'E':
-    noteUp = false;
-    doHalbton = false;
-    noteID = 52;
-  break;
-  case 'F':
-    noteUp = false;
-    doHalbton = true;
-    noteID = 53;
-  break;
-  case 'G':
-    noteUp = false;
-    doHalbton = true;
-    noteID = 55;
-  break;
-  case 'A':
-    noteUp = false;
-    doHalbton = true;
-    noteID = 57;
-  break;
-  case 'H':
-    noteUp = false;
-    doHalbton = false;
-    noteID = 59;
-  break;
-
-  case 'c':
-    noteUp = true;
-    doHalbton = true;
-    noteID = 60;
-  break;
-  case 'd':
-    noteUp = true;
-    doHalbton = true;
-    noteID = 62;
-  break;
-  case 'e':
-    noteUp = true;
-    doHalbton = false;
-    noteID = 64;
-  break;
-  case 'f':
-    noteUp = true;
-    doHalbton = true;
-    noteID = 65;
-  break;
-  case 'g':
-    noteUp = true;
-    doHalbton = true;
-    noteID = 67;
-  break;
-  case 'a':
-    noteUp = true;
-    doHalbton = true;
-    noteID = 69;
-  break;
-  case 'h':
-    noteUp = true;
-    doHalbton = false;
-    noteID = 71;
-  break;
-  }
   if(play)
-    parser2note(noteID + (doHalbton ? istHalbton : 0) + oktaveOffset * 12 * (noteUp ? 1 : -1));
+    parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
   if(buffer.length() != 0)
     parser1_1(buffer); 
   else{
-    delay(1000/4);
+    delay(beatTime/4);
   }
 }
 
@@ -552,7 +477,16 @@ void parser2(String buffer){
   Serial.printf("Parser2: %s\n", buffer.c_str());
 
   if(isNumber(buffer.charAt(0))){
-    delay(1000/atoi(buffer.c_str()));
+    uint32_t length = readNumber(buffer);
+    if(length == 0)
+      length = 4;
+    delay(beatTime/length);
+    if(buffer.charAt(0) == '.'){
+      delay((beatTime/length) / 2);
+      buffer.remove(0,1);
+    }
+    if(buffer.length() != 0)
+      parser2(buffer);
   }else{
     char note = buffer.charAt(0);
     buffer.remove(0,1);
@@ -561,126 +495,52 @@ void parser2(String buffer){
       if(buffer.length() != 0)
         parser2(buffer);
     }else if(note == 'i' || note == 'I'){
-      if(buffer.startsWith("piano"))
+      if(buffer.startsWith("piano")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,currentChanal);
-      else if(buffer.startsWith("vibes"))
+        buffer.remove(0,5);
+      }else if(buffer.startsWith("vibes")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_vibes,currentChanal);
-      else if(buffer.startsWith("organ"))
+        buffer.remove(0,5);
+      }else if(buffer.startsWith("organ")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_organ,currentChanal);
-      else if(buffer.startsWith("guitar"))
+        buffer.remove(0,5);
+      }else if(buffer.startsWith("guitar")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_guitar,currentChanal);
-      else if(buffer.startsWith("brass"))
+        buffer.remove(0,6);
+      }else if(buffer.startsWith("brass")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_brass,currentChanal);
-      else 
-        MIDI.sendProgramChange(atoi(buffer.c_str()), currentChanal);
+        buffer.remove(0,5);
+      }else {
+        if(isNumber(buffer.charAt(0))){
+          uint32_t ni = readNumber(buffer);
+          MIDI.sendProgramChange(ni, currentChanal);
+        }
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
     }
 #if ALLOW_MULTI_CHANAL_MIDI
     else if(note == 'k' || note == 'K'){
-      currentChanal = atoi(buffer.c_str());
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nc = readNumber(buffer);
+        currentChanal = nc;
+        if(buffer.length() != 0)
+          parser2(buffer);
+      }else 
+        if(buffer.length() != 0)
+          parser2(buffer);
     }
 #endif
     else{
-      int8_t oktaveOffset = 0;
-
-      if(buffer.charAt(0) == '\'')
-      {
-        oktaveOffset++;
-        buffer.remove(0,1);
-      }
-      if(buffer.charAt(0) == '\'')
-      {
-        oktaveOffset++;
-        buffer.remove(0,1);
-      }
-      if(buffer.charAt(0) == '\'')
-      {
-        oktaveOffset++;
-        buffer.remove(0,1);
-      }
-
-      bool istHalbton = 0;
-      if(buffer.charAt(0) == '#')
-      {
-        istHalbton = true;
-        buffer.remove(0,1);
-      }
-      bool noteUp = true;
-      bool doHalbton = true;
-      uint16_t noteID = 0;
-      switch(note) {
-        case 'C':
-          noteUp = false;
-          doHalbton = true;
-          noteID = 48;
-        break;
-        case 'D':
-          noteUp = false;
-          doHalbton = true;
-          noteID = 50;
-        break;
-        case 'E':
-          noteUp = false;
-          doHalbton = false;
-          noteID = 52;
-        break;
-        case 'F':
-          noteUp = false;
-          doHalbton = true;
-          noteID = 53;
-        break;
-        case 'G':
-          noteUp = false;
-          doHalbton = true;
-          noteID = 55;
-        break;
-        case 'A':
-          noteUp = false;
-          doHalbton = true;
-          noteID = 57;
-        break;
-        case 'H':
-          noteUp = false;
-          doHalbton = false;
-          noteID = 59;
-        break;
-
-        case 'c':
-          noteUp = true;
-          doHalbton = true;
-          noteID = 60;
-        break;
-        case 'd':
-          noteUp = true;
-          doHalbton = true;
-          noteID = 62;
-        break;
-        case 'e':
-          noteUp = true;
-          doHalbton = false;
-          noteID = 64;
-        break;
-        case 'f':
-          noteUp = true;
-          doHalbton = true;
-          noteID = 65;
-        break;
-        case 'g':
-          noteUp = true;
-          doHalbton = true;
-          noteID = 67;
-        break;
-        case 'a':
-          noteUp = true;
-          doHalbton = true;
-          noteID = 69;
-        break;
-        case 'h':
-          noteUp = true;
-          doHalbton = false;
-          noteID = 71;
-        break;
-      }
-      parser2note(noteID + (doHalbton ? istHalbton : 0) + oktaveOffset * 12 * (noteUp ? 1 : -1));
+      int8_t oktaveOffset = readOktaveOffset(buffer);
+      bool habtonC = false;
+      bool habtonB = false;
+      readHalbton(buffer, habtonC, habtonB);
+      bool noteDown = true;
+      bool allowHabtonC = true;
+      bool allowHabtonB = true;
+      uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
+      parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
       if(buffer.length() != 0)
         parser2(buffer);
     }
@@ -727,4 +587,130 @@ bool isNumber(char c){
     return true;
   }
   return false;
+}
+
+uint8_t readOktaveOffset(String &s){
+  uint8_t offset = 0;
+  for(uint8_t i = 0; i < 3; i++){
+    if(s.charAt(0) == '\''){
+      offset++;
+      s.remove(0,1);
+    }
+  }
+  return offset;
+}
+
+uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &noteDown){
+  uint16_t noteID = 0;
+  switch(note) {
+    case 'C':
+      noteDown = true;
+      allowHabtonB = false;
+      allowHabtonC = true;
+      noteID = 48;
+    break;
+    case 'D':
+      noteDown = true;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 50;
+    break;
+    case 'E':
+      noteDown = true;
+      allowHabtonB = true;
+      allowHabtonC = false;
+      noteID = 52;
+    break;
+    case 'F':
+      noteDown = true;
+      allowHabtonB = false;
+      allowHabtonC = true;
+      noteID = 53;
+    break;
+    case 'G':
+      noteDown = true;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 55;
+    break;
+    case 'A':
+      noteDown = true;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 57;
+    break;
+    case 'H':
+      noteDown = true;
+      allowHabtonB = true;
+      allowHabtonC = false;
+      noteID = 59;
+    break;
+
+    case 'c':
+      noteDown = false;
+      allowHabtonB = false;
+      allowHabtonC = true;
+      noteID = 60;
+    break;
+    case 'd':
+      noteDown = false;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 62;
+    break;
+    case 'e':
+      noteDown = false;
+      allowHabtonB = true;
+      allowHabtonC = false;
+      noteID = 64;
+    break;
+    case 'f':
+      noteDown = false;
+      allowHabtonB = false;
+      allowHabtonC = true;
+      noteID = 65;
+    break;
+    case 'g':
+      noteDown = false;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 67;
+    break;
+    case 'a':
+      noteDown = false;
+      allowHabtonB = true;
+      allowHabtonC = true;
+      noteID = 69;
+    break;
+    case 'h':
+      noteDown = false;
+      allowHabtonB = true;
+      allowHabtonC = false;
+      noteID = 71;
+    break;
+  }
+  return noteID;
+}
+
+uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool habtonB, bool allowHabtonC, bool allowHabtonB, bool noteDown){
+  return noteId + (oktavenOffset * 12 * (noteDown ? -1 : 1)) + (allowHabtonC && habtonC ? 1 : 0) - (allowHabtonB && habtonB ? 1 : 0);
+}
+
+void readHalbton(String &s, bool &halbtonC, bool &halbtonB){
+  halbtonC = (s.charAt(0) == '#');
+  if(halbtonC)
+    s.remove(0,1);
+  halbtonB = (s.charAt(0) == 'b');
+  if(halbtonB)
+    s.remove(0,1);
+}
+
+uint32_t readNumber(String &s){
+  uint32_t curr = 0;
+  while(isNumber(s.charAt(0))){
+    curr *= 10;
+    curr += s.charAt(0) - '0'; // get numerical value of number
+    s.remove(0,1);
+  }
+  return curr;
 }
