@@ -466,6 +466,8 @@ void parser1_1(String buffer){
   bool allowHabtonB = true;
   uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
   bool play = true;
+  if(noteID == 2000)
+    play = false;
   if(note == 'p' || note == 'P')
     play = false;
   if(play)
@@ -547,7 +549,8 @@ void parser2(String buffer){
       bool allowHabtonC = true;
       bool allowHabtonB = true;
       uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
-      parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
+      if(noteID != 2000)
+        parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
       if(buffer.length() != 0)
         parser2(buffer);
     }
@@ -608,7 +611,7 @@ uint8_t readOktaveOffset(String &s){
 }
 
 uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &noteDown){
-  uint16_t noteID = 0;
+  uint16_t noteID = 2000;
   switch(note) {
     case 'C':
       noteDown = true;
