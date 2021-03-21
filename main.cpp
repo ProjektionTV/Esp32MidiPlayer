@@ -475,7 +475,8 @@ void parser1_1(String buffer){
   if(buffer.length() != 0)
     parser1_1(buffer); 
   else{
-    delay(vierBeatZeit/4);
+    if(play || note == 'p' || note == 'P')
+      delay(vierBeatZeit/4);
   }
 }
 
