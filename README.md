@@ -1,7 +1,8 @@
 # <ins> Esp32MidiPlayer </ins>
 Benötigte Libs:<br>
-fortyseveneffects/MIDI Library<br>
-knolleary/PubSubClient<br>
+- fortyseveneffects/MIDI Library<br>
+- knolleary/PubSubClient<br>
+- bblanchon/ArduinoJson<br>
 
 ---
 
@@ -91,3 +92,11 @@ k\<Zahl - Neuer Kanal 1-16\>
 **Im „Erweitertenmodus“ wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten s gespielt.**<br>
 Es folgt: a \<a wird gespielt\> 4 \<a wird gespielt\> a \<a wird nicht gespielt\><br>
 und a \<a wird gespielt\> 4 \<a wird gespielt\> s \<a wird nicht gespielt\>
+
+## <ins> Mqtt </ins>
+
+Der midi player Reagiert auf den Mqtt topic „playmidi“. Dort wird ein einfacher String mit JSON daten empfangen.
+
+## <ins> JSON </ins>
+
+\{"laenge":\<maximale lied länge in sekunden\>, "midi":"\<midiDaten\>"\}
