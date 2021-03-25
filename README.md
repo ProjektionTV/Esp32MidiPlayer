@@ -1,93 +1,86 @@
-# <ins> Esp32MidiPlayer </ins>
-Benötigte Libs:<br>
-fortyseveneffects/MIDI Library<br>
-knolleary/PubSubClient<br>
+# Esp32MidiPlayer
+Benötigte Bibliotheken:
+* fortyseveneffects/MIDI Library
+* knolleary/PubSubClient
 
----
+## Playmidi-Syntax
 
-## <ins> Playmidi Syntax </ins>
+`[-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
 
-\[Erweitertermodus\] \[BPM\] \<Instrument\> \<Noten\>
 
-<br>
+### Flag Erweiterter Modus (optional)
 
----
+`-...`
 
-### <ins> Instrument </ins>
-Setzt das genutzte Instrument.<br>
-Instrument Liste:<br>
-- piano
-- vibes
-- organ
-- guitar
-- brass
-- oder Midi Instrumenten Nummer
+Ist das allererste Zeichen ein `-`, wir der erweiterte Modus aktiviert. Die Noten werden dann solange gehalten, bis sie zum nächsten Mal erwähnt werden.
 
----
 
-### <ins> Erweitertermodus </ins>
+### BPM (optional)
 
-Der Erweitertermodus wird aktivirt indem man ein „-“ am anfang der Nachricht Steht.<br>
-**Dieser verändert die Syntax der Noten!**<br>
-z.B.: -brass ...
+`... bpm<BPM> ...`
 
----
+Setzt das Tempo des Liedes in *beats per minute* (BPM). Standardmäßig werden die Lieder mit Tempo 240 wiedergegeben.
 
-### <ins> BPM </ins>
 
-Setzt die BPM des Liedes, wenn nicht angegeben 240.<br>
+### Instrument (optional)
+Setzt das genutzte Instrument.
+Liste der verfügbaren Instrumente:
+* `piano` (Klavier)
+* `vibes` (Vibraphon)
+* `organ` (Orgel)
+* `guitar` (Gitarre)
+* `brass` (Bläser)
+* oder Nummer des Midi-Instruments
 
-bpm\<bpm als zahl\>
+### Noten
 
----
+`<Note> <Note>...`
 
-### <ins> Noten </ins>
+Es können beliebig viele Noten hintereinander auftauchen. Einzelne Noten werden mit Leerzeichen getrennt. Sollen mehrere Noten zugleich gespielt werden, so werden die Noten ohne Leerzeichen hintereinander geschrieben.
 
-\<Note\> \<Note\> ...
-<br>
+#### Notenbestandteile
 
-#### <ins> Notenbestnteile </ins>
-##### <ins> Länge </ins>
-Die Länge ist eine Ganzzahl und gibt an eine wieviltel Note das ist. Es kann ein „.“ agehängt werden um die 1,5 fache länge zu bekommen.<br>
-z.B.: 1 - ganze Note<br>
-    2 - halbe Note<br>
-    4 - virtel <br>
-    8 - achtel Note<br>
-    16 - sechszehntel Note<br>
-    2. - sind 3x4
-##### <ins> Ton </ins>
-Bei den Tönen sind Halbtöne unterstützt \(# und b\) und man kann bis zu drei Oktavenzeichen setzen „'“.<br>
-Tonleiter ohne Oktavenzeichen: C C#/Db D D#/Eb E F F#/Gb G G#/Ab A A#/Hb H c c#/db d d#/eb e f f#/gb g g#/ab a a#/hb h
-#### <ins> Note im „Standartmodus“ </ins>
-Hir werden die Töne für die angegebene Länge **gemeinsam** gespielt. **Es ist wichtig wenn sie zu sammen gespielt werden sollen darf kein „ “ (Lehrzeichen) vorhanden seien.**<br>
-z.B.: G'H'D
+Eine Note setzt sich zusammen aus der **Tonhöhe**, einem **Vorzeichen** (optional), einem **Oktavzeichen** (optional) und dem **Notenwert** (optional).
 
-\<Ton\>\[Ton\]\[Ton\]...\[Länge standart=4\]
+Beispiele für Noten sehen folgendermaßen aus: `C` oder `d#''4`
+##### Tonhöhe
+Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung steht (`#`, `b`).
+Die Oktave ergibt sich aus bis zu drei Oktavzeichen (`'`)
+Die Reihenfolge der Oktaven von tief nach hoch sieht folgendermaßen aus:  
+`C''' C'' C' C c c' c'' c'''`.
+##### Notenwert (optional)
+Die Länge ist eine Ganzzahl und gibt den Kehrwert der Notenlänge an.
+* 1 entspricht einer ganzen Note
+* 2 entspricht einer halben Note
+* 4 entspricht einer Viertelnote
+* 8 entspricht einer Achtelnote
+* 16 entspricht einer Sechzehntelnote
 
-#### <ins> Note im „Erweitertermodus“ </ins>
+Folgt der Länge ein Punkt (`.`), wird die Note um den anderthalbfachen Wert verlängert (Punktierung).
 
-\[Ton\]...\[s\]\[Ton\]...\[Länge / k / i\]
+#### Besonderheit: Akkorde
+Mehrere direkt aufeinanderfolgende Töne werden zusammen gespielt.
+Beispie: `CEGC GHdg FAcf`
 
-##### <ins> Besondere Funktionen </ins>
-###### <ins> i/I </ins>
-Wechselt das Aktuelle Instrument im Midi-Kanal. Nach dem „i/I“ wird ein Instrument wie am Anfag genommen.<br>
-z.B.: -organ ... ipiano ...<brS>
+#### Noten im *erweiterten Modus*
 
-i\<instrument\>
+`[Ton]...[s][Ton]...[Länge / k / i]`
 
-###### <ins> s/S </ins>
-Stopt alle aktuellspilenden Noten.<br>
-z.B.: -piano A1 s1<br>
+##### Besondere Funktionen
+###### Instrument ändern
+`i<instrument>`  
+Wechselt das Aktuelle Instrument für die nachfolgenden Noten.  
+`-organ ... ipiano ...`
 
-s
+###### Alle Noten stoppen
+Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 
-###### <ins> k/K </ins>
-Wechselt den Akktuellen Midi-kanal um z.B.: mehre instrumente gleichzeitig ertönen zu Lassen.<br>
-z.B.: -piano A k2 iorgan H 4 s
+###### Midi-Channel wechseln
+`k<Midikanal>`
+Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
+`-piano A k2 iorgan H 4 s`
 
-k\<Zahl - Neuer Kanal 1-16\>
-
-###### <ins> Ton </ins>
-**Im „Erweitertenmodus“ wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten s gespielt.**<br>
-Es folgt: a \<a wird gespielt\> 4 \<a wird gespielt\> a \<a wird nicht gespielt\><br>
-und a \<a wird gespielt\> 4 \<a wird gespielt\> s \<a wird nicht gespielt\>
+###### Ton
+Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
+`a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
+und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
