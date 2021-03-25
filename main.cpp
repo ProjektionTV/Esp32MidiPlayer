@@ -4,6 +4,7 @@
 #include <WiFiClient.h>
 #include <MIDI.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 
 // for ESP8266 Use ESP8266WiFi.h instead of WiFi.h
 
@@ -28,7 +29,6 @@ IPAddress dns(192, 168, 178, 1);
 bool playSongFlag = false;
 bool parserV2 = false;
 uint8_t currentChanal = DEFALT_MIDI_CHANAL;
-uint32_t songTimeoutSeconds = 16;  // Song time out in seconds (Maximum song length)
 uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
 uint32_t vierBeatZeit = 1000;
@@ -40,7 +40,6 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 void playMIDINote(byte channel, byte note, byte velocity);
 void parser(String buffer);
 void playNote(uint16_t note, uint8_t length);
-void playSong(String input);
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
 void parser2(String buffer);
@@ -113,7 +112,9 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   {
     payload[length] = '\0';
     Serial.println("play midi vom mqtt erkannt");
-    playSong((char*)payload);
+    DynamicJsonDocument data(512);
+    deserializeJson(data, payload);
+    playSong(data["midi"], (uint32_t) data["laenge"]);
   }
 
 }
@@ -160,11 +161,6 @@ void setup()
 
   delay(500);
 
-}
-
-void playSong(String input)
-{
-  playSong(input, songTimeoutSeconds);
 }
 
 void playSong(String input, uint32_t timeOutSeconds){
@@ -289,7 +285,7 @@ void loop()
   if(playSongFlag)
   {
     playSongFlag = false;
-    playSong(song);
+    playSong(song, 600);
   }
 }
 

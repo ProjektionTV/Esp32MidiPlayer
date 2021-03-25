@@ -2,6 +2,7 @@
 Benötigte Bibliotheken:
 * fortyseveneffects/MIDI Library
 * knolleary/PubSubClient
+* bblanchon/ArduinoJson
 
 ## Playmidi-Syntax
 
@@ -84,3 +85,11 @@ Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
+
+## Mqtt
+
+Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten empfangen.
+
+## JSON
+
+`{"laenge":<maximale Liedlänge in s>, "midi":"<midiDaten>"}`
