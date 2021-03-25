@@ -40,7 +40,6 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 void playMIDINote(byte channel, byte note, byte velocity);
 void parser(String buffer);
 void playNote(uint16_t note, uint8_t length);
-void playSong(String input);
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
 void parser2(String buffer);
