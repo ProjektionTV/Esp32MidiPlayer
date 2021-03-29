@@ -6,7 +6,7 @@ Benötigte Bibliotheken:
 
 ## Playmidi-Syntax
 
-`[-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
+`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
 
 
 ### Flag Erweiterter Modus (optional)
@@ -86,6 +86,15 @@ Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung i
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
 
+### Puffer (optional)
+`;...` fals keine unten genanten Pufferaktionen folen werden folgende Noten in den Puffer geschrieben.
+
+#### Puffer löschen
+`;l...` löscht den Puffer.
+
+#### neuen Puffer erstellen
+`;[l]n...` erschaft einen neuen Puffer folgende Noten werden in diesen eingefügt.
+
 ## Mqtt
 
 Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten oder rohen Lied Daten empfangen.
@@ -101,5 +110,5 @@ optional:
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
-* `prioritaet` - priorität des nutzers um so höher desto wichtiger ist die person. Wodurch der buffer weniger gelöscht wird.
+* `prioritaet` - priorität endscheidet welce buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen feher bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
 * `maximaleBufferGroesse` - die maximale größe des Puffers
