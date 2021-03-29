@@ -25,6 +25,14 @@ IPAddress dns(192, 168, 178, 1);
 #define ALLOW_MULTI_CHANAL_MIDI 1
 #define ENABLE_PARSER_1_1 1
 #define ALLOW_PARSER_2 1
+#define NOTEN_BUFFER_LAENGE 8
+
+struct notenBufferEintrag{
+  uint8_t priority;
+  String besitzer;
+  String daten;
+  uint16_t maximaleLaenge;
+};
 
 bool playSongFlag = false;
 bool parserV2 = false;
@@ -33,6 +41,7 @@ uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
 uint32_t vierBeatZeit = 1000;
 uint32_t timeout = 0;
+notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
 String song;
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -53,6 +62,7 @@ uint32_t readNumber(String &s);
 void readHalbton(String &s, bool &halbtonC, bool &halbtonB);
 uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &noteDown);
 uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool habtonB, bool allowHabtonC, bool allowHabtonB, bool noteDown);
+void schreibeChatNachricht(String s);
 
 
 WiFiClient wiFiClient;
@@ -112,9 +122,123 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   {
     payload[length] = '\0';
     Serial.println("play midi vom mqtt erkannt");
-    DynamicJsonDocument data(512);
+    //rueckwertz kompatiblitaet
+    if(payload[0] != '{'){
+      playSong((char*)payload,16);
+      return;
+    }
+    //JSON MIDI
+    DynamicJsonDocument data(768);
     deserializeJson(data, payload);
-    playSong(data["midi"], (uint32_t) data["laenge"]);
+    bool erlaubeBuffer = data["aktivireBuffer"];
+    if(erlaubeBuffer){
+      String midi = data["midi"];
+      String nutzer = data["nutzer"];
+      //buffer funktionen
+      if(midi.startsWith(";")){
+        midi.remove(0, 1);
+        // loesche buffer aktion
+        if(midi.startsWith("l")){
+          midi.remove(0, 1);
+          bool wurdeGeloescht = false;
+          for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
+            if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
+              notenBuffer[i].besitzer = "";
+              notenBuffer[i].daten = "";
+              notenBuffer[i].maximaleLaenge = 0;
+              notenBuffer[i].priority = 0;
+              wurdeGeloescht = true;
+            }
+          }
+          if(wurdeGeloescht){
+            schreibeChatNachricht("(MIDI) @" + nutzer + " dein Puffer wurde erfolgreich gelöscht!");
+          }else{
+            schreibeChatNachricht("(MIDI) @" + nutzer + " du hast keinen Puffer!");
+          }
+        }
+        bool benutzerBufferGefunden = false;
+        uint8_t bufferID;
+        for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
+          if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
+            benutzerBufferGefunden = true;
+            bufferID = i;
+          }
+        }
+        if(benutzerBufferGefunden){
+          // daten zum buffer hinzu fügen
+          if(notenBuffer[bufferID].daten.length() == notenBuffer[bufferID].maximaleLaenge){
+            schreibeChatNachricht("(MIDI) @" + nutzer + " dein Puffer ist Voll!");
+          }else if ((notenBuffer[bufferID].daten.length() + midi.length()) > notenBuffer[bufferID].maximaleLaenge){
+            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi;
+            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
+            schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt. Achtung es wurden Daten entfernt da der puffer überfüllt wurde (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+          }else{
+            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi;
+            schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+          }
+        }else{
+          if(midi.startsWith("n")){
+            midi.remove(0, 1);
+            uint8_t prioritaet = data["prioritaet"];
+            // erschaffe neuen buffer
+            uint8_t bufferID = 0;
+            bool erschaffeBuffer = false;
+            bool ueberSchreibeBuffer = true;
+            for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
+              if(notenBuffer[i].besitzer.equalsIgnoreCase("") && ueberSchreibeBuffer){
+                //erschaffe neuen buffer
+                ueberSchreibeBuffer = false;
+                erschaffeBuffer = true;
+                bufferID = i;
+              }
+            }
+            if(ueberSchreibeBuffer){
+              for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
+                if(notenBuffer[i].priority < prioritaet && !(ueberSchreibeBuffer)){
+                  //erschaffe neuen buffer
+                  ueberSchreibeBuffer = true;
+                  erschaffeBuffer = true;
+                  bufferID = i;
+                }
+              }
+            }
+            if(erschaffeBuffer){
+              uint16_t maximaleBufferGroesse = data["maximaleBufferGroesse"];
+              notenBuffer[bufferID].besitzer = nutzer;
+              notenBuffer[bufferID].priority = prioritaet;
+              notenBuffer[bufferID].maximaleLaenge = maximaleBufferGroesse;
+              notenBuffer[bufferID].daten = midi;
+              if(notenBuffer[bufferID].daten.length() > notenBuffer[bufferID].maximaleLaenge){
+                notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
+              }
+              //TODO: ueberscheube einen buffer
+              schreibeChatNachricht("(MIDI) @" + nutzer + " puffer wurde erfolgreich erschaffen (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+            }else{
+              schreibeChatNachricht("(MIDI) @" + nutzer + " puffer konte nicht erschaffen werden.");
+            }
+          }else{
+            // spiele daten
+            playSong(midi, (uint32_t) data["laenge"]);
+          }
+        }
+      }else{
+        bool benutzerBufferGefunden = false;
+        for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
+          if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
+            benutzerBufferGefunden = true;
+            playSong(notenBuffer[i].daten + midi, (uint32_t) data["laenge"]);
+            notenBuffer[i].besitzer = "";
+            notenBuffer[i].daten = "";
+            notenBuffer[i].maximaleLaenge = 0;
+            notenBuffer[i].priority = 0;
+          }
+        }
+        if(!benutzerBufferGefunden)
+          playSong(midi, (uint32_t) data["laenge"]);
+      }
+    }else{
+      playSong(data["midi"], (uint32_t) data["laenge"]);
+    }
   }
 
 }
@@ -720,4 +844,8 @@ uint32_t readNumber(String &s){
     s.remove(0,1);
   }
   return curr;
+}
+
+void schreibeChatNachricht(String s){
+  psClient.publish("irc/tx", s.c_str());
 }
