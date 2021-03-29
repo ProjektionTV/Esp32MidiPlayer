@@ -130,7 +130,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     //JSON MIDI
     DynamicJsonDocument data(768);
     deserializeJson(data, payload);
-    bool erlaubeBuffer = data["aktivireBuffer"];
+    bool erlaubeBuffer = data["aktiviereBuffer"];
     if(erlaubeBuffer){
       String midi = data["midi"];
       String nutzer = data["nutzer"];
@@ -169,11 +169,11 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           if(notenBuffer[bufferID].daten.length() == notenBuffer[bufferID].maximaleLaenge){
             schreibeChatNachricht("(MIDI) @" + nutzer + " dein Puffer ist Voll!");
           }else if ((notenBuffer[bufferID].daten.length() + midi.length()) > notenBuffer[bufferID].maximaleLaenge){
-            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi;
+            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi + " ";
             notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
             schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt. Achtung es wurden Daten entfernt da der puffer überfüllt wurde (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
           }else{
-            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi;
+            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi + " ";
             schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
           }
         }else{
@@ -207,7 +207,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
               notenBuffer[bufferID].besitzer = nutzer;
               notenBuffer[bufferID].priority = prioritaet;
               notenBuffer[bufferID].maximaleLaenge = maximaleBufferGroesse;
-              notenBuffer[bufferID].daten = midi;
+              notenBuffer[bufferID].daten = midi + " ";
               if(notenBuffer[bufferID].daten.length() > notenBuffer[bufferID].maximaleLaenge){
                 notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
               }

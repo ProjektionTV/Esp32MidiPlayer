@@ -97,7 +97,7 @@ Es handelt sich um ein JSON-Objekt mit folgenden tags:
 * `midi` - daten des Lides
 
 optional:
-* `aktivireBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
+* `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
