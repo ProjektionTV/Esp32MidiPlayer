@@ -88,8 +88,18 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 
 ## Mqtt
 
-Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten empfangen.
+Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten oder rohen Lied Daten empfangen.
 
 ## JSON
 
-`{"laenge":<maximale Liedlänge in s>, "midi":"<midiDaten>"}`
+Es handelt sich um ein JSON-Objekt mit folgenden tags:
+* `laenge` - maximale Lied laenge
+* `midi` - daten des Lides
+
+optional:
+* `aktivireBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
+
+Bei aktivirtem buffer werden folgende tags benötigt:
+* `nutzer` - name des users
+* `prioritaet` - priorität des nutzers um so höher desto wichtiger ist die person. Wodurch der buffer weniger gelöscht wird.
+* `maximaleBufferGroesse` - die maximale größe des Puffers
