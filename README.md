@@ -35,7 +35,7 @@ Liste der verfügbaren Instrumente:
 
 ### Noten
 
-`<Note> <Note>...`
+`<Note> [M][Note] [M][Note]...`
 
 Es können beliebig viele Noten hintereinander auftauchen. Einzelne Noten werden mit Leerzeichen getrennt. Sollen mehrere Noten zugleich gespielt werden, so werden die Noten ohne Leerzeichen hintereinander geschrieben.
 
@@ -63,6 +63,9 @@ Folgt der Länge ein Punkt (`.`), wird die Note um den anderthalbfachen Wert ver
 Mehrere direkt aufeinanderfolgende Töne werden zusammen gespielt.
 Beispie: `CEGC GHdg FAcf`
 
+#### Modus wächsel
+Mit `m` kann der Modus zwischen dem "standart" und dem "erweiterten" gewächselt werden.
+
 #### Noten im *erweiterten Modus*
 
 `[Ton]...[s][Ton]...[Länge / k / i]`
@@ -80,6 +83,10 @@ Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 `k<Midikanal>`
 Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
 `-piano A k2 iorgan H 4 s`
+
+###### zuletzt genannte Note Stoppen
+`l`
+Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  

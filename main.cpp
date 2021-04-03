@@ -41,6 +41,7 @@ uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
 uint32_t vierBeatZeit = 1000;
 uint32_t timeout = 0;
+uint16_t zuletztGenannteNote = 2000;
 notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
 String song;
 
@@ -53,6 +54,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
 void parser2(String buffer);
 void parser1_1(String buffer);
+void parserT(String buffer);
 void parser2note(uint16_t note);
 void parser2allOFF();
 bool isNumber(char c);
@@ -372,24 +374,11 @@ void playSong(String input, uint32_t timeOutSeconds){
 
     timeout = millis() + timeOutSeconds * 1000;
 
-    if(parserV2){
-      while ((pch != NULL) && (millis() < timeout)) {
-        parser2(pch);
-        pch = strtok (NULL, " ");
-      }
-      parser2allOFF();
-    }
-
-    while ((pch != NULL) && (millis() < timeout))
-    {
-#if ENABLE_PARSER_1_1
-      parser1_1(pch);
-      parser2allOFF();
-#else
-      parser(pch);
-#endif
+    while ((pch != NULL) && (millis() < timeout)) {
+      parserT(pch);
       pch = strtok (NULL, " ");
     }
+    parser2allOFF();
 
     for(uint8_t i = 0; i < 17; i++)
        MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,i);
@@ -556,6 +545,25 @@ void parser(String buffer)
   }
 }
 
+void parserT(String buffer){
+  if(buffer.charAt(0) == 'm' || buffer.charAt(0) == 'M'){
+    buffer.remove(0,1);
+#if ALLOW_PARSER_2
+    parserV2 = !parserV2;
+#endif
+  }
+  if(parserV2){
+    parser2(buffer);
+  }else{
+#if ENABLE_PARSER_1_1
+    parser1_1(buffer);
+    parser2allOFF();
+#else
+    parser(buffer);
+#endif
+  }
+}
+
 void parser1_1(String buffer){
   Serial.printf("Parser1.1: %s\n", buffer.c_str());
 
@@ -624,6 +632,12 @@ void parser2(String buffer){
       parser2allOFF();
       if(buffer.length() != 0)
         parser2(buffer);
+    }else if(note == 'l' || note == 'L'){
+      if(zuletztGenannteNote != 2000){
+        parser2note(zuletztGenannteNote);
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
     }else if(note == 'i' || note == 'I'){
       if(buffer.startsWith("piano")){
         MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,currentChanal);
@@ -679,6 +693,7 @@ void parser2(String buffer){
 }
 
 void parser2note(uint16_t note){
+  zuletztGenannteNote = note;
   if(((activeNotes[note] >> currentChanal) & 1) != 1){
     //start note
     activeNotes[note] |= (1 << currentChanal);
@@ -691,6 +706,7 @@ void parser2note(uint16_t note){
 }
 
 void parser2allOFF(){
+  zuletztGenannteNote = 2000;
   for(uint16_t i = 0; i < 129; i++){
     if(activeNotes[i] != 0){
       for(uint8_t j = 0; j < 32; j++){
