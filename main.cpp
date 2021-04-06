@@ -711,7 +711,7 @@ void parser2allOFF(){
     if(activeNotes[i] != 0){
       for(uint8_t j = 0; j < 32; j++){
         if(((activeNotes[i] >> j) & 1) == 1){
-          MIDI.sendNoteOff(i, 0, currentChanal);
+          MIDI.sendNoteOff(i, 0, j);
         }
       }
       activeNotes[i] = 0;
