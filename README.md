@@ -84,6 +84,11 @@ Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
 `-piano A k2 iorgan H 4 s`
 
+###### Lauststärke ändern
+`v<Neue Lautstärke>`
+Mit `v` wird die lautstärke in dem Aktuellen Midi-Kanal geändert \(0-127\) \(Keine garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1 v64 A1`
+
 ###### zuletzt genannte Note Stoppen
 `l`
 Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.

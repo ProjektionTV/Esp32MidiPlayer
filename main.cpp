@@ -380,8 +380,10 @@ void playSong(String input, uint32_t timeOutSeconds){
     }
     parser2allOFF();
 
-    for(uint8_t i = 0; i < 17; i++)
+    for(uint8_t i = 0; i < 17; i++){
        MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,i);
+       MIDI.sendControlChange(7, 127, i);
+    }
 }
 
 void loop()
@@ -635,6 +637,14 @@ void parser2(String buffer){
     }else if(note == 'l' || note == 'L'){
       if(zuletztGenannteNote != 2000){
         parser2note(zuletztGenannteNote);
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
+    }else if(note == 'v' || note == 'V'){
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nv = readNumber(buffer);
+        if(nv < 128 && nv >= 0)
+          MIDI.sendControlChange(7, nv, currentChanal);
       }
       if(buffer.length() != 0)
         parser2(buffer);
