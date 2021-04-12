@@ -6,7 +6,7 @@ Benötigte Bibliotheken:
 
 ## Playmidi-Syntax
 
-`[-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
+`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
 
 
 ### Flag Erweiterter Modus (optional)
@@ -35,7 +35,7 @@ Liste der verfügbaren Instrumente:
 
 ### Noten
 
-`<Note> <Note>...`
+`<Note> [M][Note] [M][Note]...`
 
 Es können beliebig viele Noten hintereinander auftauchen. Einzelne Noten werden mit Leerzeichen getrennt. Sollen mehrere Noten zugleich gespielt werden, so werden die Noten ohne Leerzeichen hintereinander geschrieben.
 
@@ -63,6 +63,9 @@ Folgt der Länge ein Punkt (`.`), wird die Note um den anderthalbfachen Wert ver
 Mehrere direkt aufeinanderfolgende Töne werden zusammen gespielt.
 Beispie: `CEGC GHdg FAcf`
 
+#### Modus wächsel
+Mit `m` kann der Modus zwischen dem "standart" und dem "erweiterten" gewächselt werden.
+
 #### Noten im *erweiterten Modus*
 
 `[Ton]...[s][Ton]...[Länge / k / i]`
@@ -81,10 +84,28 @@ Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
 `-piano A k2 iorgan H 4 s`
 
+###### Lauststärke ändern
+`v<Neue Lautstärke>`
+Mit `v` wird die lautstärke in dem Aktuellen Midi-Kanal geändert \(0-127\) \(Keine garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1 v64 A1`
+
+###### zuletzt genannte Note Stoppen
+`l`
+Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
+
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
+
+### Puffer (optional)
+`;...` fals keine unten genanten Pufferaktionen folen werden folgende Noten in den Puffer geschrieben.
+
+#### Puffer löschen
+`;l...` löscht den Puffer.
+
+#### neuen Puffer erstellen
+`;[l]n...` erschaft einen neuen Puffer folgende Noten werden in diesen eingefügt.
 
 ## Mqtt
 
@@ -97,9 +118,9 @@ Es handelt sich um ein JSON-Objekt mit folgenden tags:
 * `midi` - daten des Lides
 
 optional:
-* `aktivireBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
+* `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
-* `prioritaet` - priorität des nutzers um so höher desto wichtiger ist die person. Wodurch der buffer weniger gelöscht wird.
+* `prioritaet` - priorität endscheidet welce buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen feher bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
 * `maximaleBufferGroesse` - die maximale größe des Puffers
