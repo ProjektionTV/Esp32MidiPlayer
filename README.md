@@ -6,7 +6,7 @@ Benötigte Bibliotheken:
 
 ## Playmidi-Syntax
 
-`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`
+`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`/`~<lied Preset>`
 
 
 ### Flag Erweiterter Modus (optional)
@@ -93,6 +93,18 @@ Mit `v` wird die lautstärke in dem Aktuellen Midi-Kanal geändert \(0-127\) \(K
 `l`
 Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 
+###### controllchange 0 MSB-Bank standart: 0
+`x<neuer Wert>`
+
+###### controllchange 32 LSB-Bank standart: 0
+`y<neuer Wert>`
+
+###### controllchange 72 relese
+`j<neuer Wert>`
+
+###### controllchange 73 attack
+`k<neuer Wert>`
+
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
@@ -106,6 +118,11 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 
 #### neuen Puffer erstellen
 `;[l]n...` erschaft einen neuen Puffer folgende Noten werden in diesen eingefügt.
+
+### lied Preset
+* `0`- `118 c8 C'8 mi119 c'1`
+* `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1`
+* `2`- `-126 c1 1 1 1 1 1` - Aplaus
 
 ## Mqtt
 
