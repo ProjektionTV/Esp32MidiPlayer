@@ -17,21 +17,25 @@ IPAddress dns(192, 168, 178, 1);
 #define PING_TIMEOUT 120 * 1000
 #define DEFALT_MIDI_CHANAL 1
 #define DEFALT_BPM 240
-#define MIDI_INSTRUMENT_piano 0
-#define MIDI_INSTRUMENT_vibes 11
-#define MIDI_INSTRUMENT_organ 19
-#define MIDI_INSTRUMENT_guitar 30
-#define MIDI_INSTRUMENT_brass 62
 #define ALLOW_MULTI_CHANAL_MIDI 1
 #define ENABLE_PARSER_1_1 1
 #define ALLOW_PARSER_2 1
 #define NOTEN_BUFFER_LAENGE 8
+#define MENGE_PRESET_LIEDER 3
+#define MENGE_PRESET_INSTRUMENTE 5
 
 struct notenBufferEintrag{
   uint8_t priority;
   String besitzer;
   String daten;
   uint16_t maximaleLaenge;
+};
+
+struct instrument{
+  String name;
+  uint8_t instrument;
+  uint8_t bank_MSB;
+  uint8_t bank_LSB;
 };
 
 bool playSongFlag = false;
@@ -43,6 +47,8 @@ uint32_t vierBeatZeit = 1000;
 uint32_t timeout = 0;
 uint16_t zuletztGenannteNote = 2000;
 notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
+String presetLieder[MENGE_PRESET_LIEDER];
+instrument instrumente[MENGE_PRESET_INSTRUMENTE];
 String song;
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -65,6 +71,9 @@ void readHalbton(String &s, bool &halbtonC, bool &halbtonB);
 uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &noteDown);
 uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool habtonB, bool allowHabtonC, bool allowHabtonB, bool noteDown);
 void schreibeChatNachricht(String s);
+void readInstrument(String &s);
+void fuellePresetLieder();
+void fuellePresetInstrumente();
 
 
 WiFiClient wiFiClient;
@@ -285,11 +294,23 @@ void setup()
   psClient.setBufferSize(4096);
   psClient.setCallback(mqttCallback);
 
+  fuellePresetLieder();
+  fuellePresetInstrumente();
+
   delay(500);
 
 }
 
 void playSong(String input, uint32_t timeOutSeconds){
+
+    if(input.startsWith("~")){
+      input.remove(0,1);
+      if(isNumber(input.charAt(0))){
+        uint32_t num = readNumber(input);
+        if(num >= 0 && num < MENGE_PRESET_LIEDER)
+          input = presetLieder[num];
+      }
+    }
 
     Serial.println("PLAY ERKANNT");
 
@@ -326,41 +347,7 @@ void playSong(String input, uint32_t timeOutSeconds){
     while (input.startsWith(" "))
       input.remove(0,1);
     
-    if (isNumber(input.charAt(0))){
-      uint32_t midiInstrument = readNumber(input);
-      if(midiInstrument < 128)
-        MIDI.sendProgramChange(midiInstrument, currentChanal);
-    }
-
-    if(input.startsWith("piano"))
-    {
-      input.remove(0,6);
-      MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,currentChanal);
-    }
-
-    if(input.startsWith("vibes"))
-    {
-      input.remove(0,6);
-      MIDI.sendProgramChange(MIDI_INSTRUMENT_vibes,currentChanal);
-    }
-
-    if(input.startsWith("organ"))
-    {
-      input.remove(0,6);
-      MIDI.sendProgramChange(MIDI_INSTRUMENT_organ,currentChanal);
-    }
-
-    if(input.startsWith("guitar"))
-    {
-      input.remove(0,7);
-      MIDI.sendProgramChange(MIDI_INSTRUMENT_guitar,currentChanal);
-    }
-
-    if(input.startsWith("brass"))
-    {
-      input.remove(0,6);
-      MIDI.sendProgramChange(MIDI_INSTRUMENT_brass,currentChanal);
-    }
+    readInstrument(input);
 
     vierBeatZeit = (int) ((float) (240000) / ((float) bpm));
 
@@ -381,8 +368,12 @@ void playSong(String input, uint32_t timeOutSeconds){
     parser2allOFF();
 
     for(uint8_t i = 0; i < 17; i++){
-       MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,i);
+       MIDI.sendProgramChange(0,i);
        MIDI.sendControlChange(7, 127, i);
+       MIDI.sendControlChange(0, 0, i);
+       MIDI.sendControlChange(32, 0, i);
+       MIDI.sendControlChange(72, 0, i);
+       MIDI.sendControlChange(73, 0, i);
     }
 }
 
@@ -648,28 +639,40 @@ void parser2(String buffer){
       }
       if(buffer.length() != 0)
         parser2(buffer);
-    }else if(note == 'i' || note == 'I'){
-      if(buffer.startsWith("piano")){
-        MIDI.sendProgramChange(MIDI_INSTRUMENT_piano,currentChanal);
-        buffer.remove(0,5);
-      }else if(buffer.startsWith("vibes")){
-        MIDI.sendProgramChange(MIDI_INSTRUMENT_vibes,currentChanal);
-        buffer.remove(0,5);
-      }else if(buffer.startsWith("organ")){
-        MIDI.sendProgramChange(MIDI_INSTRUMENT_organ,currentChanal);
-        buffer.remove(0,5);
-      }else if(buffer.startsWith("guitar")){
-        MIDI.sendProgramChange(MIDI_INSTRUMENT_guitar,currentChanal);
-        buffer.remove(0,6);
-      }else if(buffer.startsWith("brass")){
-        MIDI.sendProgramChange(MIDI_INSTRUMENT_brass,currentChanal);
-        buffer.remove(0,5);
-      }else {
-        if(isNumber(buffer.charAt(0))){
-          uint32_t ni = readNumber(buffer);
-          MIDI.sendProgramChange(ni, currentChanal);
-        }
+    }else if(note == 'x' || note == 'X'){
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nv = readNumber(buffer);
+        if(nv < 128 && nv >= 0)
+          MIDI.sendControlChange(0, nv, currentChanal);
       }
+      if(buffer.length() != 0)
+        parser2(buffer);
+    }else if(note == 'y' || note == 'Y'){
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nv = readNumber(buffer);
+        if(nv < 128 && nv >= 0)
+          MIDI.sendControlChange(32, nv, currentChanal);
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
+    }else if(note == 'j' || note == 'J'){
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nv = readNumber(buffer);
+        if(nv < 128 && nv >= 0)
+          MIDI.sendControlChange(72, nv, currentChanal);
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
+    }else if(note == 'o' || note == 'O'){
+      if(isNumber(buffer.charAt(0))){
+        uint32_t nv = readNumber(buffer);
+        if(nv < 128 && nv >= 0)
+          MIDI.sendControlChange(73, nv, currentChanal);
+      }
+      if(buffer.length() != 0)
+        parser2(buffer);
+    }else if(note == 'i' || note == 'I'){
+      readInstrument(buffer);
       if(buffer.length() != 0)
         parser2(buffer);
     }
@@ -870,6 +873,56 @@ uint32_t readNumber(String &s){
     s.remove(0,1);
   }
   return curr;
+}
+
+void readInstrument(String &s){
+    if (isNumber(s.charAt(0))){
+      uint32_t midiInstrument = readNumber(s);
+      if(midiInstrument < 128)
+        MIDI.sendProgramChange(midiInstrument, currentChanal);
+    }
+
+    for(uint8_t i = 0; i < MENGE_PRESET_INSTRUMENTE; i++){
+      if(s.startsWith(instrumente[i].name)){
+        s.remove(0, instrumente[i].name.length());
+        MIDI.sendProgramChange(instrumente[i].instrument,currentChanal);
+        MIDI.sendControlChange(0, instrumente[i].bank_MSB, currentChanal);  //MSB
+        MIDI.sendControlChange(32, instrumente[i].bank_LSB, currentChanal); //LSB
+      }
+    }
+}
+
+void fuellePresetLieder(){
+  presetLieder[0] = "118 c8 C'8 mi119 c'1";
+  presetLieder[1] = "brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1";
+  presetLieder[2] = "-126 c1 1 1 1 1 1";
+}
+
+void fuellePresetInstrumente(){
+  instrumente[0].name = "piano";
+  instrumente[0].instrument = 0;
+  instrumente[0].bank_MSB = 0;
+  instrumente[0].bank_LSB = 0;
+
+  instrumente[1].name = "vibes";
+  instrumente[1].instrument = 11;
+  instrumente[1].bank_MSB = 0;
+  instrumente[1].bank_LSB = 0;
+
+  instrumente[2].name = "organ";
+  instrumente[2].instrument = 19;
+  instrumente[2].bank_MSB = 0;
+  instrumente[2].bank_LSB = 0;
+
+  instrumente[3].name = "guitar";
+  instrumente[3].instrument = 30;
+  instrumente[3].bank_MSB = 0;
+  instrumente[3].bank_LSB = 0;
+
+  instrumente[4].name = "brass";
+  instrumente[4].instrument = 62;
+  instrumente[4].bank_MSB = 0;
+  instrumente[4].bank_LSB = 0;
 }
 
 void schreibeChatNachricht(String s){
