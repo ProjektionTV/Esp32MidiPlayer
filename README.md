@@ -99,11 +99,11 @@ Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 ###### controllchange 32 LSB-Bank standart: 0
 `y<neuer Wert>`
 
-###### controllchange 72 relese
+###### controllchange 72 relese standart: 63
 `j<neuer Wert>`
 
-###### controllchange 73 attack
-`o<neuer Wert>`
+###### controllchange 73 attack standart: 63
+`k<neuer Wert>`
 
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
@@ -123,6 +123,8 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 * `0`- `118 c8 C'8 mi119 c'1`
 * `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1`
 * `2`- `-126 c1 1 1 1 1 1` - Aplaus
+* `3`- ... - Gravity Falls
+* `4`- ... - Vivaldi
 
 ## Mqtt
 

@@ -21,7 +21,7 @@ IPAddress dns(192, 168, 178, 1);
 #define ENABLE_PARSER_1_1 1
 #define ALLOW_PARSER_2 1
 #define NOTEN_BUFFER_LAENGE 8
-#define MENGE_PRESET_LIEDER 3
+#define MENGE_PRESET_LIEDER 5
 #define MENGE_PRESET_INSTRUMENTE 5
 
 struct notenBufferEintrag{
@@ -372,8 +372,8 @@ void playSong(String input, uint32_t timeOutSeconds){
        MIDI.sendControlChange(7, 127, i);
        MIDI.sendControlChange(0, 0, i);
        MIDI.sendControlChange(32, 0, i);
-       MIDI.sendControlChange(72, 0, i);
-       MIDI.sendControlChange(73, 0, i);
+       MIDI.sendControlChange(72, 63, i);
+       MIDI.sendControlChange(73, 63, i);
     }
 }
 
@@ -663,7 +663,7 @@ void parser2(String buffer){
       }
       if(buffer.length() != 0)
         parser2(buffer);
-    }else if(note == 'o' || note == 'O'){
+    }else if(note == 'k' || note == 'K'){
       if(isNumber(buffer.charAt(0))){
         uint32_t nv = readNumber(buffer);
         if(nv < 128 && nv >= 0)
@@ -896,6 +896,17 @@ void fuellePresetLieder(){
   presetLieder[0] = "118 c8 C'8 mi119 c'1";
   presetLieder[1] = "brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1";
   presetLieder[2] = "-126 c1 1 1 1 1 1";
+  presetLieder[3] = "-bpm160 piano DD'f'8f'd'8d'a8ad'8d'f'8f'd'8d'a8ad'8s FF'f'8f'c'8c'a8ac'8c'f'8f'c'8c'a8ac'8s AA'e'8e'c'#8c'#a8ac'#8c'#e'8e'c'#8c'#a8ac'#8s AA'e'8e'c'#8c'#a8ac'#8s AA'e'4e'a'4s dd'D'8D'A'8A'D8DA'8A'F8FD8see'A'8A'D8s " +
+    "f'afD'8D'A'8A'F8FA'8A'F8FD8DA'8A'D8s a'c'aF'8F'C'8C'F8sg'gC'8C'A8AF8sa'aC'8C'F8s cc'F'8F'C'8C'F8FC'8C'A8AF8FC'8C'F8s dd'H'b8H'bF8FHb8HbFs d8sHb8s ee'F8FHb8s ff'H'b8H'bF8FHb8HbF8s e'd8dHb8HbF8FHb8Hbs g'c'gC8CG8Gc8cG8Gs aa'e8ec8cG8GC8s gg'C8CE8EA8AE8s " +
+    "ff'c#8c#A8AE8EA'8s D'8sA'8s ff'D8DA'8s ff'D'8D'A'8s ff'D8DA'8s aa'D'8D'A'8saa'D8DA'8s gg'D'8D'A'8sff'E'8E'A'8s F'8sC8saa'F8FC8saa'F'8F'C8saa'F8FC8s gg'F'8F'C8saa'F8FC8s gg'F'8F'C8sff'F8FC8s H'b8sF8sff'Hb8HbF8sff'H'b8H'bF8sff'Hb8HbF8s " +
+    "aa'H'b8H'bF8saa'Hb8HbF8sgg'H'b8H'bF8sff'Hb8HbF8s C8sG8saa'c8cG8saa'C8CG8saa'H'b8H'bG8s A'8sE8sc''#c'#A8AE8sc'#c''#A'8A'E8sc'#c''#A8AE8s D'8sA'8sff'D8DA'8sff'D'8D'A'8sff'D'8D'A'8s aa'F'8F'C8saa'F8FC8s gg'F'8F'C8sff'F8FA'8s " +
+    "H'b8sF8shbh'bHb8HbF8shbh'bH'b8H'bF8shbh'bHb8HbF8s gg'C8CG8Gc8cG8sc'c''C8CG8Gc8cG8s aa'c'#A'8A'E8EA8AE8sc'c''#e'A'8A'E8EA4s DAdaf'8af'd'8d'f'8f'a'8a'e'8e'c'#8c'#a'8a'c''#8s d''d'''2D'";
+  presetLieder[4] = "bpm120 41 gg'16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 ff'16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 ebe'b16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 gG16 GG'16 dd'16 GG'16 gG16 GG'16 " +
+    "gG16 GG'16 gG16 GG'16 gG16 p8. p1 dd'16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 cc'16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 hbh'b16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 " +
+    "aA16 DD'16 dD16 DD'16 dD16 DD'16 dD16 DD'16 dD16 p8. p16 d16 c16 Hb16 A16 G16 F#16 E16 D16 C16 H'b16 A'16 G'G''16 d16 G'G''c16 Hb16 G'G''A16 G16 G'G''F#16 E16 G'G''D16 C16 G'G''H'b16 A16 G'G''16 g16 G'G''f16 eb16 dG'G''16 c16 HbG'G''16 A16 " +
+    "GG'G''16 F16 EbG'G''16 D16 CC'16 g16 CC'f16 eb16 dCC'16 c16 HbCC'16 A16 GCC'16 F16 EbCC'16 D16 CC'16 hb16 CC'a16 g16 CC'f16 eb16 CC'd16 c16 CC'Hb16 A16 CC'G16 F16 EbE'b16 hb16 EbE'ba16 g16 EbE'bf16 eb16 EbE'bd16 c16 EbE'bHb16 A16 EbE'bG16 F16 " + 
+    "EbE'b16 d'16 EbE'bc'16 hb16 EbE'ba16 g16 EbE'bf#16 e16 EbE'bd16 c16 EbE'bHb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 " +
+    "GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 dd'16 GG'16 GG'16 GG'16 dd'16 GG'16 GG'16 GG'16 dd'16 GG'16 GG'16 GG'16 D'16 DA16 D'Hb16 Dc16 D'd16 De16 D'f#16 Dg16 D'a16 D16 D'16 D16 D'16 CA16 D'Hb16 Cc16 D'd16 Ce16 D'f#16 Cg16 D'a16 C16 D'16 C16 ";
 }
 
 void fuellePresetInstrumente(){
