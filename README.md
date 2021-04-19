@@ -103,7 +103,7 @@ Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 `j<neuer Wert>`
 
 ###### controllchange 73 attack standart: 63
-`k<neuer Wert>`
+`o<neuer Wert>`
 
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  

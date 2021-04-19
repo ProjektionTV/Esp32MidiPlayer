@@ -663,7 +663,7 @@ void parser2(String buffer){
       }
       if(buffer.length() != 0)
         parser2(buffer);
-    }else if(note == 'k' || note == 'K'){
+    }else if(note == 'o' || note == 'O'){
       if(isNumber(buffer.charAt(0))){
         uint32_t nv = readNumber(buffer);
         if(nv < 128 && nv >= 0)
