@@ -21,7 +21,7 @@ IPAddress dns(192, 168, 178, 1);
 #define ENABLE_PARSER_1_1 1
 #define ALLOW_PARSER_2 1
 #define NOTEN_BUFFER_LAENGE 8
-#define MENGE_PRESET_LIEDER 5
+#define MENGE_PRESET_LIEDER 6
 #define MENGE_PRESET_INSTRUMENTE 5
 
 struct notenBufferEintrag{
@@ -893,7 +893,7 @@ void readInstrument(String &s){
 }
 
 void fuellePresetLieder(){
-  presetLieder[0] = "118 c8 C'8 mi119 c'1";
+  presetLieder[0] = "118 c4 C'4 mi119 c'2";
   presetLieder[1] = "brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1";
   presetLieder[2] = "-126 c1 1 1 1 1 1";
   presetLieder[3] = "-bpm160 piano DD'f'8f'd'8d'a8ad'8d'f'8f'd'8d'a8ad'8s FF'f'8f'c'8c'a8ac'8c'f'8f'c'8c'a8ac'8s AA'e'8e'c'#8c'#a8ac'#8c'#e'8e'c'#8c'#a8ac'#8s AA'e'8e'c'#8c'#a8ac'#8s AA'e'4e'a'4s dd'D'8D'A'8A'D8DA'8A'F8FD8see'A'8A'D8s " +
@@ -907,6 +907,8 @@ void fuellePresetLieder(){
     "GG'G''16 F16 EbG'G''16 D16 CC'16 g16 CC'f16 eb16 dCC'16 c16 HbCC'16 A16 GCC'16 F16 EbCC'16 D16 CC'16 hb16 CC'a16 g16 CC'f16 eb16 CC'd16 c16 CC'Hb16 A16 CC'G16 F16 EbE'b16 hb16 EbE'ba16 g16 EbE'bf16 eb16 EbE'bd16 c16 EbE'bHb16 A16 EbE'bG16 F16 " + 
     "EbE'b16 d'16 EbE'bc'16 hb16 EbE'ba16 g16 EbE'bf#16 e16 EbE'bd16 c16 EbE'bHb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 GG'16 d'16 GG'c'16 hb16 GG'a16 g16 " +
     "GG'f#16 e16 GG'd16 c16 GG'Hb16 A16 dd'16 GG'16 GG'16 GG'16 dd'16 GG'16 GG'16 GG'16 dd'16 GG'16 GG'16 GG'16 D'16 DA16 D'Hb16 Dc16 D'd16 De16 D'f#16 Dg16 D'a16 D16 D'16 D16 D'16 CA16 D'Hb16 Cc16 D'd16 Ce16 D'f#16 Cg16 D'a16 C16 D'16 C16 ";
+  presetLieder[5] = "piano H8 A8 H2 E2 p4 c8 H8 c4 H4 A2 p4 c8 H8 c2 E2 p4 A8 G8 A4 G4 F#4 A4 p4 H8 A8 H2 E2 F#8 G8 A2. G8 A8 H4 A4 G4 F#4 E2 c2 H2 H4 c2 H8 A8 H1 E4 E4 F#4 G4 F2 E2. p2 E4 E4 F#4 G4 E1 E4 E4 F#4 G4 F#4 E4 E2 p2 G4 F#2 E4 D4 D1 p2 c8 H8 c4 h4 a2" +
+    "p4 c8 H8 c2 E2 p4 A8 G8 A4 G4 F#4 A4 G2. F#8 G8 A2. G8 A8 H4 A4 G4 F#4 E2 c2 H2. H8 c8 H8 A8 H1";
 }
 
 void fuellePresetInstrumente(){
