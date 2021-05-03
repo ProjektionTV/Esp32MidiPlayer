@@ -93,16 +93,19 @@ Mit `v` wird die lautstärke in dem Aktuellen Midi-Kanal geändert \(0-127\) \(K
 `l`
 Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 
+###### bpm änderung
+`q<neue BPM>`
+
 ###### controllchange 0 MSB-Bank standart: 0
 `x<neuer Wert>`
 
 ###### controllchange 32 LSB-Bank standart: 0
 `y<neuer Wert>`
 
-###### controllchange 72 relese
+###### controllchange 72 relese standart: 63
 `j<neuer Wert>`
 
-###### controllchange 73 attack
+###### controllchange 73 attack standart: 63
 `o<neuer Wert>`
 
 ###### Ton
@@ -120,9 +123,13 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 `;[l]n...` erschaft einen neuen Puffer folgende Noten werden in diesen eingefügt.
 
 ### lied Preset
-* `0`- `118 c8 C'8 mi119 c'1`
-* `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1`
+* `0`- `118 c4 C'4 mi119 c'2`
+* `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1` - `Klavier Spielen` beispiel melodie
 * `2`- `-126 c1 1 1 1 1 1` - Aplaus
+* `3`- ... - Gravity Falls
+* `4`- ... - Vivaldi
+* `5`- ... - cowntdown\(/Vorhersage/Umfrage Melodie\)
+* `6`- ... - irgendwas was `d7gr` gemacht hat
 
 ## Mqtt
 
@@ -136,8 +143,13 @@ Es handelt sich um ein JSON-Objekt mit folgenden tags:
 
 optional:
 * `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
+* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert. INFO: indev ONLY
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
 * `prioritaet` - priorität endscheidet welce buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen feher bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
 * `maximaleBufferGroesse` - die maximale größe des Puffers
+
+
+Bei aktivirtem admin modus werden folgende tags benötigt: INFO: indev ONLY
+* `nutzer` - name des users
