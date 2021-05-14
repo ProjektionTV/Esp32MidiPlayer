@@ -17,13 +17,11 @@
 #include "interface.h"
 #include "admin.h"
 #include "defaults.h"
+#include "song.h"
 
-// for ESP8266 Use ESP8266WiFi.h instead of WiFi.h
+// for ESP8266 Use ESP8266WiFi.h instead of WiFi.
 
 void mqttReconnect();
-void parserT(String buffer);
-void playSong(String input, uint32_t timeOutSeconds);
-void readInstrument(String &s);
 
 extern bool playSongFlag;
 extern bool parserV2;
