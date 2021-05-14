@@ -130,6 +130,7 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 * `4`- ... - Vivaldi
 * `5`- ... - cowntdown\(/Vorhersage/Umfrage Melodie\)
 * `6`- ... - irgendwas was `d7gr` gemacht hat
+* `7`- ... - trinken
 
 ## Mqtt
 
@@ -143,7 +144,7 @@ Es handelt sich um ein JSON-Objekt mit folgenden tags:
 
 optional:
 * `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
-* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert. INFO: indev ONLY
+* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert.
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
@@ -151,5 +152,8 @@ Bei aktivirtem buffer werden folgende tags benötigt:
 * `maximaleBufferGroesse` - die maximale größe des Puffers
 
 
-Bei aktivirtem admin modus werden folgende tags benötigt: INFO: indev ONLY
+Bei aktivirtem admin modus werden folgende tags benötigt:
 * `nutzer` - name des users
+
+## Adminmodus MIDI syntax
+TODO
