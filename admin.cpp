@@ -24,12 +24,32 @@ void parseAdminCommand(String command, String user){
         break;
       }
       case '~':
-        //TODO: Spiele Buffer und Lösche diesen
-        return;
+        if(isNumber(command.charAt(0))){
+          uint32_t id = readNumber(command);
+          deleteSpace(command);
+          uint32_t time = 16;
+          if(isNumber(command.charAt(0))){
+            time = readNumber(command);
+            deleteSpace(command);
+          }
+          playSong(notenBuffer[id].daten, time);
+          notenBuffer[id].besitzer = "";
+          notenBuffer[id].daten = "";
+          notenBuffer[id].maximaleLaenge = 0;
+          notenBuffer[id].priority = 0;
+        }
         break;
       case 'q':
-        //TODO: Spiele Buffer
-        return;
+        if(isNumber(command.charAt(0))){
+          uint32_t id = readNumber(command);
+          deleteSpace(command);
+          uint32_t time = 16;
+          if(isNumber(command.charAt(0))){
+            time = readNumber(command);
+            deleteSpace(command);
+          }
+          playSong(notenBuffer[id].daten, time);
+        }
         break;
       case 'B':
       case 'b':
