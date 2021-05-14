@@ -156,4 +156,84 @@ Bei aktivirtem admin modus werden folgende tags benötigt:
 * `nutzer` - name des users
 
 ## Adminmodus MIDI syntax
-TODO
+`command;[command;...]`
+
+### p
+Spielt die folgenden daten. Es können keine weiteren befehle angehengt werden.
+`p <noten>`
+
+### ~
+Spielt den Puffer und löscht diesen
+`~ <Puffer id>`
+
+### q
+Spielt den Puffer
+`q <Puffer id>`
+
+### i
+
+instrument optionen
+
+#### l
+listet die instrumente.
+`il`
+
+#### i
+setzt die instrument nummer des instrumentes
+`ii<interne instrument id> <instrument id>`
+
+#### m
+setzt die msb des instrumentes
+`im<interne instrument id> <msb>`
+
+#### d
+setzt die lsb des instrumentes
+`id<interne instrument id> <lsb>`
+
+#### n
+setzt den namen des instrumentes, mit welchen man dies ereicht
+`in<interne instrument id> <name ohne lerzeichen>`
+
+### l
+
+#### l
+listet all lieder und deren daten
+`ll`
+
+#### d
+setzt die daten des liedes. Es können keine weiteren befehle angehengt werden.
+`ld<lied id> <noten>`
+
+#### a
+fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+`la<lied id> <noten>`
+
+#### c
+löscht die daten des liedes
+`lc<lied id>`
+
+### b
+
+#### l
+listet all puffer und deren besitzer
+`bl`
+
+#### d
+setzt die daten des puffer. Es können keine weiteren befehle angehengt werden.
+`bd<puffer id> <noten>`
+
+#### a
+fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+`ba<puffer id> <noten>`
+
+#### c
+löscht die daten des puffers
+`bc<puffer id>`
+
+#### o
+setzt den besitzer des puffers
+`bo<puffer id> <neuer besitzer ohne lerzeichen>`
+
+#### p
+listet die daten des puffers
+`bp<puffer id>`
