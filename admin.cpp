@@ -249,7 +249,7 @@ void parseAdminCommand(String command, String user){
       }
       break;
     //end
-    deleteSpace(command);
     }
+    deleteSpace(command);
   }
 }
