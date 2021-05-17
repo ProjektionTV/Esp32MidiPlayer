@@ -11,7 +11,7 @@
 #define MQTT_IRC_TX "irc/tx"
 #define MQTT_PLAYMIDI "playmidi"
 #define MQTT_CLIENT_ID "playmidi"
-#define MQTT_MUSIC_ON_TOPIC "shellies/Switch-DG/relay/0/command"
+#define MQTT_MUSIC_ON_TOPIC "stream/music"
 #define MQTT_MUSIC_ON_MASSAGE "on"
 #define MQTT_MUSIC_OFF_TOPIC MQTT_MUSIC_ON_TOPIC
 #define MQTT_MUSIC_OFF_MASSAGE "off"
