@@ -131,6 +131,8 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 * `5`- ... - cowntdown\(/Vorhersage/Umfrage Melodie\)
 * `6`- ... - irgendwas was `d7gr` gemacht hat
 * `7`- ... - trinken
+* `8`- ... - Ducktales Intro theme
+* `9`- ... - Wenn ich reich wär - Abomelodie
 
 ## Mqtt
 
