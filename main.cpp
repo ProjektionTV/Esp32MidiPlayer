@@ -12,7 +12,7 @@ uint32_t vierBeatZeit = 1000;
 uint32_t timeout = 0;
 uint16_t zuletztGenannteNote = 2000;
 notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
-String presetLieder[MENGE_PRESET_LIEDER];
+lied presetLieder[MENGE_PRESET_LIEDER];
 instrument instrumente[MENGE_PRESET_INSTRUMENTE];
 String song;
 
@@ -94,12 +94,16 @@ void setup()
   wifiConnect();
 
   ArduinoOTA.setHostname(OTA_HOST);
-  ArduinoOTA.setPort(OTA_PORT);
+  if (OTA_PORT != 0)
+    ArduinoOTA.setPort(OTA_PORT);
   ArduinoOTA.begin();
 
   MIDI.begin(4);
 
-  MIDI.sendProgramChange(0,currentChanal);
+  for (uint8_t i = 1; i < 17; i++) {
+    MIDI.sendProgramChange(0, i);
+    MIDI.sendPitchBend(0, i);
+  }
     
   psClient.setServer(mqttBroker, 1883);
   psClient.setBufferSize(4096);

@@ -1,7 +1,16 @@
 #include "interface.h"
 
-void schreibeChatNachricht(String s){
-  psClient.publish(MQTT_IRC_TX, s.c_str());
+void schreibeChatNachricht(String s) {
+  if (s.length() > 500) {
+    while(s.length() > 500){
+      psClient.publish(MQTT_IRC_TX, s.substring(0, 500).c_str());
+      s.remove(0, 500);
+      if (s.length() > 0) {
+        psClient.publish(MQTT_IRC_TX, s.c_str());
+      }
+    }
+  } else
+    psClient.publish(MQTT_IRC_TX, s.c_str());
 }
 
 void setMusicStatus(bool newStatus){

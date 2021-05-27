@@ -1,41 +1,5 @@
 #include "song.h"
 
-void parserT(String buffer){
-  if(buffer.charAt(0) == 'm' || buffer.charAt(0) == 'M'){
-    buffer.remove(0,1);
-#if ALLOW_PARSER_2
-    parserV2 = !parserV2;
-#endif
-  }
-  if(parserV2){
-    parser2(buffer);
-  }else{
-#if ENABLE_PARSER_1_1
-    parser1_1(buffer);
-    parser2allOFF();
-#else
-    parser(buffer);
-#endif
-  }
-}
-
-void readInstrument(String &s){
-    if (isNumber(s.charAt(0))){
-      uint32_t midiInstrument = readNumber(s);
-      if(midiInstrument < 128)
-        MIDI.sendProgramChange(midiInstrument, currentChanal);
-    }
-
-    for(uint8_t i = 0; i < MENGE_PRESET_INSTRUMENTE; i++){
-      if(s.startsWith(instrumente[i].name)){
-        s.remove(0, instrumente[i].name.length());
-        MIDI.sendProgramChange(instrumente[i].instrument,currentChanal);
-        MIDI.sendControlChange(0, instrumente[i].bank_MSB, currentChanal);  //MSB
-        MIDI.sendControlChange(32, instrumente[i].bank_LSB, currentChanal); //LSB
-      }
-    }
-}
-
 void playSong(String input, uint32_t timeOutSeconds){
 
     if(input.startsWith("~")){
@@ -43,7 +7,7 @@ void playSong(String input, uint32_t timeOutSeconds){
       if(isNumber(input.charAt(0))){
         uint32_t num = readNumber(input);
         if(num >= 0 && num < MENGE_PRESET_LIEDER)
-          input = presetLieder[num];
+          input = presetLieder[num].daten;
       }
     }
 
@@ -88,6 +52,9 @@ void playSong(String input, uint32_t timeOutSeconds){
 
     while (input.startsWith(" "))
       input.remove(0,1);
+
+    input = expandLoops(input);
+
     delay(250);
 
     char * pch;

@@ -214,7 +214,7 @@ void parseAdminCommand(String command, String user){
       case 'L':
         schreibeChatNachricht("(MIDI) @" + user + " Liste von Preset Liedern:");
         for(uint16_t i = 0; i < MENGE_PRESET_LIEDER; i++){
-          schreibeChatNachricht("(MIDI) @" + user + " " + i + ": " + presetLieder[i]);
+          schreibeChatNachricht("(MIDI) @" + user + " " + i + ": " + presetLieder[i].name);
         }
         break;
       case 'D':
@@ -223,7 +223,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id] = command;
+          presetLieder[id].daten = command;
           return;
         }
         break;
@@ -233,7 +233,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id] += command;
+          presetLieder[id].daten += command;
           return;
         }
         break;
@@ -243,7 +243,31 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id] = "";
+          presetLieder[id].daten = "";
+          presetLieder[id].name = "";
+        }
+        break;
+      case 'P':
+      case 'p':
+        //print
+        if(isNumber(command.charAt(0))){
+          uint32_t id = readNumber(command);
+          deleteSpace(command);
+          schreibeChatNachricht("(MIDI) @" + user + " Daten vom Lied " + id + ": " + presetLieder[id].daten);
+        }
+        break;
+      case 'N':
+      case 'n':
+        //set name
+        if(isNumber(command.charAt(0))){
+          uint32_t id = readNumber(command);
+          deleteSpace(command);
+          String e = "";
+          while((command.length() != 0) && (command.charAt(0) != ' ') && (command.charAt(0) != ';')){
+            e += "" + command.substring(0, 1);
+            command.remove(0,1);
+          }
+          presetLieder[id].name = e;
         }
         break;
       }

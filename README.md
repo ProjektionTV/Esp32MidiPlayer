@@ -113,6 +113,28 @@ Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung i
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
 
+### Wiederholung
+Achtung: Der aktuelle Modus wird nicht beachtet, woduch eine Wiederholung im selben Modus aufhören solte, wie sie angefangen hat.
+
+#### w
+Aktivirt/Deaktivirt die wieder holung
+`...w<0>w...`→`...<0><0>...`
+
+#### n
+noten die nach dem ersten spielen gespielt werden
+`...w<0>f<1>w...`→`...<0><1><0>...`
+
+#### u
+`u` wird nach `n` genutzt um weitere wieder holungen anzuhengen mit optional noten
+* `...w<0>f<1>u[2]w...`→`...<0><1><0>[2]<0>...`
+* `...w<0>f<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
+* ...
+
+#### Beispiele
+* `cw d ew g` → `c d e d e g`
+* `cw d en fw g` → `c d e f d e g`
+* `cw d en fu dw g` → `c d e f d e d d e g`
+
 ### Puffer (optional)
 `;...` fals keine unten genanten Pufferaktionen folen werden folgende Noten in den Puffer geschrieben.
 

@@ -5,8 +5,8 @@
 #define IP_BROKER 7
 #define IP_CLIENT 203
 
-#define OTA_HOST "ESPMidiPlayer"
-#define OTA_PORT 45678
+#define OTA_HOST "playmidi"
+#define OTA_PORT 0 // if 0 ignored
 
 #define MQTT_IRC_TX "irc/tx"
 #define MQTT_PLAYMIDI "playmidi"
@@ -17,6 +17,7 @@
 #define MQTT_MUSIC_OFF_MASSAGE "off"
 
 #define INDEV 0
+#define DEBUG 0
 
 #define PING_TIMEOUT 120 * 1000
 #define DEFALT_MIDI_CHANAL 1

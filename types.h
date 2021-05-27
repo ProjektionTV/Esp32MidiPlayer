@@ -16,4 +16,9 @@ struct instrument{
   uint8_t bank_LSB;
 };
 
+struct lied{
+  String name;
+  String daten;
+};
+
 #endif
