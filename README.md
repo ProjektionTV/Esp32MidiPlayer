@@ -113,6 +113,28 @@ Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung i
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
 
+### Wiederholung
+Achtung: Der aktuelle Modus wird nicht beachtet, woduch eine Wiederholung im selben Modus aufhören solte, wie sie angefangen hat.
+
+#### w
+Aktivirt/Deaktivirt die wieder holung
+`...w<0>w...`→`...<0><0>...`
+
+#### n
+noten die nach dem ersten spielen gespielt werden
+`...w<0>f<1>w...`→`...<0><1><0>...`
+
+#### u
+`u` wird nach `n` genutzt um weitere wieder holungen anzuhengen mit optional noten
+* `...w<0>f<1>u[2]w...`→`...<0><1><0>[2]<0>...`
+* `...w<0>f<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
+* ...
+
+#### Beispiele
+* `cw d ew g` → `c d e d e g`
+* `cw d en fw g` → `c d e f d e g`
+* `cw d en fu dw g` → `c d e f d e d d e g`
+
 ### Puffer (optional)
 `;...` fals keine unten genanten Pufferaktionen folen werden folgende Noten in den Puffer geschrieben.
 
@@ -130,6 +152,9 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 * `4`- ... - Vivaldi
 * `5`- ... - cowntdown\(/Vorhersage/Umfrage Melodie\)
 * `6`- ... - irgendwas was `d7gr` gemacht hat
+* `7`- ... - trinken
+* `8`- ... - Ducktales Intro theme
+* `9`- ... - Wenn ich reich wär - Abomelodie
 
 ## Mqtt
 
@@ -143,7 +168,7 @@ Es handelt sich um ein JSON-Objekt mit folgenden tags:
 
 optional:
 * `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
-* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert. INFO: indev ONLY
+* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert.
 
 Bei aktivirtem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
@@ -151,5 +176,88 @@ Bei aktivirtem buffer werden folgende tags benötigt:
 * `maximaleBufferGroesse` - die maximale größe des Puffers
 
 
-Bei aktivirtem admin modus werden folgende tags benötigt: INFO: indev ONLY
+Bei aktivirtem admin modus werden folgende tags benötigt:
 * `nutzer` - name des users
+
+## Adminmodus MIDI syntax
+`command;[command;...]`
+
+### p
+Spielt die folgenden daten. Es können keine weiteren befehle angehengt werden.
+`p <noten>`
+
+### ~
+Spielt den Puffer und löscht diesen
+`~ <Puffer id>`
+
+### q
+Spielt den Puffer
+`q <Puffer id>`
+
+### i
+
+instrument optionen
+
+#### l
+listet die instrumente.
+`il`
+
+#### i
+setzt die instrument nummer des instrumentes
+`ii<interne instrument id> <instrument id>`
+
+#### m
+setzt die msb des instrumentes
+`im<interne instrument id> <msb>`
+
+#### d
+setzt die lsb des instrumentes
+`id<interne instrument id> <lsb>`
+
+#### n
+setzt den namen des instrumentes, mit welchen man dies ereicht
+`in<interne instrument id> <name ohne lerzeichen>`
+
+### l
+
+#### l
+listet all lieder und deren daten
+`ll`
+
+#### d
+setzt die daten des liedes. Es können keine weiteren befehle angehengt werden.
+`ld<lied id> <noten>`
+
+#### a
+fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+`la<lied id> <noten>`
+
+#### c
+löscht die daten des liedes
+`lc<lied id>`
+
+### b
+
+#### l
+listet all puffer und deren besitzer
+`bl`
+
+#### d
+setzt die daten des puffer. Es können keine weiteren befehle angehengt werden.
+`bd<puffer id> <noten>`
+
+#### a
+fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+`ba<puffer id> <noten>`
+
+#### c
+löscht die daten des puffers
+`bc<puffer id>`
+
+#### o
+setzt den besitzer des puffers
+`bo<puffer id> <neuer besitzer ohne lerzeichen>`
+
+#### p
+listet die daten des puffers
+`bp<puffer id>`
