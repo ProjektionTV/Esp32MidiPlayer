@@ -8,6 +8,8 @@ void playSong(String input, uint32_t timeOutSeconds){
         uint32_t num = readNumber(input);
         if(num >= 0 && num < MENGE_PRESET_LIEDER)
           input = presetLieder[num].daten;
+        else
+          input = SONG_NOT_EXISTS;
       }
     }
 

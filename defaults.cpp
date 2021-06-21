@@ -11,6 +11,12 @@ void fuellePresetLieder(){
   presetLieder[7].daten = "-bpm140 D'F'#A'A8A A16A G16G F#8s E'G'H'G4G E4E E8E A8s E'G'H'A8A G8s D'F#'A'F#8F# A8A A16A G16G F#8s E'G'H'G4G E4s D'F'#A'F#8F# D8s E'G'H'E4.E E8E G8G A8A G'H'DH4H H4s D'F'#A'Dc8c A8s G'H'DH4.s D'F'#A'DA8A A16A G16G F#8s E'G'H'G4G E4E E8E A8s D'F'#A'A8A G8G F#8F# A8A A16A G16G F#8s E'G'H'G4G E4s D'F'#A'F#8F# D8s E'G'H'E4.s";
   presetLieder[8].daten = "bpm91 F''8 F'8 F''8 F'8 F''8 F'16 F''16 16 F''16 F'8 | F''F8 F'A8 F''c8 F'd8 F''eb8 F'eb16 mdF''16l16s mF''c16 F'Hb8 | F''DFHb8 mF'16CFA16F'F''8lF'8s mF''DFHb8 F'16 mCFAF''16l16l16lF'8s | mF''F8 F'A8 F''c8 F'd8 F''eb8 F'eb16 mdF''16l16s mF''c16 F'Hb8 | H''bGHbeb8 mH'b16FHbd16H'bH''b8lH'b8s mH''bGHbeb8 H'b16 mFHbdH''b16l16l16lH'b8s | mF''8 F'G8 F''Hb8 F'd8 mdC'8lC16s cC'16l16l16lC8s | mF''8 F'Hbd8 F''Hbf8 F'Hbg8 mceaC'8lC16s cegC'16l16s mC'f16 Cd8 | F''Acf8 F'Acf8 mF''16c16s mF'ac8 F''fa8 F'16 F''16 16 F''16 F'8 | D'bAbf8 DbAbeb8 D'bAbdb8 DbAbeb8 E'bGHbf8 EbGHbeb8 E'bGHbdb8 EbGHbeb8 | F''Acf8 F'Acf8 mF''16c16s mF'ac8 F''fa8 F'16 F''16 16 F''16 F'8 | D'bfabf'8 Dbebge'b8 D'bdbfd'b8 Dbebge'b8 E'bfabf'8 Ebebge'b8 E'bdbfd'b8 Ebebge'b8 | F''faf'8 F'faf'8 mF''16c16s mF'a'c'8 F''f'a'8 F'16 F''16 16 F''16 F'8 | mG'G''16Hbdf16HbdfHbdf16s mG'Hbdf16 DGHbda8 G'Hbdf8 mA'A''Fc8FcFc16A'A''A'16s mFAcd8 A'cf8 | mE'bE''b8Hbebf16s mE'bHbebf16 EbH'bHbebg8 E'bHbebf8 mF''F'cfa8cfadfhb16F''F'F'16s mFCcfa8 F'Acf8 | D'D8 mD'Dceg16cegceg16s mDD'ceg8 DD'cea8 D'D''ehd'8 D'D''ead'8 D'D''ege'8 D'D''ead'8 | G''ghd'8 G'ghd'8 mG''16e16s mG'hd'8 G''gh8 mgG'16lG''16s mh16 G''d'16 mG'e'16lg'16s | mE''bg8 E'bf8 E''bebHb8 E'bHbf8 F''Acg8 F'Acf8 F''Aceb8 F'Acf8 | G''Hdg8 G'Hdg8 mG''16e16s mG'hd'8 G''gh8 mgG'16lG''16s mh16 G''d'16 mG'e'16lg'16s | mE''bg8 E'bf8 E''bHbeb8 E'bHbf8 E''bHbg8 E'bAf8 E''bGeb8 E'bAf8 | mcAF''g8F''F'fg8s mF''Aceb8 F'Acf8 mcAF''g8F''F'fg8s mF''Aceb8 F'Acf8 | G'G''Hbdg8 G'G''Hbdg8 16 d16 D'hd'8 G'gh8 8 G'G''ghd'g'4";
   presetLieder[9].daten = "-piano CC'g8lf8s mgcG8 fcG8 eCC'4 cG4 | CC'4 ecG8 fcG8 mCC'g8lf8s cGg8lf8s | CC'e8lf8s mceg8 cea8 mCC'hb8la8s cehb8la8s | mCC'g4";
+  presetLieder[10].daten = "bpm120 e'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 g#8 h8 | mc'A'8lE8s mA8 e8 e'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 c'8 h8 | maA'8lE8lA8l8s me'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 g#8 h8 | mc'A'8lE8s mA8 e8 e'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 c'8 h8 | maA'8lE8s mA8 h8 c'8 d'8 | me'C8lG8lc8s mg8 f'8 e'8 | md'G'8lG8lH8s mf8 e'8 d'8 | mc'A'8lE8lA8s me8 d'8 c'8 | mhE'8lE8s me8 e8 e'8 e8 | e'8 e'8 e''8 d'#8 e'8 d'#8 | e'8 d'#8 e'8 d'#8 e'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 g#8 h8 | mc'A'8lE8s mA8 e8 e'8 d'#8 | e'8 d'#8 e'8 h8 d'8 c'8 | maA'8lE8s mA8 c8 e8 a8 | mhE'8lE8s mG#8 e8 c'8 h8 | aAA'4 ";
+  presetLieder[11].daten = "bpm98 0 d''8 e''8 mhf'#d''8lg''8s | ae'd''4la'8lh'8le'd'c''8ld''8la | ga'8lg'8ld'c'a'8lh'8s f#hg'8ld'8s | wmec'a'd''4 dhf'#d''4 mDcd'e8lf#8s | GHgd'4ll4s F#ah8lc'8s | EHgd'4ll4s Df#h4s | ehC4lA'8hc'8s DdGa8lGF#h8s | HgG4lG'4s g4s | ceaF#4ll8ah8s FHeba8lh8s | EHdg4le8lf#8lg4dHE | dbAEb4ga8lg8s ADcf#8la8s | GHg8a8s EHgg8lc'8s HH'f#d'4HH'f# | EHg4d'h8lc'8s cea8lg8s | Hda4s Ace8lf#8s | mGHg4 d''8 e''8 mhf'#d''8lg''8s | ae'd''4la'8lh'8le'd'c''8ld''8la | ga'8lg'8ld'c'a'8lh'8s f#hg'8ld'8s | wmec'a'd''4 dhf'#d''4 Dcf'#d''4 | GHg'g''2";
+  presetLieder[12].daten = SONG_NOT_EXISTS;
+  presetLieder[13].daten = SONG_NOT_EXISTS;
+  presetLieder[14].daten = SONG_NOT_EXISTS;
+  presetLieder[15].daten = SONG_NOT_EXISTS;
 
   presetLieder[0].name = "kabum tschhh";
   presetLieder[1].name = "Beispiel";
@@ -22,6 +28,8 @@ void fuellePresetLieder(){
   presetLieder[7].name = "trinken";
   presetLieder[8].name = "Ducktales";
   presetLieder[9].name = "Wenn ich reich waer";
+  presetLieder[10].name = "Fuer Elise";
+  presetLieder[11].name = "Sandmann";
 }
 
 void fuellePresetInstrumente(){

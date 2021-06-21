@@ -1,14 +1,18 @@
 #ifndef MAINH
 #define MAINH
 
+#include "settings.h"
 #include <Arduino.h>
-#include <Wifi.h>
+#if USE_ESP8266
+#include <ESP8266WiFi.h>
+#else
+#include <WiFi.h>
+#endif
 #include <WiFiClient.h>
 #include <MIDI.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
-#include "settings.h"
 #include "types.h"
 #include "parser1.h"
 #include "parser2.h"
@@ -19,8 +23,6 @@
 #include "defaults.h"
 #include "song.h"
 #include "songUtil.h"
-
-// for ESP8266 Use ESP8266WiFi.h instead of WiFi.
 
 void mqttReconnect();
 void wifiConnect();
