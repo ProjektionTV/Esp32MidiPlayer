@@ -31,6 +31,9 @@ void loop();
 
 extern bool playSongFlag;
 extern bool parserV2;
+extern bool inUserRequest;
+extern uint8_t ammountPlayRequestLeft;
+extern uint32_t lastMqttCheck;
 extern uint8_t currentChanal;
 extern uint32_t activeNotes[129];
 extern uint32_t bpm;
@@ -40,6 +43,7 @@ extern uint16_t zuletztGenannteNote;
 extern notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
 extern lied presetLieder[MENGE_PRESET_LIEDER];
 extern instrument instrumente[MENGE_PRESET_INSTRUMENTE];
+extern openPlayRequest playRequests[MAX_PLAYREQUESTS]; 
 extern String song;
 extern midi::MidiInterface<midi::SerialMIDI<HardwareSerial>> MIDI;
 extern WiFiClient wiFiClient;

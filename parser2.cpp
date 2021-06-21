@@ -3,10 +3,12 @@
 void parser2(String buffer){
   Serial.printf("Parser2: %s\n", buffer.c_str());
 
-  bool loop = true;
-  while ((loop) && (buffer.length() > 0)){
+  while (buffer.length() > 0){
     if(millis() > timeout)
       return;
+
+    if((lastMqttCheck + 10000) < millis())
+      loop();
 
     if(isNumber(buffer.charAt(0))){
       uint32_t length = readNumber(buffer);

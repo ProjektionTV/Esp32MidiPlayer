@@ -126,10 +126,13 @@ void parser(String buffer)
 void parser1_1(String buffer){
   Serial.printf("Parser1.1: %s\n", buffer.c_str());
 
-  bool loop = true;
-  while ((loop) && (buffer.length() > 0)){
+  bool inloop = true;
+  while ((inloop) && (buffer.length() > 0)){
     if(millis() > timeout)
       return;
+
+    if((lastMqttCheck + 10000) < millis())
+      loop();
 
     if(isNumber(buffer.charAt(0))){
       uint32_t length = readNumber(buffer);
@@ -164,7 +167,7 @@ void parser1_1(String buffer){
     if(buffer.length() == 0) {
       if(play || note == 'p' || note == 'P')
         delay(vierBeatZeit/4);
-      loop = false;
+      inloop = false;
     }
   }
 }

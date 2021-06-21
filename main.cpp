@@ -5,6 +5,10 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 bool playSongFlag = false;
 bool parserV2 = false;
+bool inUserRequest = false;
+uint8_t ammountPlayRequestLeft = 0;
+openPlayRequest playRequests[MAX_PLAYREQUESTS];
+uint32_t lastMqttCheck = 0;
 uint8_t currentChanal = DEFALT_MIDI_CHANAL;
 uint32_t activeNotes[129];
 uint32_t bpm = DEFALT_BPM;
@@ -128,7 +132,16 @@ void loop()
     mqttReconnect();
   }
   psClient.loop();
+  lastMqttCheck = millis();
   ArduinoOTA.handle();
+
+  if(!inUserRequest)
+    while(ammountPlayRequestLeft){
+      playSong(playRequests[ammountPlayRequestLeft - 1].data, playRequests[ammountPlayRequestLeft - 1].timeleft);
+      playRequests[ammountPlayRequestLeft - 1].data = "";
+      playRequests[ammountPlayRequestLeft - 1].timeleft = 0;
+      ammountPlayRequestLeft--;
+    }
 
   if(playSongFlag)
   {
