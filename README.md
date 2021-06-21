@@ -155,6 +155,8 @@ noten die nach dem ersten spielen gespielt werden
 * `7`- ... - trinken
 * `8`- ... - Ducktales Intro theme
 * `9`- ... - Wenn ich reich wär - Abomelodie
+* `10`- ... - Für Elise
+* `11`- ... - Sandmann
 
 ## Mqtt
 
