@@ -138,9 +138,9 @@ void parser1_1(String buffer){
       uint32_t length = readNumber(buffer);
       if(length == 0)
         length = 4;
-      delay(vierBeatZeit/length);
+      midiDelay(vierBeatZeit/length);
       if(buffer.charAt(0) == '.'){
-        delay((vierBeatZeit/length) / 2);
+        midiDelay((vierBeatZeit/length) / 2);
         buffer.remove(0,1);
       }
       return;
@@ -166,7 +166,7 @@ void parser1_1(String buffer){
       parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
     if(buffer.length() == 0) {
       if(play || note == 'p' || note == 'P')
-        delay(vierBeatZeit/4);
+        midiDelay(vierBeatZeit/4);
       inloop = false;
     }
   }

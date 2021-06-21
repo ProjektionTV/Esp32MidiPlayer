@@ -148,3 +148,11 @@ void deleteSpace(String &s){
     s.remove(0,1);
   }
 }
+
+void midiDelay(uint32_t time){
+  if((millis() + time) > timeout){
+    delay(timeout - millis());
+  } else {
+    delay(time);
+  }
+}

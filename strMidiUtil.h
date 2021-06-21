@@ -10,4 +10,6 @@ uint16_t getNoteID(char note, bool &allowHabtonC, bool &allowHabtonB, bool &note
 uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool habtonB, bool allowHabtonC, bool allowHabtonB, bool noteDown);
 void deleteSpace(String &s);
 
+void midiDelay(uint32_t time);
+
 #endif

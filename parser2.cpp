@@ -14,9 +14,9 @@ void parser2(String buffer){
       uint32_t length = readNumber(buffer);
       if(length == 0)
         length = 4;
-      delay(vierBeatZeit/length);
+      midiDelay(vierBeatZeit/length);
       if(buffer.charAt(0) == '.'){
-        delay((vierBeatZeit/length) / 2);
+        midiDelay((vierBeatZeit/length) / 2);
         buffer.remove(0,1);
       }
     }else{
