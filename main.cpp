@@ -1,5 +1,5 @@
 #include "main.h"
-#include "../../myauth.h"
+#include "../../myauth.h" // ../../myauth.h
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
@@ -137,10 +137,12 @@ void loop()
 
   if(!inUserRequest)
     while(ammountPlayRequestLeft){
-      playSong(playRequests[ammountPlayRequestLeft - 1].data, playRequests[ammountPlayRequestLeft - 1].timeleft);
+      String notes = playRequests[ammountPlayRequestLeft - 1].data;
+      uint32_t time = playRequests[ammountPlayRequestLeft - 1].timeleft;
       playRequests[ammountPlayRequestLeft - 1].data = "";
       playRequests[ammountPlayRequestLeft - 1].timeleft = 0;
       ammountPlayRequestLeft--;
+      playSong(notes, time);
     }
 
   if(playSongFlag)
