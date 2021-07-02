@@ -41,9 +41,9 @@ Es können beliebig viele Noten hintereinander auftauchen. Einzelne Noten werden
 
 #### Notenbestandteile
 
-Eine Note setzt sich zusammen aus der **Tonhöhe**, einem **Vorzeichen** (optional), einem **Oktavzeichen** (optional) und dem **Notenwert** (optional).
+Eine Note setzt sich zusammen aus der **Tonhöhe**, einem **Oktavzeichen** (optional), einem **Vorzeichen** (optional) und dem **Notenwert** (optional).
 
-Beispiele für Noten sehen folgendermaßen aus: `C` oder `d#''4`
+Beispiele für Noten sehen folgendermaßen aus: `C` oder `d''#4`
 ##### Tonhöhe
 Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung steht (`#`, `b`).
 Die Oktave ergibt sich aus bis zu drei Oktavzeichen (`'`)
@@ -122,12 +122,12 @@ Aktivirt/Deaktivirt die wieder holung
 
 #### n
 noten die nach dem ersten spielen gespielt werden
-`...w<0>f<1>w...`→`...<0><1><0>...`
+`...w<0>n<1>w...`→`...<0><1><0>...`
 
 #### u
 `u` wird nach `n` genutzt um weitere wieder holungen anzuhengen mit optional noten
-* `...w<0>f<1>u[2]w...`→`...<0><1><0>[2]<0>...`
-* `...w<0>f<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
+* `...w<0>n<1>u[2]w...`→`...<0><1><0>[2]<0>...`
+* `...w<0>n<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
 * ...
 
 #### Beispiele
