@@ -1,5 +1,5 @@
 #include "main.h"
-#include "../../myauth.h" // ../../myauth.h
+#include "../../myauth.h"
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 

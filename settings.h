@@ -1,7 +1,7 @@
 #ifndef MAINSETTINGS
 #define MAINSETTINGS
 
-#define USE_ESP8266 0 // 0:Esp 32, 1:ESP 8266 // 0
+#define USE_ESP8266 0 // 0:Esp 32, 1:ESP 8266
 #define SONG_NOT_EXISTS "H' E'"
 
 #define IP_SUBNET 178
