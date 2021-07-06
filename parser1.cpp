@@ -126,43 +126,48 @@ void parser(String buffer)
 void parser1_1(String buffer){
   Serial.printf("Parser1.1: %s\n", buffer.c_str());
 
-  if(millis() > timeout)
-    return;
+  bool inloop = true;
+  while ((inloop) && (buffer.length() > 0)){
+    if(millis() > timeout)
+      return;
 
-  if(isNumber(buffer.charAt(0))){
-    uint32_t length = readNumber(buffer);
-    if(length == 0)
-      length = 4;
-    delay(vierBeatZeit/length);
-    if(buffer.charAt(0) == '.'){
-      delay((vierBeatZeit/length) / 2);
-      buffer.remove(0,1);
+    if((lastMqttCheck + 10000) < millis())
+      loop();
+
+    if(isNumber(buffer.charAt(0))){
+      uint32_t length = readNumber(buffer);
+      if(length == 0)
+        length = 4;
+      midiDelay(vierBeatZeit/length);
+      if(buffer.charAt(0) == '.'){
+        midiDelay((vierBeatZeit/length) / 2);
+        buffer.remove(0,1);
+      }
+      return;
     }
-    return;
-  }
 
-  char note = buffer.charAt(0);
-  buffer.remove(0,1);
+    char note = buffer.charAt(0);
+    buffer.remove(0,1);
   
-  int8_t oktaveOffset = readOktaveOffset(buffer);
-  bool habtonC = false;
-  bool habtonB = false;
-  readHalbton(buffer, habtonC, habtonB);
-  bool noteDown = true;
-  bool allowHabtonC = true;
-  bool allowHabtonB = true;
-  uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
-  bool play = true;
-  if(noteID == 2000)
-    play = false;
-  if(note == 'p' || note == 'P')
-    play = false;
-  if(play)
-    parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
-  if(buffer.length() != 0)
-    parser1_1(buffer); 
-  else{
-    if(play || note == 'p' || note == 'P')
-      delay(vierBeatZeit/4);
+    int8_t oktaveOffset = readOktaveOffset(buffer);
+    bool habtonC = false;
+    bool habtonB = false;
+    readHalbton(buffer, habtonC, habtonB);
+    bool noteDown = true;
+    bool allowHabtonC = true;
+    bool allowHabtonB = true;
+    uint16_t noteID = getNoteID(note, allowHabtonC, allowHabtonB, noteDown);
+    bool play = true;
+    if(noteID == 2000)
+      play = false;
+    if(note == 'p' || note == 'P')
+      play = false;
+    if(play)
+      parser2note(convertNote(noteID, oktaveOffset, habtonC, habtonB, allowHabtonC, allowHabtonB, noteDown));
+    if(buffer.length() == 0) {
+      if(play || note == 'p' || note == 'P')
+        midiDelay(vierBeatZeit/4);
+      inloop = false;
+    }
   }
 }

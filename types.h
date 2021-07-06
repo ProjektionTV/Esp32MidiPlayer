@@ -21,4 +21,9 @@ struct lied{
   String daten;
 };
 
+struct openPlayRequest{
+  String data;
+  uint32_t timeleft;
+};
+
 #endif

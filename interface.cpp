@@ -30,7 +30,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 
   String strTopic = topic;
-  if(strTopic.equals("playmidi"))
+  if(strTopic.equals(MQTT_PLAYMIDI))
   {
     payload[length] = '\0';
     Serial.println("play midi vom mqtt erkannt");
