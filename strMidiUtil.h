@@ -11,5 +11,6 @@ uint16_t convertNote(uint16_t noteId, uint8_t oktavenOffset, bool habtonC, bool 
 void deleteSpace(String &s);
 
 void midiDelay(uint32_t time);
+void mqttLoopedDelay(uint32_t delay);
 
 #endif

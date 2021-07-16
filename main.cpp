@@ -78,6 +78,7 @@ void mqttReconnect() {
       //psClient.publish("wled/861a06/api","%PL=10");
       // ... and resubscribe
       psClient.subscribe(MQTT_PLAYMIDI);
+      psClient.subscribe(MQTT_KILLMIDI);
     } else {
       Serial.print("failed, rc=");
       Serial.print(psClient.state());

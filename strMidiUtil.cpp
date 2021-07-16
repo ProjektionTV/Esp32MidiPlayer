@@ -151,8 +151,19 @@ void deleteSpace(String &s){
 
 void midiDelay(uint32_t time){
   if((millis() + time) > timeout){
-    delay(timeout - millis());
+    mqttLoopedDelay(timeout - millis());
   } else {
-    delay(time);
+    mqttLoopedDelay(time);
+  }
+}
+
+void mqttLoopedDelay(uint32_t delay){
+  uint32_t loopEnd = millis() + delay;
+  while (millis() < loopEnd){
+    if (!psClient.connected())
+      mqttReconnect();
+    psClient.loop();
+    if(timeout < loopEnd)
+      loopEnd = timeout;
   }
 }
