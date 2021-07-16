@@ -158,6 +158,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     }else{
       playSong(data["midi"], (uint32_t) data["laenge"]);
     }
+  }else if(strTopic.equals(MQTT_KILLMIDI)){
+    payload[length] = '\0';
+    Serial.println("kill midi vom mqtt erkannt");
+    timeout = 0;
+    while(ammountPlayRequestLeft){
+      playRequests[ammountPlayRequestLeft - 1].data = "";
+      playRequests[ammountPlayRequestLeft - 1].timeleft = 0;
+      ammountPlayRequestLeft--;
+    }
   }
 
 }

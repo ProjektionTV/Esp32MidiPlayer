@@ -18,6 +18,9 @@
 #define MQTT_MUSIC_ON_MASSAGE "on"
 #define MQTT_MUSIC_OFF_TOPIC MQTT_MUSIC_ON_TOPIC
 #define MQTT_MUSIC_OFF_MASSAGE "off"
+#define MQTT_KILLMIDI "killmidi"
+
+#define LOOP_PULL_MS 2500
 
 #define INDEV 0
 #define DEBUG 0

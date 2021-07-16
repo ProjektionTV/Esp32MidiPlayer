@@ -162,6 +162,7 @@ noten die nach dem ersten spielen gespielt werden
 ## Mqtt
 
 Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten oder rohen Lied Daten empfangen.
+Wenn eine nachricht vom MQTT-topic `killmidi` emfangen wird, würd das aktuelle lied unterbrochen und die play que wird gelert.
 
 ## JSON
 

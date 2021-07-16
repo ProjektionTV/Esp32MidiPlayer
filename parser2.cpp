@@ -7,8 +7,11 @@ void parser2(String buffer){
     if(millis() > timeout)
       return;
 
-    if((lastMqttCheck + 10000) < millis())
+    if((lastMqttCheck + LOOP_PULL_MS) < millis())
       loop();
+    if (!psClient.connected())
+      mqttReconnect();
+    psClient.loop();
 
     if(isNumber(buffer.charAt(0))){
       uint32_t length = readNumber(buffer);
