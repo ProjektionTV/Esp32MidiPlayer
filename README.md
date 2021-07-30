@@ -117,7 +117,7 @@ und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt
 Achtung: Der aktuelle Modus wird nicht beachtet, woduch eine Wiederholung im selben Modus aufhören solte, wie sie angefangen hat.
 
 #### w
-Aktivirt/Deaktivirt die wieder holung
+Aktiviert/Deaktiviert die wiederholung
 `...w<0>w...`→`...<0><0>...`
 
 #### n
@@ -161,33 +161,33 @@ noten die nach dem ersten spielen gespielt werden
 
 ## Mqtt
 
-Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten oder rohen Lied Daten empfangen.
-Wenn eine nachricht vom MQTT-topic `killmidi` emfangen wird, würd das aktuelle lied unterbrochen und die play que wird gelert.
+Der Midi-Player reagiert auf den MQTT-topic `playmidi`. Dort wird ein einfacher String mit JSON-Daten oder rohen Lieddaten empfangen.
+Wenn eine Nachricht vom MQTT-topic `killmidi` emfangen wird, wird das aktuelle lied unterbrochen und die play queue wird geleert.
 
 ## JSON
 
 Es handelt sich um ein JSON-Objekt mit folgenden tags:
-* `laenge` - maximale Lied laenge
+* `laenge` - maximale Lied länge
 * `midi` - daten des Lides
 
 optional:
-* `aktiviereBuffer` - fals vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
-* `adminModus` - fals vorhanden und der Wert `true` ist, wird die admin funktion aktiviert.
+* `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
+* `adminModus` - falls vorhanden und der Wert `true` ist, wird die admin funktion aktiviert.
 
-Bei aktivirtem buffer werden folgende tags benötigt:
+Bei aktiviertem buffer werden folgende tags benötigt:
 * `nutzer` - name des users
-* `prioritaet` - priorität endscheidet welce buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen feher bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
+* `prioritaet` - priorität endscheidet welche buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen fehler bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
 * `maximaleBufferGroesse` - die maximale größe des Puffers
 
 
-Bei aktivirtem admin modus werden folgende tags benötigt:
+Bei aktiviertem admin modus werden folgende tags benötigt:
 * `nutzer` - name des users
 
 ## Adminmodus MIDI syntax
 `command;[command;...]`
 
 ### p
-Spielt die folgenden daten. Es können keine weiteren befehle angehengt werden.
+Spielt die folgenden daten. Es können keine weiteren befehle angehängt werden.
 `p <noten>`
 
 ### ~
@@ -243,11 +243,11 @@ löscht die daten des liedes
 ### b
 
 #### l
-listet all puffer und deren besitzer
+listet alle puffer und deren besitzer
 `bl`
 
 #### d
-setzt die daten des puffer. Es können keine weiteren befehle angehengt werden.
+setzt die daten des puffer. Es können keine weiteren befehle angehängt werden.
 `bd<puffer id> <noten>`
 
 #### a
