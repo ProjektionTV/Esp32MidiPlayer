@@ -17,9 +17,9 @@ void parser2(String buffer){
       uint32_t length = readNumber(buffer);
       if(length == 0)
         length = 4;
-      midiDelay(vierBeatZeit/length);
+      midiDelay(fourBeatTime/length);
       if(buffer.charAt(0) == '.'){
-        midiDelay((vierBeatZeit/length) / 2);
+        midiDelay((fourBeatTime/length) / 2);
         buffer.remove(0,1);
       }
     }else{
@@ -28,43 +28,43 @@ void parser2(String buffer){
       if(note == 's' || note == 'S'){
         parser2allOFF();
       }else if(note == 'l' || note == 'L'){
-        if(zuletztGenannteNote != 2000){
-          parser2note(zuletztGenannteNote);
+        if(lastNamedNote != 2000){
+          parser2note(lastNamedNote);
         }
       }else if(note == 'q' || note == 'Q'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
-          vierBeatZeit = (int) ((float) (240000) / ((float) nv));
+          fourBeatTime = (int) ((float) (240000) / ((float) nv));
         }
       }else if(note == 'v' || note == 'V'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(7, nv, currentChanal);
+            MIDI.sendControlChange(7, nv, currentChannel);
         }
       }else if(note == 'x' || note == 'X'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(0, nv, currentChanal);
+            MIDI.sendControlChange(0, nv, currentChannel);
         }
       }else if(note == 'y' || note == 'Y'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(32, nv, currentChanal);
+            MIDI.sendControlChange(32, nv, currentChannel);
         }
       }else if(note == 'j' || note == 'J'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(72, nv, currentChanal);
+            MIDI.sendControlChange(72, nv, currentChannel);
         }
       }else if(note == 'o' || note == 'O'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(73, nv, currentChanal);
+            MIDI.sendControlChange(73, nv, currentChannel);
         }
       }else if(note == 'i' || note == 'I'){
         readInstrument(buffer);
@@ -73,7 +73,7 @@ void parser2(String buffer){
       else if(note == 'k' || note == 'K'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nc = readNumber(buffer);
-          currentChanal = nc;
+          currentChannel = nc;
         }
       }
 #endif

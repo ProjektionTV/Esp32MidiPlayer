@@ -13,26 +13,26 @@ void playMIDINote(byte channel, byte note, byte velocity)
 
 void playNote(uint16_t note, uint8_t length)
 {
-  MIDI.sendNoteOn(note, 127, currentChanal);
-  delay(vierBeatZeit/length);
-  MIDI.sendNoteOff(note, 0, currentChanal);
+  MIDI.sendNoteOn(note, 127, currentChannel);
+  delay(fourBeatTime/length);
+  MIDI.sendNoteOff(note, 0, currentChannel);
 }
 
 void parser2note(uint16_t note){
-  zuletztGenannteNote = note;
-  if(((activeNotes[note] >> currentChanal) & 1) != 1){
+  lastNamedNote = note;
+  if(((activeNotes[note] >> currentChannel) & 1) != 1){
     //start note
-    activeNotes[note] |= (1 << currentChanal);
-    MIDI.sendNoteOn(note, 127, currentChanal);
+    activeNotes[note] |= (1 << currentChannel);
+    MIDI.sendNoteOn(note, 127, currentChannel);
   }else{
     //stop note
-    activeNotes[note] &= ~(1 << currentChanal);
-    MIDI.sendNoteOff(note, 0, currentChanal);
+    activeNotes[note] &= ~(1 << currentChannel);
+    MIDI.sendNoteOff(note, 0, currentChannel);
   }
 }
 
 void parser2allOFF(){
-  zuletztGenannteNote = 2000;
+  lastNamedNote = 2000;
   for(uint16_t i = 0; i < 129; i++){
     if(activeNotes[i] != 0){
       for(uint8_t j = 0; j < 32; j++){

@@ -2,8 +2,8 @@
 #define DEFAULTH
 #include "main.h"
 
-void fuellePresetLieder();
-void fuellePresetInstrumente();
+void fillPresetSongs();
+void fillPresetInstruments();
 void cleanInstrument(uint32_t id);
 
 #endif

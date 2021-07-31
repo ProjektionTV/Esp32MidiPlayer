@@ -32,11 +32,11 @@ void parseAdminCommand(String command, String user){
             time = readNumber(command);
             deleteSpace(command);
           }
-          playSong(notenBuffer[id].daten, time);
-          notenBuffer[id].besitzer = "";
-          notenBuffer[id].daten = "";
-          notenBuffer[id].maximaleLaenge = 0;
-          notenBuffer[id].priority = 0;
+          playSong(notesBuffer[id].data, time);
+          notesBuffer[id].owner = "";
+          notesBuffer[id].data = "";
+          notesBuffer[id].maxLength = 0;
+          notesBuffer[id].priority = 0;
         }
         break;
       case 'q':
@@ -48,7 +48,7 @@ void parseAdminCommand(String command, String user){
             time = readNumber(command);
             deleteSpace(command);
           }
-          playSong(notenBuffer[id].daten, time);
+          playSong(notesBuffer[id].data, time);
         }
         break;
       case 'B':
@@ -73,9 +73,9 @@ void parseAdminCommand(String command, String user){
         break;
       case 'L':
       case 'l':
-        schreibeChatNachricht("(MIDI) @" + user + " Liste von Puffern:");
-        for(uint16_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-          schreibeChatNachricht("(MIDI) @" + user + " " + i + ": " + notenBuffer[i].besitzer + " - " + notenBuffer[i].daten.length() + "/" + notenBuffer[i].maximaleLaenge);
+        sendIrcMessage("(MIDI) @" + user + " Liste von Puffern:");
+        for(uint16_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+          sendIrcMessage("(MIDI) @" + user + " " + i + ": " + notesBuffer[i].owner + " - " + notesBuffer[i].data.length() + "/" + notesBuffer[i].maxLength);
         }
         break;
       case 'O':
@@ -89,7 +89,7 @@ void parseAdminCommand(String command, String user){
             e += "" + command.substring(0, 1);
             command.remove(0,1);
           }
-          notenBuffer[id].besitzer = e;
+          notesBuffer[id].owner = e;
         }
         break;
       case 'D':
@@ -98,7 +98,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          notenBuffer[id].daten = command;
+          notesBuffer[id].data = command;
           return;
         }
         break;
@@ -108,7 +108,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          notenBuffer[id].daten += command;
+          notesBuffer[id].data += command;
           return;
         }
         break;
@@ -118,10 +118,10 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          notenBuffer[id].besitzer = "";
-          notenBuffer[id].daten = "";
-          notenBuffer[id].maximaleLaenge = 0;
-          notenBuffer[id].priority = 0;
+          notesBuffer[id].owner = "";
+          notesBuffer[id].data = "";
+          notesBuffer[id].maxLength = 0;
+          notesBuffer[id].priority = 0;
         }
         break;
       case 'P':
@@ -130,7 +130,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          schreibeChatNachricht("(MIDI) @" + user + " Daten vom Puffer " + id + ": " + notenBuffer[id].daten);
+          sendIrcMessage("(MIDI) @" + user + " Daten vom Puffer " + id + ": " + notesBuffer[id].data);
         }
         break;
       }
@@ -144,9 +144,9 @@ void parseAdminCommand(String command, String user){
       case 'L':
       case 'l':
         // list
-        schreibeChatNachricht("(MIDI) @" + user + " Liste von Instrumenten:");
-        for(uint16_t i = 0; i < MENGE_PRESET_INSTRUMENTE; i++){
-          schreibeChatNachricht("(MIDI) @" + user + " " + i + ": " + instrumente[i].name + " - instr=" + instrumente[i].instrument + ", msb=" + instrumente[i].bank_MSB + ", lsb=" + instrumente[i].bank_LSB);
+        sendIrcMessage("(MIDI) @" + user + " Liste von Instrumenten:");
+        for(uint16_t i = 0; i < AMOUNT_PRESET_INSTRUMENTS; i++){
+          sendIrcMessage("(MIDI) @" + user + " " + i + ": " + instruments[i].name + " - instr=" + instruments[i].instrument + ", msb=" + instruments[i].bank_MSB + ", lsb=" + instruments[i].bank_LSB);
         }
         break;
       case 'N':
@@ -160,7 +160,7 @@ void parseAdminCommand(String command, String user){
             e += "" + command.substring(0, 1);
             command.remove(0,1);
           }
-          instrumente[id].name = e;
+          instruments[id].name = e;
         }
         break;
       case 'M':
@@ -172,7 +172,7 @@ void parseAdminCommand(String command, String user){
           if(isNumber(command.charAt(0))){
             uint32_t val = readNumber(command);
             deleteSpace(command);
-            instrumente[id].bank_MSB = val;
+            instruments[id].bank_MSB = val;
           }
         }
         break;
@@ -185,7 +185,7 @@ void parseAdminCommand(String command, String user){
           if(isNumber(command.charAt(0))){
             uint32_t val = readNumber(command);
             deleteSpace(command);
-            instrumente[id].instrument = val;
+            instruments[id].instrument = val;
           }
         }
         break;
@@ -198,7 +198,7 @@ void parseAdminCommand(String command, String user){
           if(isNumber(command.charAt(0))){
             uint32_t val = readNumber(command);
             deleteSpace(command);
-            instrumente[id].bank_LSB = val;
+            instruments[id].bank_LSB = val;
           }
         }
         break;
@@ -212,9 +212,9 @@ void parseAdminCommand(String command, String user){
         break;
       case 'l':
       case 'L':
-        schreibeChatNachricht("(MIDI) @" + user + " Liste von Preset Liedern:");
-        for(uint16_t i = 0; i < MENGE_PRESET_LIEDER; i++){
-          schreibeChatNachricht("(MIDI) @" + user + " " + i + ": " + presetLieder[i].name);
+        sendIrcMessage("(MIDI) @" + user + " Liste von Preset Liedern:");
+        for(uint16_t i = 0; i < AMOUNT_PRESET_SONGS; i++){
+          sendIrcMessage("(MIDI) @" + user + " " + i + ": " + presetSongs[i].name);
         }
         break;
       case 'D':
@@ -223,7 +223,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id].daten = command;
+          presetSongs[id].data = command;
           return;
         }
         break;
@@ -233,7 +233,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id].daten += command;
+          presetSongs[id].data += command;
           return;
         }
         break;
@@ -243,8 +243,8 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          presetLieder[id].daten = "";
-          presetLieder[id].name = "";
+          presetSongs[id].data = "";
+          presetSongs[id].name = "";
         }
         break;
       case 'P':
@@ -253,7 +253,7 @@ void parseAdminCommand(String command, String user){
         if(isNumber(command.charAt(0))){
           uint32_t id = readNumber(command);
           deleteSpace(command);
-          schreibeChatNachricht("(MIDI) @" + user + " Daten vom Lied " + id + ": " + presetLieder[id].daten);
+          sendIrcMessage("(MIDI) @" + user + " Daten vom Lied " + id + ": " + presetSongs[id].data);
         }
         break;
       case 'N':
@@ -267,7 +267,7 @@ void parseAdminCommand(String command, String user){
             e += "" + command.substring(0, 1);
             command.remove(0,1);
           }
-          presetLieder[id].name = e;
+          presetSongs[id].name = e;
         }
         break;
       }

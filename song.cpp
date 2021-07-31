@@ -3,11 +3,11 @@
 void playSong(String input, uint32_t timeOutSeconds){
 
   if(inUserRequest){
-    if(ammountPlayRequestLeft == MAX_PLAYREQUESTS)
+    if(amountPlayRequestLeft == MAX_PLAYREQUESTS)
       return;
-    playRequests[ammountPlayRequestLeft].data = input;
-    playRequests[ammountPlayRequestLeft].timeleft = timeOutSeconds;
-    ammountPlayRequestLeft++;
+    playRequests[amountPlayRequestLeft].data = input;
+    playRequests[amountPlayRequestLeft].timeleft = timeOutSeconds;
+    amountPlayRequestLeft++;
     return;
   }
 
@@ -17,8 +17,8 @@ void playSong(String input, uint32_t timeOutSeconds){
     input.remove(0,1);
     if(isNumber(input.charAt(0))){
       uint32_t num = readNumber(input);
-      if(num >= 0 && num < MENGE_PRESET_LIEDER)
-        input = presetLieder[num].daten;
+      if(num >= 0 && num < AMOUNT_PRESET_SONGS)
+        input = presetSongs[num].data;
       else
         input = SONG_NOT_EXISTS;
     }
@@ -26,7 +26,7 @@ void playSong(String input, uint32_t timeOutSeconds){
 
   Serial.println("PLAY ERKANNT");
 
-  currentChanal = DEFALT_MIDI_CHANAL;
+  currentChannel = DEFAULT_MIDI_CHANNEL;
 
   while (input.startsWith(" "))
     input.remove(0,1);
@@ -50,10 +50,10 @@ void playSong(String input, uint32_t timeOutSeconds){
     if(isNumber(input.charAt(0))){
       bpm = readNumber(input);
     }else{
-      bpm = DEFALT_BPM;
+      bpm = DEFAULT_BPM;
     }
   }else{
-    bpm = DEFALT_BPM;
+    bpm = DEFAULT_BPM;
   }
 
   while (input.startsWith(" "))
@@ -61,7 +61,7 @@ void playSong(String input, uint32_t timeOutSeconds){
     
   readInstrument(input);
 
-  vierBeatZeit = (int) ((float) (240000) / ((float) bpm));
+  fourBeatTime = (int) ((float) (240000) / ((float) bpm));
 
   while (input.startsWith(" "))
     input.remove(0,1);

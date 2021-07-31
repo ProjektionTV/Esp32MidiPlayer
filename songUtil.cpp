@@ -23,15 +23,15 @@ void readInstrument(String &s) {
     if (isNumber(s.charAt(0))) {
       uint32_t midiInstrument = readNumber(s);
       if(midiInstrument < 128)
-        MIDI.sendProgramChange(midiInstrument, currentChanal);
+        MIDI.sendProgramChange(midiInstrument, currentChannel);
     }
 
-    for (uint8_t i = 0; i < MENGE_PRESET_INSTRUMENTE; i++) {
-      if(s.startsWith(instrumente[i].name)){
-        s.remove(0, instrumente[i].name.length());
-        MIDI.sendProgramChange(instrumente[i].instrument,currentChanal);
-        MIDI.sendControlChange(0, instrumente[i].bank_MSB, currentChanal);  //MSB
-        MIDI.sendControlChange(32, instrumente[i].bank_LSB, currentChanal); //LSB
+    for (uint8_t i = 0; i < AMOUNT_PRESET_INSTRUMENTS; i++) {
+      if(s.startsWith(instruments[i].name)){
+        s.remove(0, instruments[i].name.length());
+        MIDI.sendProgramChange(instruments[i].instrument,currentChannel);
+        MIDI.sendControlChange(0, instruments[i].bank_MSB, currentChannel);  //MSB
+        MIDI.sendControlChange(32, instruments[i].bank_LSB, currentChannel); //LSB
       }
     }
 }

@@ -13,7 +13,7 @@ Benötigte Bibliotheken:
 
 `-...`
 
-Ist das allererste Zeichen ein `-`, wir der erweiterte Modus aktiviert. Die Noten werden dann solange gehalten, bis sie zum nächsten Mal erwähnt werden.
+Ist das allererste Zeichen ein `-`, wird der erweiterte Modus aktiviert. Die Noten werden dann so lange gehalten, bis sie zum nächsten Mal erwähnt werden.
 
 
 ### BPM (optional)
@@ -63,8 +63,8 @@ Folgt der Länge ein Punkt (`.`), wird die Note um den anderthalbfachen Wert ver
 Mehrere direkt aufeinanderfolgende Töne werden zusammen gespielt.
 Beispie: `CEGC GHdg FAcf`
 
-#### Modus wächsel
-Mit `m` kann der Modus zwischen dem "standart" und dem "erweiterten" gewächselt werden.
+#### Modus wechsel
+Mit `m` kann der Modus zwischen dem "standard" und dem "erweiterten" gewechselt werden.
 
 #### Noten im *erweiterten Modus*
 
@@ -73,7 +73,7 @@ Mit `m` kann der Modus zwischen dem "standart" und dem "erweiterten" gewächselt
 ##### Besondere Funktionen
 ###### Instrument ändern
 `i<instrument>`  
-Wechselt das Aktuelle Instrument für die nachfolgenden Noten.  
+Wechselt das aktuelle Instrument für die nachfolgenden Noten.  
 `-organ ... ipiano ...`
 
 ###### Alle Noten stoppen
@@ -86,26 +86,26 @@ Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere
 
 ###### Lauststärke ändern
 `v<Neue Lautstärke>`
-Mit `v` wird die lautstärke in dem Aktuellen Midi-Kanal geändert \(0-127\) \(Keine garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+Mit `v` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
 `-piano A1 v64 A1`
 
 ###### zuletzt genannte Note Stoppen
 `l`
 Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 
-###### bpm änderung
+###### BPM Änderung
 `q<neue BPM>`
 
-###### controllchange 0 MSB-Bank standart: 0
+###### controllchange 0 MSB-Bank standard: 0
 `x<neuer Wert>`
 
-###### controllchange 32 LSB-Bank standart: 0
+###### controllchange 32 LSB-Bank standard: 0
 `y<neuer Wert>`
 
-###### controllchange 72 relese standart: 63
+###### controllchange 72 release standard: 63
 `j<neuer Wert>`
 
-###### controllchange 73 attack standart: 63
+###### controllchange 73 attack standard: 63
 `o<neuer Wert>`
 
 ###### Ton
@@ -114,18 +114,18 @@ Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung i
 und a (a wird wieder gespielt) 4 (a wird gespielt) s (a wird nicht mehr gespielt)`
 
 ### Wiederholung
-Achtung: Der aktuelle Modus wird nicht beachtet, woduch eine Wiederholung im selben Modus aufhören solte, wie sie angefangen hat.
+Achtung: Der aktuelle Modus wird nicht beachtet, woduch eine Wiederholung im selben Modus aufhören sollte, wie sie angefangen hat.
 
 #### w
-Aktiviert/Deaktiviert die wiederholung
+Aktiviert/Deaktiviert die Wiederholung
 `...w<0>w...`→`...<0><0>...`
 
 #### n
-noten die nach dem ersten spielen gespielt werden
+Noten die nach dem ersten Spielen gespielt werden
 `...w<0>n<1>w...`→`...<0><1><0>...`
 
 #### u
-`u` wird nach `n` genutzt um weitere wieder holungen anzuhengen mit optional noten
+`u` wird nach `n` genutzt um weitere Wiederholungen anzuhängen mit optionalen Noten
 * `...w<0>n<1>u[2]w...`→`...<0><1><0>[2]<0>...`
 * `...w<0>n<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
 * ...
@@ -136,25 +136,25 @@ noten die nach dem ersten spielen gespielt werden
 * `cw d en fu dw g` → `c d e f d e d d e g`
 
 ### Puffer (optional)
-`;...` fals keine unten genanten Pufferaktionen folen werden folgende Noten in den Puffer geschrieben.
+`;...` falls keine unten genannten Pufferaktionen folgen werden folgende Noten in den Puffer geschrieben.
 
 #### Puffer löschen
 `;l...` löscht den Puffer.
 
 #### neuen Puffer erstellen
-`;[l]n...` erschaft einen neuen Puffer folgende Noten werden in diesen eingefügt.
+`;[l]n...` erstellt einen neuen Puffer, folgende Noten werden eingefügt.
 
-### lied Preset
+### Lied Preset
 * `0`- `118 c4 C'4 mi119 c'2`
-* `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1` - `Klavier Spielen` beispiel melodie
-* `2`- `-126 c1 1 1 1 1 1` - Aplaus
+* `1`- `brass F2 G#2 F4 F8 A#4 F4 D# F2 c2 F4 F8 c# c4 G# F4 c4 f4 F4 D# D#8 C G# F1` - `Klavier` Beispielmelodie
+* `2`- `-126 c1 1 1 1 1 1` - Applaus
 * `3`- ... - Gravity Falls
 * `4`- ... - Vivaldi
 * `5`- ... - cowntdown\(/Vorhersage/Umfrage Melodie\)
 * `6`- ... - irgendwas was `d7gr` gemacht hat
 * `7`- ... - trinken
-* `8`- ... - Ducktales Intro theme
-* `9`- ... - Wenn ich reich wär - Abomelodie
+* `8`- ... - Ducktales
+* `9`- ... - Wenn ich einmal reich wär - Abomelodie
 * `10`- ... - Für Elise
 * `11`- ... - Sandmann
 * `12`- ... - Airwolf
@@ -166,102 +166,102 @@ Wenn eine Nachricht vom MQTT-topic `killmidi` emfangen wird, wird das aktuelle l
 
 ## JSON
 
-Es handelt sich um ein JSON-Objekt mit folgenden tags:
-* `laenge` - maximale Lied länge
-* `midi` - daten des Lides
+Es handelt sich um ein JSON-Objekt mit folgenden Tags:
+* `laenge` - maximale Liedlänge
+* `midi` - Daten des Liedes
 
 optional:
-* `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die buffer funktion aktiviert.
-* `adminModus` - falls vorhanden und der Wert `true` ist, wird die admin funktion aktiviert.
+* `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
+* `adminModus` - falls vorhanden und der Wert `true` ist, wird die Adminfunktion aktiviert.
 
-Bei aktiviertem buffer werden folgende tags benötigt:
-* `nutzer` - name des users
-* `prioritaet` - priorität endscheidet welche buffer zu erst gelöscht werden, kleinere zahlen werden eher gelöscht. z.B.: der buffer ist mit priorität 1 gefüllt dan würde wenn einer mit priorität 1 einen Puffer erstellen möchte einen fehler bekommen, einer mit priorität 2 nicht da dies einen buffer mit priorität 1 überschreibt.
-* `maximaleBufferGroesse` - die maximale größe des Puffers
+Bei aktiviertem Buffer werden folgende Tags benötigt:
+* `nutzer` - Name des Users
+* `prioritaet` - Priorität endscheidet welche Buffer zuerst gelöscht werden, kleinere Zahlen werden eher gelöscht. z.B.: der Buffer ist mit Priorität 1 gefüllt, dann würde, wenn einer mit Priorität 1 einen Puffer erstellen möchte ein Fehler ausgegeben, einer mit Priorität 2 nicht, da dies einen Buffer mit Priorität 1 überschreibt.
+* `maximaleBufferGroesse` - die maximale Größe des Puffers
 
 
-Bei aktiviertem admin modus werden folgende tags benötigt:
-* `nutzer` - name des users
+Bei aktiviertem Adminmodus werden folgende Tags benötigt:
+* `nutzer` - Name des Users
 
 ## Adminmodus MIDI syntax
 `command;[command;...]`
 
 ### p
-Spielt die folgenden daten. Es können keine weiteren befehle angehängt werden.
+Spielt die folgenden Daten. Es können keine weiteren Befehle angehängt werden.
 `p <noten>`
 
 ### ~
-Spielt den Puffer und löscht diesen
+Spielt den Puffer und löscht diesen.
 `~ <Puffer id>`
 
 ### q
-Spielt den Puffer
+Spielt den Puffer.
 `q <Puffer id>`
 
 ### i
 
-instrument optionen
+Instrument Optionen
 
 #### l
-listet die instrumente.
+Listet die Instrumente.
 `il`
 
 #### i
-setzt die instrument nummer des instrumentes
+Setzt die Instrumentnummer des Instrumentes
 `ii<interne instrument id> <instrument id>`
 
 #### m
-setzt die msb des instrumentes
+Setzt die msb des Instrumentes
 `im<interne instrument id> <msb>`
 
 #### d
-setzt die lsb des instrumentes
+Setzt die lsb des Instrumentes
 `id<interne instrument id> <lsb>`
 
 #### n
-setzt den namen des instrumentes, mit welchen man dies ereicht
+Setzt den Namen des Instrumentes, mit welchen man dies ereicht
 `in<interne instrument id> <name ohne lerzeichen>`
 
 ### l
 
 #### l
-listet all lieder und deren daten
+Listet alle Lieder und deren Daten
 `ll`
 
 #### d
-setzt die daten des liedes. Es können keine weiteren befehle angehengt werden.
+Setzt die Daten des Liedes. Es können keine weiteren Befehle angehängt werden.
 `ld<lied id> <noten>`
 
 #### a
-fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
 `la<lied id> <noten>`
 
 #### c
-löscht die daten des liedes
+Löscht die Daten des Liedes
 `lc<lied id>`
 
 ### b
 
 #### l
-listet alle puffer und deren besitzer
+Listet alle Puffer und deren Besitzer
 `bl`
 
 #### d
-setzt die daten des puffer. Es können keine weiteren befehle angehängt werden.
+Setzt die Daten des Puffer. Es können keine weiteren Befehle angehängt werden.
 `bd<puffer id> <noten>`
 
 #### a
-fügt die folgenden daten zum lied hinzu. Es können keine weiteren befehle angehengt werden.
+Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
 `ba<puffer id> <noten>`
 
 #### c
-löscht die daten des puffers
+Löscht die Daten des Puffers.
 `bc<puffer id>`
 
 #### o
-setzt den besitzer des puffers
-`bo<puffer id> <neuer besitzer ohne lerzeichen>`
+Setzt den Besitzer des Puffers.
+`bo<puffer id> <neuer Besitzer ohne Leerzeichen>`
 
 #### p
-listet die daten des puffers
+Listet die Daten des Puffers.
 `bp<puffer id>`

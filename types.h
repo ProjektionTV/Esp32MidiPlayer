@@ -2,11 +2,11 @@
 #define TYPESH
 #include "main.h"
 
-struct notenBufferEintrag{
+struct notesBufferEntry{
   uint8_t priority;
-  String besitzer;
-  String daten;
-  uint16_t maximaleLaenge;
+  String owner;
+  String data;
+  uint16_t maxLength;
 };
 
 struct instrument{
@@ -16,9 +16,9 @@ struct instrument{
   uint8_t bank_LSB;
 };
 
-struct lied{
+struct presetSong{
   String name;
-  String daten;
+  String data;
 };
 
 struct openPlayRequest{

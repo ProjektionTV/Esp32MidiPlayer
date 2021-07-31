@@ -1,6 +1,6 @@
 #include "interface.h"
 
-void schreibeChatNachricht(String s) {
+void sendIrcMessage(String s) {
   if (s.length() > 500) {
     while(s.length() > 500){
       psClient.publish(MQTT_IRC_TX, s.substring(0, 500).c_str());
@@ -15,9 +15,9 @@ void schreibeChatNachricht(String s) {
 
 void setMusicStatus(bool newStatus){
   if(newStatus)
-    psClient.publish(MQTT_MUSIC_ON_TOPIC, MQTT_MUSIC_ON_MASSAGE);
+    psClient.publish(MQTT_MUSIC_ON_TOPIC, MQTT_MUSIC_ON_MESSAGE);
   else
-    psClient.publish(MQTT_MUSIC_OFF_TOPIC, MQTT_MUSIC_OFF_MASSAGE);
+    psClient.publish(MQTT_MUSIC_OFF_TOPIC, MQTT_MUSIC_OFF_MESSAGE);
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -60,40 +60,40 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         if(midi.startsWith("l")){
           midi.remove(0, 1);
           bool wurdeGeloescht = false;
-          for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-            if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
-              notenBuffer[i].besitzer = "";
-              notenBuffer[i].daten = "";
-              notenBuffer[i].maximaleLaenge = 0;
-              notenBuffer[i].priority = 0;
+          for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+            if(nutzer.equalsIgnoreCase(notesBuffer[i].owner)){
+              notesBuffer[i].owner = "";
+              notesBuffer[i].data = "";
+              notesBuffer[i].maxLength = 0;
+              notesBuffer[i].priority = 0;
               wurdeGeloescht = true;
             }
           }
           if(wurdeGeloescht){
-            schreibeChatNachricht("(MIDI) @" + nutzer + " dein Puffer wurde erfolgreich gelöscht!");
+            sendIrcMessage("(MIDI) @" + nutzer + " dein Puffer wurde erfolgreich gelöscht!");
           }else{
-            schreibeChatNachricht("(MIDI) @" + nutzer + " du hast keinen Puffer!");
+            sendIrcMessage("(MIDI) @" + nutzer + " du hast keinen Puffer!");
           }
         }
         bool benutzerBufferGefunden = false;
         uint8_t bufferID;
-        for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-          if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
+        for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+          if(nutzer.equalsIgnoreCase(notesBuffer[i].owner)){
             benutzerBufferGefunden = true;
             bufferID = i;
           }
         }
         if(benutzerBufferGefunden){
           // daten zum buffer hinzu fügen
-          if(notenBuffer[bufferID].daten.length() == notenBuffer[bufferID].maximaleLaenge){
-            schreibeChatNachricht("(MIDI) @" + nutzer + " dein Puffer ist Voll!");
-          }else if ((notenBuffer[bufferID].daten.length() + midi.length()) > notenBuffer[bufferID].maximaleLaenge){
-            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi + " ";
-            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
-            schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt. Achtung es wurden Daten entfernt da der puffer überfüllt wurde (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+          if(notesBuffer[bufferID].data.length() == notesBuffer[bufferID].maxLength){
+            sendIrcMessage("(MIDI) @" + nutzer + " dein Puffer ist Voll!");
+          }else if ((notesBuffer[bufferID].data.length() + midi.length()) > notesBuffer[bufferID].maxLength){
+            notesBuffer[bufferID].data = notesBuffer[bufferID].data + midi + " ";
+            notesBuffer[bufferID].data = notesBuffer[bufferID].data.substring(0, notesBuffer[bufferID].maxLength);
+            sendIrcMessage("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt. Achtung es wurden Daten entfernt da der puffer überfüllt wurde (" + notesBuffer[bufferID].data.length() + "/" + notesBuffer[bufferID].maxLength + ").");
           }else{
-            notenBuffer[bufferID].daten = notenBuffer[bufferID].daten + midi + " ";
-            schreibeChatNachricht("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+            notesBuffer[bufferID].data = notesBuffer[bufferID].data + midi + " ";
+            sendIrcMessage("(MIDI) @" + nutzer + " daten wurden zu deinem Puffer hinzugefügt (" + notesBuffer[bufferID].data.length() + "/" + notesBuffer[bufferID].maxLength + ").");
           }
         }else{
           if(midi.startsWith("n")){
@@ -103,8 +103,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
             uint8_t bufferID = 0;
             bool erschaffeBuffer = false;
             bool ueberSchreibeBuffer = true;
-            for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-              if(notenBuffer[i].besitzer.equalsIgnoreCase("") && ueberSchreibeBuffer){
+            for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+              if(notesBuffer[i].owner.equalsIgnoreCase("") && ueberSchreibeBuffer){
                 //erschaffe neuen buffer
                 ueberSchreibeBuffer = false;
                 erschaffeBuffer = true;
@@ -112,8 +112,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
               }
             }
             if(ueberSchreibeBuffer){
-              for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-                if(notenBuffer[i].priority < prioritaet && !(ueberSchreibeBuffer)){
+              for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+                if(notesBuffer[i].priority < prioritaet && !(ueberSchreibeBuffer)){
                   //erschaffe neuen buffer
                   ueberSchreibeBuffer = true;
                   erschaffeBuffer = true;
@@ -123,17 +123,17 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
             }
             if(erschaffeBuffer){
               uint16_t maximaleBufferGroesse = data["maximaleBufferGroesse"];
-              notenBuffer[bufferID].besitzer = nutzer;
-              notenBuffer[bufferID].priority = prioritaet;
-              notenBuffer[bufferID].maximaleLaenge = maximaleBufferGroesse;
-              notenBuffer[bufferID].daten = midi + " ";
-              if(notenBuffer[bufferID].daten.length() > notenBuffer[bufferID].maximaleLaenge){
-                notenBuffer[bufferID].daten = notenBuffer[bufferID].daten.substring(0, notenBuffer[bufferID].maximaleLaenge);
+              notesBuffer[bufferID].owner = nutzer;
+              notesBuffer[bufferID].priority = prioritaet;
+              notesBuffer[bufferID].maxLength = maximaleBufferGroesse;
+              notesBuffer[bufferID].data = midi + " ";
+              if(notesBuffer[bufferID].data.length() > notesBuffer[bufferID].maxLength){
+                notesBuffer[bufferID].data = notesBuffer[bufferID].data.substring(0, notesBuffer[bufferID].maxLength);
               }
               //TODO: ueberscheube einen buffer
-              schreibeChatNachricht("(MIDI) @" + nutzer + " puffer wurde erfolgreich erschaffen (" + notenBuffer[bufferID].daten.length() + "/" + notenBuffer[bufferID].maximaleLaenge + ").");
+              sendIrcMessage("(MIDI) @" + nutzer + " puffer wurde erfolgreich erschaffen (" + notesBuffer[bufferID].data.length() + "/" + notesBuffer[bufferID].maxLength + ").");
             }else{
-              schreibeChatNachricht("(MIDI) @" + nutzer + " puffer konte nicht erschaffen werden.");
+              sendIrcMessage("(MIDI) @" + nutzer + " puffer konte nicht erschaffen werden.");
             }
           }else{
             // spiele daten
@@ -142,14 +142,14 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         }
       }else{
         bool benutzerBufferGefunden = false;
-        for(uint8_t i = 0; i < NOTEN_BUFFER_LAENGE; i++){
-          if(nutzer.equalsIgnoreCase(notenBuffer[i].besitzer)){
+        for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
+          if(nutzer.equalsIgnoreCase(notesBuffer[i].owner)){
             benutzerBufferGefunden = true;
-            playSong(notenBuffer[i].daten + midi, (uint32_t) data["laenge"]);
-            notenBuffer[i].besitzer = "";
-            notenBuffer[i].daten = "";
-            notenBuffer[i].maximaleLaenge = 0;
-            notenBuffer[i].priority = 0;
+            playSong(notesBuffer[i].data + midi, (uint32_t) data["laenge"]);
+            notesBuffer[i].owner = "";
+            notesBuffer[i].data = "";
+            notesBuffer[i].maxLength = 0;
+            notesBuffer[i].priority = 0;
           }
         }
         if(!benutzerBufferGefunden)
@@ -162,10 +162,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     payload[length] = '\0';
     Serial.println("kill midi vom mqtt erkannt");
     timeout = 0;
-    while(ammountPlayRequestLeft){
-      playRequests[ammountPlayRequestLeft - 1].data = "";
-      playRequests[ammountPlayRequestLeft - 1].timeleft = 0;
-      ammountPlayRequestLeft--;
+    while(amountPlayRequestLeft){
+      playRequests[amountPlayRequestLeft - 1].data = "";
+      playRequests[amountPlayRequestLeft - 1].timeleft = 0;
+      amountPlayRequestLeft--;
     }
   }
 

@@ -6,18 +6,18 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 bool playSongFlag = false;
 bool parserV2 = false;
 bool inUserRequest = false;
-uint8_t ammountPlayRequestLeft = 0;
+uint8_t amountPlayRequestLeft = 0;
 openPlayRequest playRequests[MAX_PLAYREQUESTS];
 uint32_t lastMqttCheck = 0;
-uint8_t currentChanal = DEFALT_MIDI_CHANAL;
+uint8_t currentChannel = DEFAULT_MIDI_CHANNEL;
 uint32_t activeNotes[129];
-uint32_t bpm = DEFALT_BPM;
-uint32_t vierBeatZeit = 1000;
+uint32_t bpm = DEFAULT_BPM;
+uint32_t fourBeatTime = 1000;
 uint32_t timeout = 0;
-uint16_t zuletztGenannteNote = 2000;
-notenBufferEintrag notenBuffer[NOTEN_BUFFER_LAENGE];
-lied presetLieder[MENGE_PRESET_LIEDER];
-instrument instrumente[MENGE_PRESET_INSTRUMENTE];
+uint16_t lastNamedNote = 2000;
+notesBufferEntry notesBuffer[NOTES_BUFFER_LENGTH];
+presetSong presetSongs[AMOUNT_PRESET_SONGS];
+instrument instruments[AMOUNT_PRESET_INSTRUMENTS];
 String song;
 
 IPAddress mqttBroker(192, 168, IP_SUBNET, IP_BROKER);
@@ -114,8 +114,8 @@ void setup()
   psClient.setBufferSize(4096);
   psClient.setCallback(mqttCallback);
 
-  fuellePresetLieder();
-  fuellePresetInstrumente();
+  fillPresetSongs();
+  fillPresetInstruments();
 
   setMusicStatus(true);
 
@@ -137,12 +137,12 @@ void loop()
   ArduinoOTA.handle();
 
   if(!inUserRequest)
-    while(ammountPlayRequestLeft){
-      String notes = playRequests[ammountPlayRequestLeft - 1].data;
-      uint32_t time = playRequests[ammountPlayRequestLeft - 1].timeleft;
-      playRequests[ammountPlayRequestLeft - 1].data = "";
-      playRequests[ammountPlayRequestLeft - 1].timeleft = 0;
-      ammountPlayRequestLeft--;
+    while(amountPlayRequestLeft){
+      String notes = playRequests[amountPlayRequestLeft - 1].data;
+      uint32_t time = playRequests[amountPlayRequestLeft - 1].timeleft;
+      playRequests[amountPlayRequestLeft - 1].data = "";
+      playRequests[amountPlayRequestLeft - 1].timeleft = 0;
+      amountPlayRequestLeft--;
       playSong(notes, time);
     }
 
