@@ -73,9 +73,24 @@ void parseAdminCommand(String command, String user){
             vol = readNumber(command);
             deleteSpace(command);
           }
-          if(id >= 0 && id < 128 && vol >= 0 && vol < 128) {
-            EEPROM[id] = vol;
-            EEPROM.commit();
+          if(vol >= 0 && vol < 128) {
+            EEPROM.begin(257);
+            if(id >= 0 && id < 128) {
+              EEPROM.write(id + 1, vol);
+              eepromData[id] = vol;
+              EEPROM.commit();
+            } else if (id == 128) {
+              EEPROM.write(id, vol);
+              eepromData[id] = vol;
+              EEPROM.commit();
+            } else if (id == 129) {
+              for(uint16_t i = 1; i < 130; i++){
+                EEPROM.write(i, vol);
+                eepromData[i - 1] = vol;
+              }
+              EEPROM.commit();
+            }
+            EEPROM.end();
             sendIrcMessage("(MIDI) lautstaerke fuer " + String(id) + " ist nun " + String(vol) + "!");
           }
         }

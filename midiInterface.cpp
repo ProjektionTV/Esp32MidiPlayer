@@ -23,7 +23,7 @@ void parser2note(uint16_t note){
   if(((activeNotes[note] >> currentChannel) & 1) != 1){
     //start note
     activeNotes[note] |= (1 << currentChannel);
-    MIDI.sendNoteOn(note, 127, currentChannel);
+    MIDI.sendNoteOn(note, curr_vol[currentChannel], currentChannel);
   }else{
     //stop note
     activeNotes[note] &= ~(1 << currentChannel);

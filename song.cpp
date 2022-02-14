@@ -88,7 +88,7 @@ void playSong(String input, uint32_t timeOutSeconds, bool allowDev){
 
   for(uint8_t i = 1; i < 17; i++){
     MIDI.sendProgramChange(0,i);
-    MIDI.sendControlChange(7, 127, i);
+    MIDI.sendControlChange(7, eepromData[128], i);
     MIDI.sendControlChange(0, 0, i);
     MIDI.sendControlChange(32, 0, i);
     MIDI.sendControlChange(72, 63, i);
@@ -96,7 +96,7 @@ void playSong(String input, uint32_t timeOutSeconds, bool allowDev){
     current_inst_i[i] = 0;
     current_inst_lsb[i] = 0;
     current_inst_msb[i] = 0;
-    current_inst_vol[i] = 0;
+    curr_vol[i] = 127;
   }
   setMusicStatus(true);
   enabledUserDev = false;

@@ -58,6 +58,7 @@ extern PubSubClient psClient;
 extern uint8_t current_inst_i[17];
 extern uint8_t current_inst_msb[17];
 extern uint8_t current_inst_lsb[17];
-extern uint8_t current_inst_vol[17];
+extern uint8_t eepromData[256];
+extern uint8_t curr_vol[17];
 
 #endif

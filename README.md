@@ -86,13 +86,13 @@ Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere
 
 ###### Lauststärke ändern
 `v<Neue Lautstärke>`
-Mit `v` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+Mit `v` wird die "Lautstärke" in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
 `-piano A1 v64 A1`
 
-###### Lauststärke ändern (skaliert)
-`d<Neue Lautstärke>`
-Mit `d` wird die Lautstärke zur Instrumentnen skaliert in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
-`-piano A1 v64 A1`
+###### absulute Lauststärke ändern (nicht empholen)
+`z<Neue Lautstärke>`
+Mit `z` wird die absulute Lautstärke des Keybords in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1 z64 A1`
 
 ###### zuletzt genannte Note Stoppen
 `l`
@@ -272,5 +272,5 @@ Listet die Daten des Puffers.
 `bp<puffer id>`
 
 ### v
-Setzt lautstärke von einem GM instrument
+Setzt lautstärke von einem GM instrument \(instrument: 128 standart lautstärke, 129 setze alle lautstärken\)
 `v <instrument> <lautstärke 0-127>`

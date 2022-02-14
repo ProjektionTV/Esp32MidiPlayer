@@ -25,7 +25,6 @@ void readInstrument(String &s) {
       if(midiInstrument < 128){
         MIDI.sendProgramChange(midiInstrument, currentChannel);
         current_inst_i[currentChannel] = midiInstrument;
-        current_inst_vol[currentChannel] = 127;
       }
     }
 
@@ -38,12 +37,12 @@ void readInstrument(String &s) {
         current_inst_i[currentChannel] = instruments[i].instrument;
         current_inst_lsb[currentChannel] = instruments[i].bank_LSB;
         current_inst_msb[currentChannel] = instruments[i].bank_MSB;
-        current_inst_vol[currentChannel] = 127;
       }
     }
     if(current_inst_lsb[currentChannel] == 0 && current_inst_msb[currentChannel] == 0) {
-        current_inst_vol[currentChannel] = EEPROM[current_inst_i[currentChannel]];
-        MIDI.sendControlChange(7, current_inst_vol[currentChannel], currentChannel);
+        MIDI.sendControlChange(7, eepromData[current_inst_i[currentChannel]], currentChannel);
+    } else {
+        MIDI.sendControlChange(7, eepromData[128], currentChannel);
     }
 }
 

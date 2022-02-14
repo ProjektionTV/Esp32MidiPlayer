@@ -24,7 +24,8 @@ String song;
 uint8_t current_inst_i[17];
 uint8_t current_inst_msb[17];
 uint8_t current_inst_lsb[17];
-uint8_t current_inst_vol[17];
+uint8_t eepromData[256];
+uint8_t curr_vol[17];
 
 IPAddress mqttBroker(192, 168, IP_SUBNET, IP_BROKER);
 IPAddress staticIP(192, 168, IP_SUBNET, IP_CLIENT);
@@ -117,15 +118,17 @@ void setup()
     current_inst_i[i] = 0;
     current_inst_lsb[i] = 0;
     current_inst_msb[i] = 0;
-    current_inst_vol[i] = 0;
+    curr_vol[i] = 127;
   }
 
   EEPROM.begin(257);
   if(EEPROM.read(0) != 0x7A) {
-      EEPROM[0] = 0x7A;
-      for(uint16_t i = 1; i < 257; i++) EEPROM[i] = 0xFF;
+      EEPROM.write(0, 0x7A);
+      for(uint16_t i = 1; i < 257; i++) EEPROM.write(i, 0xFF);
       EEPROM.commit();
   }
+  for(uint16_t i = 0; i < 256; i++) eepromData[i] = EEPROM[i + 1];
+  EEPROM.end();
     
   psClient.setServer(mqttBroker, 1883);
   psClient.setBufferSize(4096);
