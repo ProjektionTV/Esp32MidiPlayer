@@ -19,7 +19,7 @@ void parseAdminCommand(String command, String user){
           time = readNumber(command);
           deleteSpace(command);
         }
-        playSong(command, time);
+        playSong(command, time, false);
         return;
         break;
       }
@@ -32,7 +32,7 @@ void parseAdminCommand(String command, String user){
             time = readNumber(command);
             deleteSpace(command);
           }
-          playSong(notesBuffer[id].data, time);
+          playSong(notesBuffer[id].data, time, false);
           notesBuffer[id].owner = "";
           notesBuffer[id].data = "";
           notesBuffer[id].maxLength = 0;
@@ -48,7 +48,7 @@ void parseAdminCommand(String command, String user){
             time = readNumber(command);
             deleteSpace(command);
           }
-          playSong(notesBuffer[id].data, time);
+          playSong(notesBuffer[id].data, time, false);
         }
         break;
       case 'B':
@@ -62,6 +62,23 @@ void parseAdminCommand(String command, String user){
       case 'L':
       case 'l':
         state = 3;
+        break;
+      case 'v':
+      case 'V':
+        if(isNumber(command.charAt(0))){
+          uint32_t id = readNumber(command);
+          deleteSpace(command);
+          uint32_t vol = 127;
+          if(isNumber(command.charAt(0))){
+            vol = readNumber(command);
+            deleteSpace(command);
+          }
+          if(id >= 0 && id < 128 && vol >= 0 && vol < 128) {
+            EEPROM[id] = vol;
+            EEPROM.commit();
+            sendIrcMessage("(MIDI) lautstaerke fuer " + String(id) + " ist nun " + String(vol) + "!");
+          }
+        }
         break;
       }
       break;

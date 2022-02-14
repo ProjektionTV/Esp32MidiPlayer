@@ -22,8 +22,11 @@ void parserT(String buffer) {
 void readInstrument(String &s) {
     if (isNumber(s.charAt(0))) {
       uint32_t midiInstrument = readNumber(s);
-      if(midiInstrument < 128)
+      if(midiInstrument < 128){
         MIDI.sendProgramChange(midiInstrument, currentChannel);
+        current_inst_i[currentChannel] = midiInstrument;
+        current_inst_vol[currentChannel] = 127;
+      }
     }
 
     for (uint8_t i = 0; i < AMOUNT_PRESET_INSTRUMENTS; i++) {
@@ -32,7 +35,15 @@ void readInstrument(String &s) {
         MIDI.sendProgramChange(instruments[i].instrument,currentChannel);
         MIDI.sendControlChange(0, instruments[i].bank_MSB, currentChannel);  //MSB
         MIDI.sendControlChange(32, instruments[i].bank_LSB, currentChannel); //LSB
+        current_inst_i[currentChannel] = instruments[i].instrument;
+        current_inst_lsb[currentChannel] = instruments[i].bank_LSB;
+        current_inst_msb[currentChannel] = instruments[i].bank_MSB;
+        current_inst_vol[currentChannel] = 127;
       }
+    }
+    if(current_inst_lsb[currentChannel] == 0 && current_inst_msb[currentChannel] == 0) {
+        current_inst_vol[currentChannel] = EEPROM[current_inst_i[currentChannel]];
+        MIDI.sendControlChange(7, current_inst_vol[currentChannel], currentChannel);
     }
 }
 

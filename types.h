@@ -23,6 +23,7 @@ struct presetSong{
 
 struct openPlayRequest{
   String data;
+  bool allowDev;
   uint32_t timeleft;
 };
 

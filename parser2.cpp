@@ -42,17 +42,27 @@ void parser2(String buffer){
           if(nv < 128 && nv >= 0)
             MIDI.sendControlChange(7, nv, currentChannel);
         }
-      }else if(note == 'x' || note == 'X'){
+      }else if(note == 'd' || note == 'D'){
         if(isNumber(buffer.charAt(0))){
-          uint32_t nv = readNumber(buffer);
+          uint32_t nv = (readNumber(buffer) * current_inst_vol[currentChannel]) / 127;
           if(nv < 128 && nv >= 0)
-            MIDI.sendControlChange(0, nv, currentChannel);
+            MIDI.sendControlChange(7, nv, currentChannel);
         }
-      }else if(note == 'y' || note == 'Y'){
+      }else if(note == 'x' || note == 'X'){ // msb
         if(isNumber(buffer.charAt(0))){
           uint32_t nv = readNumber(buffer);
-          if(nv < 128 && nv >= 0)
+          if(nv < 128 && nv >= 0){
+            MIDI.sendControlChange(0, nv, currentChannel);
+            current_inst_msb[currentChannel] = nv;
+          }
+        }
+      }else if(note == 'y' || note == 'Y'){ // lsb
+        if(isNumber(buffer.charAt(0))){
+          uint32_t nv = readNumber(buffer);
+          if(nv < 128 && nv >= 0){
             MIDI.sendControlChange(32, nv, currentChannel);
+            current_inst_lsb[currentChannel] = nv;
+          }
         }
       }else if(note == 'j' || note == 'J'){
         if(isNumber(buffer.charAt(0))){
@@ -68,8 +78,11 @@ void parser2(String buffer){
         }
       }else if(note == 'i' || note == 'I'){
         readInstrument(buffer);
+      } else if(enabledUserDev && (note == 'r' || note == 'R')) {
+        Serial1.write((hexToInt(buffer.charAt(0)) << 4) | hexToInt(buffer.charAt(1)));
+        buffer.remove(0, 2);
       }
-#if ALLOW_MULTI_CHANAL_MIDI
+#if ALLOW_MULTI_CHANNEL_MIDI
       else if(note == 'k' || note == 'K'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nc = readNumber(buffer);

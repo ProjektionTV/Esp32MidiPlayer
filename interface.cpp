@@ -36,7 +36,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     Serial.println("play midi vom mqtt erkannt");
     //rueckwertz kompatiblitaet
     if(payload[0] != '{'){
-      playSong((char*)payload,16);
+      playSong((char*)payload,16, false);
       return;
     }
     //JSON MIDI
@@ -137,7 +137,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
             }
           }else{
             // spiele daten
-            playSong(midi, (uint32_t) data["laenge"]);
+            playSong(midi, (uint32_t) data["laenge"], data["allowDev"]);
           }
         }
       }else{
@@ -145,7 +145,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
           if(nutzer.equalsIgnoreCase(notesBuffer[i].owner)){
             benutzerBufferGefunden = true;
-            playSong(notesBuffer[i].data + midi, (uint32_t) data["laenge"]);
+            playSong(notesBuffer[i].data + midi, (uint32_t) data["laenge"], data["allowDev"]);
             notesBuffer[i].owner = "";
             notesBuffer[i].data = "";
             notesBuffer[i].maxLength = 0;
@@ -153,10 +153,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           }
         }
         if(!benutzerBufferGefunden)
-          playSong(midi, (uint32_t) data["laenge"]);
+          playSong(midi, (uint32_t) data["laenge"], data["allowDev"]);
       }
     }else{
-      playSong(data["midi"], (uint32_t) data["laenge"]);
+      playSong(data["midi"], (uint32_t) data["laenge"], false);
     }
   }else if(strTopic.equals(MQTT_KILLMIDI)){
     payload[length] = '\0';

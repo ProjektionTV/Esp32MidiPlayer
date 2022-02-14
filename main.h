@@ -13,6 +13,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
+#include <EEPROM.h>
 #include "types.h"
 #include "parser1.h"
 #include "parser2.h"
@@ -24,6 +25,10 @@
 #include "song.h"
 #include "songUtil.h"
 
+#if USE_ESP8266
+#define esp_restart() []{ESP.restart();}
+#endif
+
 void mqttReconnect();
 void wifiConnect();
 void setup();
@@ -32,6 +37,7 @@ void loop();
 extern bool playSongFlag;
 extern bool parserV2;
 extern bool inUserRequest;
+extern bool enabledUserDev;
 extern uint8_t amountPlayRequestLeft;
 extern uint32_t lastMqttCheck;
 extern uint8_t currentChannel;
@@ -48,5 +54,10 @@ extern String song;
 extern midi::MidiInterface<midi::SerialMIDI<HardwareSerial>> MIDI;
 extern WiFiClient wiFiClient;
 extern PubSubClient psClient;
+
+extern uint8_t current_inst_i[17];
+extern uint8_t current_inst_msb[17];
+extern uint8_t current_inst_lsb[17];
+extern uint8_t current_inst_vol[17];
 
 #endif

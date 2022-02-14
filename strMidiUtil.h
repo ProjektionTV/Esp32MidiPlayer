@@ -13,4 +13,6 @@ void deleteSpace(String &s);
 void midiDelay(uint32_t time);
 void mqttLoopedDelay(uint32_t delay);
 
+uint8_t hexToInt(char c);
+
 #endif

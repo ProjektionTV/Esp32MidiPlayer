@@ -1,17 +1,19 @@
 #include "song.h"
 
-void playSong(String input, uint32_t timeOutSeconds){
+void playSong(String input, uint32_t timeOutSeconds, bool allowDev){
 
   if(inUserRequest){
     if(amountPlayRequestLeft == MAX_PLAYREQUESTS)
       return;
     playRequests[amountPlayRequestLeft].data = input;
     playRequests[amountPlayRequestLeft].timeleft = timeOutSeconds;
+    playRequests[amountPlayRequestLeft].allowDev = allowDev;
     amountPlayRequestLeft++;
     return;
   }
 
   inUserRequest = true;
+  enabledUserDev = allowDev;
 
   if(input.startsWith("~")){
     input.remove(0,1);
@@ -84,14 +86,19 @@ void playSong(String input, uint32_t timeOutSeconds){
   }
   parser2allOFF();
 
-  for(uint8_t i = 0; i < 17; i++){
+  for(uint8_t i = 1; i < 17; i++){
     MIDI.sendProgramChange(0,i);
     MIDI.sendControlChange(7, 127, i);
     MIDI.sendControlChange(0, 0, i);
     MIDI.sendControlChange(32, 0, i);
     MIDI.sendControlChange(72, 63, i);
     MIDI.sendControlChange(73, 63, i);
+    current_inst_i[i] = 0;
+    current_inst_lsb[i] = 0;
+    current_inst_msb[i] = 0;
+    current_inst_vol[i] = 0;
   }
   setMusicStatus(true);
+  enabledUserDev = false;
   inUserRequest = false;
 }

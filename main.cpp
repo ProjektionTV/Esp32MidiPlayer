@@ -6,6 +6,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 bool playSongFlag = false;
 bool parserV2 = false;
 bool inUserRequest = false;
+bool enabledUserDev = false;
 uint8_t amountPlayRequestLeft = 0;
 openPlayRequest playRequests[MAX_PLAYREQUESTS];
 uint32_t lastMqttCheck = 0;
@@ -19,6 +20,11 @@ notesBufferEntry notesBuffer[NOTES_BUFFER_LENGTH];
 presetSong presetSongs[AMOUNT_PRESET_SONGS];
 instrument instruments[AMOUNT_PRESET_INSTRUMENTS];
 String song;
+
+uint8_t current_inst_i[17];
+uint8_t current_inst_msb[17];
+uint8_t current_inst_lsb[17];
+uint8_t current_inst_vol[17];
 
 IPAddress mqttBroker(192, 168, IP_SUBNET, IP_BROKER);
 IPAddress staticIP(192, 168, IP_SUBNET, IP_CLIENT);
@@ -108,6 +114,17 @@ void setup()
   for (uint8_t i = 1; i < 17; i++) {
     MIDI.sendProgramChange(0, i);
     MIDI.sendPitchBend(0, i);
+    current_inst_i[i] = 0;
+    current_inst_lsb[i] = 0;
+    current_inst_msb[i] = 0;
+    current_inst_vol[i] = 0;
+  }
+
+  EEPROM.begin(257);
+  if(EEPROM.read(0) != 0x7A) {
+      EEPROM[0] = 0x7A;
+      for(uint16_t i = 1; i < 257; i++) EEPROM[i] = 0xFF;
+      EEPROM.commit();
   }
     
   psClient.setServer(mqttBroker, 1883);
@@ -140,15 +157,17 @@ void loop()
     while(amountPlayRequestLeft){
       String notes = playRequests[amountPlayRequestLeft - 1].data;
       uint32_t time = playRequests[amountPlayRequestLeft - 1].timeleft;
+      bool allowDev = playRequests[amountPlayRequestLeft - 1].allowDev;
       playRequests[amountPlayRequestLeft - 1].data = "";
       playRequests[amountPlayRequestLeft - 1].timeleft = 0;
+      playRequests[amountPlayRequestLeft - 1].allowDev = false;
       amountPlayRequestLeft--;
-      playSong(notes, time);
+      playSong(notes, time, allowDev);
     }
 
   if(playSongFlag)
   {
     playSongFlag = false;
-    playSong(song, 600);
+    playSong(song, 600, true);
   }
 }
