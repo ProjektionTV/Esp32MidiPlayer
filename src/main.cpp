@@ -1,6 +1,6 @@
 #include "main.h"
 #include "../../myauth.h"
-#include <wifictrl.h>
+#include "wifictrl.h"
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
@@ -21,7 +21,11 @@ presetSong presetSongs[AMOUNT_PRESET_SONGS];
 instrument instruments[AMOUNT_PRESET_INSTRUMENTS];
 String song;
 
-//IPAddress mqttBroker(192, 168, IP_SUBNET, IP_BROKER);
+#if useMqttBroakerIP
+IPAddress mqttBrokerI(mqttBrokerIp0, mqttBrokerIp1, mqttBrokerIp2, mqttBrokerIp3);
+#else
+#define mqttBrokerI mqttBroker
+#endif
 
 WiFiClient wiFiClient;
 
@@ -33,7 +37,11 @@ void mqttReconnect() {
   while (!psClient.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
+#if noMqttUser
+    if (psClient.connect(MQTT_CLIENT_ID)) {
+#else
     if (psClient.connect(MQTT_CLIENT_ID, mqttUser, mqttPassword)) {
+#endif
       Serial.println("connected");
       // Once connected, publish an announcement...
       //psClient.publish("wled/861a06/api","%PL=10");
@@ -71,7 +79,7 @@ void setup()
     MIDI.sendPitchBend(0, i);
   }
     
-  psClient.setServer(mqttBroker, 1883);
+  psClient.setServer(mqttBrokerI, 1883);
   psClient.setBufferSize(9216);
   psClient.setCallback(mqttCallback);
   psClient.setKeepAlive(120);

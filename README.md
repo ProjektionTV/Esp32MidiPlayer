@@ -1,8 +1,19 @@
 # Esp32MidiPlayer
-Benötigte Bibliotheken:
-* fortyseveneffects/MIDI Library
-* knolleary/PubSubClient
-* bblanchon/ArduinoJson
+Benutzte Bibliotheken:
+* fortyseveneffects/MIDI Library@^5.0.2
+* knolleary/PubSubClient@^2.8
+* bblanchon/ArduinoJson@^6.17.3
+* https://github.com/tzapu/WiFiManager.git#v2.0.11-beta
+
+## Platformen
+* ESP8266
+* ESP32
+
+## Setup
+1. copy `src/bspmyauth` to `../myauth.h`
+2. modify `../myauth.h` (the relaive paths are given to this Readme file)
+3. compile and flash
+4. setup wifi
 
 ## Playmidi-Syntax
 

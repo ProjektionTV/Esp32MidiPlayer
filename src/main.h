@@ -3,11 +3,6 @@
 
 #include "settings.h"
 #include <Arduino.h>
-#if USE_ESP8266
-#include <ESP8266WiFi.h>
-#else
-#include <WiFi.h>
-#endif
 #include <WiFiClient.h>
 #include <MIDI.h>
 #include <PubSubClient.h>
@@ -23,6 +18,10 @@
 #include "defaults.h"
 #include "song.h"
 #include "songUtil.h"
+
+#ifdef ESP8266
+#define esp_restart() []{ESP.restart();}
+#endif
 
 void mqttReconnect();
 void wifiConnect();
