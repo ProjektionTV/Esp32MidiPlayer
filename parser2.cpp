@@ -69,7 +69,7 @@ void parser2(String buffer){
       }else if(note == 'i' || note == 'I'){
         readInstrument(buffer);
       }
-#if ALLOW_MULTI_CHANAL_MIDI
+#if ALLOW_MULTI_CHANNEL_MIDI
       else if(note == 'k' || note == 'K'){
         if(isNumber(buffer.charAt(0))){
           uint32_t nc = readNumber(buffer);
