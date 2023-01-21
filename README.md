@@ -10,10 +10,12 @@ Benutzte Bibliotheken:
 * ESP8266
 
 ## Setup
-1. copy `src/bspmyauth` to `../myauth.h`
-2. modify `../myauth.h` (the relaive paths are given to this Readme file)
-3. compile and flash
-4. setup wifi
+1. copy `src/bspmyauth.h` to `../myauth.h`
+1. modify `../myauth.h` (the relaive paths are given to this Readme file)
+1. copy `src/bspmysettings.h` to `src/mysettings.h` (optional)
+1. modify `src/mysettings.h` (optional)
+1. compile and flash
+1. setup wifi
 
 ## Playmidi-Syntax
 
