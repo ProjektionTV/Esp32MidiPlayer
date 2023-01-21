@@ -85,10 +85,10 @@ void playSong(String input, uint32_t timeOutSeconds){
   parser2allOFF();
 
   for(uint8_t i = 0; i < 17; i++){
-    MIDI.sendProgramChange(0,i);
     MIDI.sendControlChange(7, 127, i);
     MIDI.sendControlChange(0, 0, i);
     MIDI.sendControlChange(32, 0, i);
+    MIDI.sendProgramChange(0, i);
     MIDI.sendControlChange(72, 63, i);
     MIDI.sendControlChange(73, 63, i);
   }

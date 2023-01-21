@@ -29,9 +29,9 @@ void readInstrument(String &s) {
     for (uint8_t i = 0; i < AMOUNT_PRESET_INSTRUMENTS; i++) {
       if(s.startsWith(instruments[i].name)){
         s.remove(0, instruments[i].name.length());
-        MIDI.sendProgramChange(instruments[i].instrument,currentChannel);
         MIDI.sendControlChange(0, instruments[i].bank_MSB, currentChannel);  //MSB
         MIDI.sendControlChange(32, instruments[i].bank_LSB, currentChannel); //LSB
+        MIDI.sendProgramChange(instruments[i].instrument,currentChannel);
       }
     }
 }

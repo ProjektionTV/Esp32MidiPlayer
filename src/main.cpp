@@ -60,7 +60,7 @@ void mqttReconnect() {
 
 void setup()
 {
-    //Set up serial output with standard MIDI baud rate
+  //Set up serial output with standard MIDI baud rate
 
   Serial.begin(115200);
   Serial.println();
@@ -75,10 +75,12 @@ void setup()
   MIDI.begin(4);
 
   for (uint8_t i = 1; i < 17; i++) {
+    MIDI.sendControlChange(0, 0, i);  //MSB
+    MIDI.sendControlChange(32, 0, i); //LSB
     MIDI.sendProgramChange(0, i);
     MIDI.sendPitchBend(0, i);
   }
-    
+
   psClient.setServer(mqttBrokerI, 1883);
   psClient.setBufferSize(9216);
   psClient.setCallback(mqttCallback);

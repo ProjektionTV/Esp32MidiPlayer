@@ -39,7 +39,9 @@ public:
     {
         Serial.print("Attempting WiFi connection... ");
         WiFi.mode(WIFI_STA);
+#ifdef ESP32
         WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE);
+#endif /* ESP32 */
         WiFi.setHostname(hostName.c_str()); //define hostname
 
         wifiManager.setDebugOutput(false);

@@ -34,14 +34,14 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   {
     payload[length] = '\0';
     Serial.println("play midi vom mqtt erkannt");
-    //rueckwertz kompatiblitaet
-    if(payload[0] != '{'){
+    //JSON MIDI
+    DynamicJsonDocument data(768);
+    auto jsonErr = deserializeJson(data, payload);
+    if(jsonErr != DeserializationError::Ok) {
+      // backwards compatibility
       playSong((char*)payload,16);
       return;
     }
-    //JSON MIDI
-    DynamicJsonDocument data(768);
-    deserializeJson(data, payload);
     bool adminModus = data["adminModus"];
     if(adminModus){
       String midi = data["midi"];
@@ -130,7 +130,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
               if(notesBuffer[bufferID].data.length() > notesBuffer[bufferID].maxLength){
                 notesBuffer[bufferID].data = notesBuffer[bufferID].data.substring(0, notesBuffer[bufferID].maxLength);
               }
-              //TODO: ueberscheube einen buffer
+              //TODO: ueberschreibe einen buffer
               sendIrcMessage("(MIDI) @" + nutzer + " puffer wurde erfolgreich erschaffen (" + notesBuffer[bufferID].data.length() + "/" + notesBuffer[bufferID].maxLength + ").");
             }else{
               sendIrcMessage("(MIDI) @" + nutzer + " puffer konte nicht erschaffen werden.");
