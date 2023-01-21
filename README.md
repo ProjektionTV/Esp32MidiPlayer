@@ -6,8 +6,8 @@ Benutzte Bibliotheken:
 * https://github.com/tzapu/WiFiManager.git#v2.0.11-beta
 
 ## Platformen
-* ESP8266
 * ESP32
+* ESP8266
 
 ## Setup
 1. copy `src/bspmyauth` to `../myauth.h`
@@ -183,96 +183,8 @@ Es handelt sich um ein JSON-Objekt mit folgenden Tags:
 
 optional:
 * `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
-* `adminModus` - falls vorhanden und der Wert `true` ist, wird die Adminfunktion aktiviert.
 
 Bei aktiviertem Buffer werden folgende Tags benötigt:
 * `nutzer` - Name des Users
 * `prioritaet` - Priorität endscheidet welche Buffer zuerst gelöscht werden, kleinere Zahlen werden eher gelöscht. z.B.: der Buffer ist mit Priorität 1 gefüllt, dann würde, wenn einer mit Priorität 1 einen Puffer erstellen möchte ein Fehler ausgegeben, einer mit Priorität 2 nicht, da dies einen Buffer mit Priorität 1 überschreibt.
 * `maximaleBufferGroesse` - die maximale Größe des Puffers
-
-
-Bei aktiviertem Adminmodus werden folgende Tags benötigt:
-* `nutzer` - Name des Users
-
-## Adminmodus MIDI syntax
-`command;[command;...]`
-
-### p
-Spielt die folgenden Daten. Es können keine weiteren Befehle angehängt werden.
-`p <noten>`
-
-### ~
-Spielt den Puffer und löscht diesen.
-`~ <Puffer id>`
-
-### q
-Spielt den Puffer.
-`q <Puffer id>`
-
-### i
-
-Instrument Optionen
-
-#### l
-Listet die Instrumente.
-`il`
-
-#### i
-Setzt die Instrumentnummer des Instrumentes
-`ii<interne instrument id> <instrument id>`
-
-#### m
-Setzt die msb des Instrumentes
-`im<interne instrument id> <msb>`
-
-#### d
-Setzt die lsb des Instrumentes
-`id<interne instrument id> <lsb>`
-
-#### n
-Setzt den Namen des Instrumentes, mit welchen man dies ereicht
-`in<interne instrument id> <name ohne lerzeichen>`
-
-### l
-
-#### l
-Listet alle Lieder und deren Daten
-`ll`
-
-#### d
-Setzt die Daten des Liedes. Es können keine weiteren Befehle angehängt werden.
-`ld<lied id> <noten>`
-
-#### a
-Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
-`la<lied id> <noten>`
-
-#### c
-Löscht die Daten des Liedes
-`lc<lied id>`
-
-### b
-
-#### l
-Listet alle Puffer und deren Besitzer
-`bl`
-
-#### d
-Setzt die Daten des Puffer. Es können keine weiteren Befehle angehängt werden.
-`bd<puffer id> <noten>`
-
-#### a
-Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
-`ba<puffer id> <noten>`
-
-#### c
-Löscht die Daten des Puffers.
-`bc<puffer id>`
-
-#### o
-Setzt den Besitzer des Puffers.
-`bo<puffer id> <neuer Besitzer ohne Leerzeichen>`
-
-#### p
-Listet die Daten des Puffers.
-`bp<puffer id>`

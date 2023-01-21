@@ -39,7 +39,7 @@ public:
     {
         Serial.print("Attempting WiFi connection... ");
         WiFi.mode(WIFI_STA);
-#ifdef ESP32
+#ifdef ESP32 // disable following line (when not esp32) for esp8266 compatibility. When the line is in esp8266 it will connect to wifi, but dosn't get an ip
         WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE);
 #endif /* ESP32 */
         WiFi.setHostname(hostName.c_str()); //define hostname

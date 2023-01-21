@@ -42,13 +42,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
       playSong((char*)payload,16);
       return;
     }
-    bool adminModus = data["adminModus"];
-    if(adminModus){
-      String midi = data["midi"];
-      String nutzer = data["nutzer"];
-      parseAdminCommand(midi, nutzer);
-      return;
-    }
     bool erlaubeBuffer = data["aktiviereBuffer"];
     if(erlaubeBuffer){
       String midi = data["midi"];

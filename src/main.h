@@ -14,7 +14,6 @@
 #include "midiInterface.h"
 #include "strMidiUtil.h"
 #include "interface.h"
-#include "admin.h"
 #include "defaults.h"
 #include "song.h"
 #include "songUtil.h"
