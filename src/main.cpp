@@ -1,25 +1,47 @@
+#include "settings.h"
+#if RUN_TEST
+
+#include "arduinoTestOutAdapter.hpp"
+#include "core/test/tests.hpp"
+
+int trys = 0;
+bool ok = false;
+
+adruinoTestOut *testOut;
+silentAdruinoTestOut *silentTestOut;
+
+void setup() {
+  Serial.begin(115200);
+  testOut = new adruinoTestOut();
+  silentTestOut = new silentAdruinoTestOut();
+  ok = !test(testOut);
+  trys++;
+  delay(10000);
+}
+
+void loop() {
+  if(!ok && trys < 5) {
+    Serial.println("--------------------------------------------------------------------------------");
+    ok = !test(silentTestOut);
+    trys++;
+  } else if(!ok && trys == 5) { Serial.println("Canceling Tests!"); trys++; }
+  delay(10000);
+}
+
+#else /* RUN_TEST */
 #include "main.h"
 #include "../../myauth.h"
+
+#include "arduinoMidiAdapter.hpp"
+#include "core/projektionMidi.hpp"
 #include "wifictrl.h"
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
-bool playSongFlag = false;
-bool parserV2 = false;
-bool inUserRequest = false;
-uint8_t amountPlayRequestLeft = 0;
-openPlayRequest playRequests[MAX_PLAYREQUESTS];
-uint32_t lastMqttCheck = 0;
-uint8_t currentChannel = DEFAULT_MIDI_CHANNEL;
-uint32_t activeNotes[129];
-uint32_t bpm = DEFAULT_BPM;
-uint32_t fourBeatTime = 1000;
-uint32_t timeout = 0;
-uint16_t lastNamedNote = 2000;
 notesBufferEntry notesBuffer[NOTES_BUFFER_LENGTH];
-presetSong presetSongs[AMOUNT_PRESET_SONGS];
-instrument instruments[AMOUNT_PRESET_INSTRUMENTS];
-String song;
+
+arduinoMidiAdapter<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> *midiAdapter;
+projektionMidi::projektionMidi *projektionMidiPlayer;
 
 #if useMqttBroakerIP
 IPAddress mqttBrokerI(mqttBrokerIp0, mqttBrokerIp1, mqttBrokerIp2, mqttBrokerIp3);
@@ -38,10 +60,11 @@ void mqttReconnect() {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
 #if noMqttUser
-    if (psClient.connect(MQTT_CLIENT_ID)) {
+    if (psClient.connect(MQTT_CLIENT_ID))
 #else
-    if (psClient.connect(MQTT_CLIENT_ID, mqttUser, mqttPassword)) {
+    if (psClient.connect(MQTT_CLIENT_ID, mqttUser, mqttPassword))
 #endif
+    {
       Serial.println("connected");
       // Once connected, publish an announcement...
       //psClient.publish("wled/861a06/api","%PL=10");
@@ -72,14 +95,23 @@ void setup()
     ArduinoOTA.setPort(OTA_PORT);
   ArduinoOTA.begin();
 
-  MIDI.begin(4);
+  projektionMidiPlayer = new projektionMidi::projektionMidi();
+  projektionMidiPlayer->setMusicStatusReciever(setMusicStatus);
+  projektionMidiPlayer->setErrorReciever([](const char *msg) {
+    size_t len = strlen(msg);
+    const char *prefix = "(MIDI:ERROR) ";
+    size_t prefixLen = strlen(prefix);
+    char *out = (char *) malloc(len + prefixLen + 1);
+    memcpy(out, prefix, prefixLen);
+    memcpy(out + prefixLen, msg, len + 1);
+    sendIrcMessage(out);
+    Serial.printf("MIDI:ERR: %s\n", out); // TODO: rmme
+    free(out);
+  });
 
-  for (uint8_t i = 1; i < 17; i++) {
-    MIDI.sendControlChange(0, 0, i);  //MSB
-    MIDI.sendControlChange(32, 0, i); //LSB
-    MIDI.sendProgramChange(0, i);
-    MIDI.sendPitchBend(0, i);
-  }
+  MIDI.begin(4);
+  midiAdapter = new arduinoMidiAdapter(&MIDI, 16);
+  midiAdapter->apply(projektionMidiPlayer, 1);
 
   psClient.setServer(mqttBrokerI, 1883);
   psClient.setBufferSize(9216);
@@ -87,13 +119,12 @@ void setup()
   psClient.setKeepAlive(120);
   psClient.setSocketTimeout(120);  
 
-  fillPresetSongs();
-  fillPresetInstruments();
+  fillPresetSongs(projektionMidiPlayer);
+  fillPresetInstruments(projektionMidiPlayer);
 
   setMusicStatus(true);
 
   delay(500);
-
 }
 
 void loop()
@@ -104,22 +135,8 @@ void loop()
     mqttReconnect();
   }
   psClient.loop();
-  lastMqttCheck = millis();
   ArduinoOTA.handle();
 
-  if(!inUserRequest)
-    while(amountPlayRequestLeft){
-      String notes = playRequests[amountPlayRequestLeft - 1].data;
-      uint32_t time = playRequests[amountPlayRequestLeft - 1].timeleft;
-      playRequests[amountPlayRequestLeft - 1].data = "";
-      playRequests[amountPlayRequestLeft - 1].timeleft = 0;
-      amountPlayRequestLeft--;
-      playSong(notes, time);
-    }
-
-  if(playSongFlag)
-  {
-    playSongFlag = false;
-    playSong(song, 600);
-  }
+  projektionMidiPlayer->tick(millis() * 1000);
 }
+#endif /* RUN_TEST */

@@ -49,6 +49,12 @@
 #ifndef DEBUG
 #define DEBUG 0
 #endif
+#ifndef RUN_TEST
+#define RUN_TEST 0
+#endif
+#ifndef TEST_COUNT
+#define TEST_COUNT 5
+#endif
 
 #ifndef MAX_PLAYREQUESTS
 #define MAX_PLAYREQUESTS 2

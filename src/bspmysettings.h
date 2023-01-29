@@ -21,6 +21,8 @@
 
 //#define INDEV 0
 //#define DEBUG 0
+//#define RUN_TEST 0 // if 1 test will be runn
+//#define TEST_COUNT 5 // max count of test runs, canncled if all tests passed
 
 //#define MAX_PLAYREQUESTS 2
 //#define DEFAULT_MIDI_CHANNEL 1

@@ -1,4 +1,5 @@
 #include "interface.h"
+#include "main.h"
 
 void sendIrcMessage(String s) {
   if (s.length() > 500) {
@@ -11,6 +12,19 @@ void sendIrcMessage(String s) {
     }
   } else
     psClient.publish(MQTT_IRC_TX, s.c_str());
+}
+
+void sendIrcMessage(const char *s) {
+  size_t len = strlen(s);
+  if (len > 500) {
+    size_t i = 0;
+    while((len - i) >= 500) {
+      psClient.publish(MQTT_IRC_TX, s + i, 500);
+      i += 500;
+    }
+    if(len - i) psClient.publish(MQTT_IRC_TX, s + i, len - i);
+  } else
+    psClient.publish(MQTT_IRC_TX, s);
 }
 
 void setMusicStatus(bool newStatus){
@@ -39,7 +53,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     auto jsonErr = deserializeJson(data, payload);
     if(jsonErr != DeserializationError::Ok) {
       // backwards compatibility
-      playSong((char*)payload,16);
+      projektionMidiPlayer->enqueue((char*)payload, 16);
       return;
     }
     bool erlaubeBuffer = data["aktiviereBuffer"];
@@ -130,7 +144,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
             }
           }else{
             // spiele daten
-            playSong(midi, (uint32_t) data["laenge"]);
+            projektionMidiPlayer->enqueue(midi.c_str(), data["laenge"]);
           }
         }
       }else{
@@ -138,7 +152,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
         for(uint8_t i = 0; i < NOTES_BUFFER_LENGTH; i++){
           if(nutzer.equalsIgnoreCase(notesBuffer[i].owner)){
             benutzerBufferGefunden = true;
-            playSong(notesBuffer[i].data + midi, (uint32_t) data["laenge"]);
+            projektionMidiPlayer->enqueue((notesBuffer[i].data + midi).c_str(), data["laenge"]);
             notesBuffer[i].owner = "";
             notesBuffer[i].data = "";
             notesBuffer[i].maxLength = 0;
@@ -146,20 +160,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           }
         }
         if(!benutzerBufferGefunden)
-          playSong(midi, (uint32_t) data["laenge"]);
+          projektionMidiPlayer->enqueue(midi.c_str(), data["laenge"]);
       }
     }else{
-      playSong(data["midi"], (uint32_t) data["laenge"]);
+      projektionMidiPlayer->enqueue(data["midi"], data["laenge"]);
     }
   }else if(strTopic.equals(MQTT_KILLMIDI)){
     payload[length] = '\0';
     Serial.println("kill midi vom mqtt erkannt");
-    timeout = 0;
-    while(amountPlayRequestLeft){
-      playRequests[amountPlayRequestLeft - 1].data = "";
-      playRequests[amountPlayRequestLeft - 1].timeleft = 0;
-      amountPlayRequestLeft--;
-    }
+    projektionMidiPlayer->kill();
   }
 
 }

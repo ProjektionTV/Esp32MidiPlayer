@@ -1,9 +1,9 @@
 #ifndef DEFAULTH
 #define DEFAULTH
-#include "main.h"
 
-void fillPresetSongs();
-void fillPresetInstruments();
-void cleanInstrument(uint32_t id);
+#include "core/projektionMidi.hpp"
+
+void fillPresetSongs(projektionMidi::projektionMidi *midi);
+void fillPresetInstruments(projektionMidi::projektionMidi *midi);
 
 #endif
