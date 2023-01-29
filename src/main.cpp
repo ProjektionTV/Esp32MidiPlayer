@@ -20,11 +20,11 @@ void setup() {
 }
 
 void loop() {
-  if(!ok && trys < 5) {
+  if(!ok && trys < TEST_COUNT) {
     Serial.println("--------------------------------------------------------------------------------");
     ok = !test(silentTestOut);
     trys++;
-  } else if(!ok && trys == 5) { Serial.println("Canceling Tests!"); trys++; }
+  } else if(!ok && trys == TEST_COUNT) { Serial.println("Canceling Tests!"); trys++; }
   delay(10000);
 }
 
