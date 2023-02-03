@@ -12,7 +12,7 @@ void projektionMidi::playStack::push(playStackFrame *frame, errorReciever errorR
     }
     current = frame;
     frames[stackIndex++] = frame;
-    if(stackIndex > 0) playing = true;
+    playing = true;
 }
 
 void projektionMidi::playStack::pop(errorReciever errorReciever) {
@@ -25,8 +25,12 @@ void projektionMidi::playStack::pop(errorReciever errorReciever) {
 
 void projektionMidi::playStack::popUnsafe() {
     delete current;
-    current = frames[--stackIndex];
-    if(stackIndex == 0) playing = false;
+    if (--stackIndex == 0) {
+        playing = false;
+        current = nullptr;
+    } else {
+        current = frames[stackIndex - 1];
+    }
 }
 
 void projektionMidi::projektionMidi::enqueue(std::string text, uint16_t time) {
@@ -77,7 +81,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                     }
                     player[i].jumpToCommand = false;
                     player[i].pop(errorReciever);
-                    player[i].current->walker->skip();
+                    if(player[i].current != nullptr) player[i].current->walker->skip();
                     break;
                 default:
                     if(player[i].jumpToCommand) { player[i].current->walker->skip(); break; }
@@ -186,6 +190,7 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
 
     stringTextWalker *walker = new stringTextWalker(&text);
 
+    textWalkerUtil::skipAfterSpaces(walker);
     if(walker->peek() == '~') {
         walker->skip();
         char c = walker->peek();
