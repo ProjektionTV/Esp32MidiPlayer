@@ -1,5 +1,8 @@
 #include "projektionMidi.hpp"
 
+#include <algorithm>
+#include <cstring>
+
 #include "parsers.hpp"
 #include "stringTextWalker.hpp"
 #include "textWalkerUtil.hpp"
@@ -314,4 +317,64 @@ projektionMidi::playStack::~playStack() {
 
 projektionMidi::playTrackInfo::~playTrackInfo() {
     // walkerAddress // TODO: use string textwalker impl
+}
+
+uint8_t projektionMidi::projektionMidi::bufferOperation(const char *directText, const char *name, uint16_t playLength, uint32_t maxSize, uint32_t &currSize) {
+    bufferData *buffer = nullptr;
+    // collect buffer of user or nullptr
+    for(auto &data : buffers)
+        if(data.name == name) {
+            buffer = &data;
+            break;
+        }
+    uint8_t out = 0;
+    std::size_t textLen = std::strlen(directText);
+    std::size_t i = 0;
+    if(i < textLen && directText[i] == ';') { // buffer operation
+        i++;
+        bool append = buffer != nullptr;
+        if(i < textLen && directText[i] == 'l') { // buffer delete operation
+            i++;
+            if(buffer != nullptr) { // delete buffer
+                buffers.erase(std::remove_if(buffers.begin(), buffers.end(), [name](const auto &e){ return e.name == name; }), buffers.end());
+                buffer = nullptr;
+                //
+                append = false;
+                out |= (1 & 3) << 0;
+                currSize = 0;
+            } else { // no delete
+                out |= (2 & 3) << 0;
+            }
+        }
+        if(i < textLen && directText[i] == 'n') { // buffer create operation
+            i++;
+            if(buffer == nullptr) { // create buffer
+                buffer = &buffers.emplace_back();
+                buffer->name = name;
+                append = true;
+                out |= (1 & 3) << 2;
+                currSize = 0;
+            } else { // no create
+                out |= (2 & 3) << 2;
+            }
+        }
+        if(append) { // append to buffer
+            buffer->data.append(directText + i, std::min(textLen - i, maxSize - buffer->data.size()));
+            if(buffer->data.size() < maxSize) buffer->data += ' ';
+            out |= 1 << 4; // modify
+            out |= 1 << 5; // refund
+            currSize = buffer->data.size();
+        } else { // play
+            enqueue(directText + i, playLength);
+        }
+    } else if(buffer != nullptr) { // play "buffer + this"
+        buffer->data += directText + i;
+        enqueue(buffer->data, playLength);
+        // delete buffer
+        buffers.erase(std::remove_if(buffers.begin(), buffers.end(), [name](const auto &e){ return e.name == name; }), buffers.end());
+        buffer = nullptr;
+    } else { // play "this"
+        enqueue(directText + i, playLength);
+    }
+    return out;
 }

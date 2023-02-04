@@ -74,9 +74,15 @@ namespace projektionMidi {
         uint8_t bankMsb;
     };
 
+    struct bufferData {
+        std::string data;
+        std::string name;
+    };
+
     class projektionMidi {
         private:
         std::deque<playInfo> queue;
+        std::vector<bufferData> buffers;
 
         std::vector<midiInstrument> instruments;
 
@@ -110,6 +116,34 @@ namespace projektionMidi {
         void enqueue(std::string text, uint16_t time);
         void kill();
         void tick(uint64_t us);
+
+        /**
+         * 0: buffer deleted 0
+         * 1: buffer deleted 1
+         * 2: buffer created 0
+         * 3: buffer created 1
+         * 4: buffer modified
+         * 5: refund
+         *
+         * buffer deleted:
+         * 0: no delete
+         * 1: success
+         * 2: no buffer
+         *
+         * buffer created:
+         * 0: no create
+         * 1: success
+         * 2: has alredy an buffer (append)
+         * 
+         * @param directText will be copied
+         * @param name will be copied
+         * @param playLength time to play
+         * @param maxSize maximum buffer size
+         * @param currSize will be set to current buffer size
+         * 
+         * @returns bit information 0b'76543210'
+         */
+        uint8_t bufferOperation(const char *directText, const char *name, uint16_t playLength, uint32_t maxSize, uint32_t &currSize);
 
         uint32_t fourBeatTime;
         void stopAllMidi();

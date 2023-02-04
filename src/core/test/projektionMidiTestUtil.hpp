@@ -45,4 +45,10 @@ void expectMidiEnd(uint8_t channel) {
     projektionMidi::test::testMidiOut::expectProgram(channel, 0);
 }
 
+#define PROJEKTION_MIDI_TEST_BUFFER(TEXT, USER, TIME, MAX_SIZE, EXPECTED_LENGTH, BO_DELETED, BO_CREATED, BO_MODIFIED, BO_REFUND) { \
+        uint32_t cl = 0; \
+        ASSERT(midi->bufferOperation(TEXT, USER, TIME, MAX_SIZE, cl), (BO_REFUND << 5) | (BO_MODIFIED << 4) | (BO_CREATED << 2) | BO_DELETED) \
+        ASSERT(cl, EXPECTED_LENGTH) \
+    }
+
 #endif /* PROJEKTION_MIDI_TEST_PROJEKTION_MIDI_TEST_UTIL_HPP_ */

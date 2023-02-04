@@ -180,13 +180,12 @@ Wenn eine Nachricht vom MQTT-topic `killmidi` emfangen wird, wird das aktuelle l
 ## JSON
 
 Es handelt sich um ein JSON-Objekt mit folgenden Tags:
-* `laenge` - maximale Liedlänge
+* `length` / `laenge` - maximale Liedlänge
 * `midi` - Daten des Liedes
 
 optional:
-* `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
+* `allowBuffer` / `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
 
 Bei aktiviertem Buffer werden folgende Tags benötigt:
-* `nutzer` - Name des Users
-* `prioritaet` - Priorität endscheidet welche Buffer zuerst gelöscht werden, kleinere Zahlen werden eher gelöscht. z.B.: der Buffer ist mit Priorität 1 gefüllt, dann würde, wenn einer mit Priorität 1 einen Puffer erstellen möchte ein Fehler ausgegeben, einer mit Priorität 2 nicht, da dies einen Buffer mit Priorität 1 überschreibt.
-* `maximaleBufferGroesse` - die maximale Größe des Puffers
+* `user` / `nutzer` - Name des Users
+* `maxBufferSize` / `maximaleBufferGroesse` - die maximale Größe des Puffers
