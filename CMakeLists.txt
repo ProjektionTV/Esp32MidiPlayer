@@ -24,11 +24,20 @@ if(projektionMidiBuildTests)
     add_executable(tests defaultTests.cpp)
     target_link_libraries(tests PUBLIC ProjektionMidi)
     if(projektionMidiRunTests)
+        set(TEST_FLAG_FILE tests.PASSED)
         add_custom_command(
             TARGET tests
-            COMMENT "Run tests"
+            COMMENT "delete flag"
             POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E remove -f ${TEST_FLAG_FILE}
+        )
+        add_custom_command(
+            OUTPUT ${TEST_FLAG_FILE}
+            COMMENT "run tests"
+            DEPENDS tests
             COMMAND tests
-    )
+            COMMAND ${CMAKE_COMMAND} -E touch ${TEST_FLAG_FILE}
+        )
+        add_custom_target(run_tests ALL DEPENDS ${TEST_FLAG_FILE})
     endif()
 endif()
