@@ -32,13 +32,18 @@ void loop() {
 #include "main.h"
 #include "../../myauth.h"
 
+#include <Arduino.h>
+#include <ArduinoOTA.h>
+#include <MIDI.h>
+#include <WiFiClient.h>
+
 #include "arduinoMidiAdapter.hpp"
 #include "core/projektionMidi.hpp"
+#include "defaults.h"
+#include "interface.h"
 #include "wifictrl.h"
 
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
-
-notesBufferEntry notesBuffer[NOTES_BUFFER_LENGTH];
 
 arduinoMidiAdapter<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> *midiAdapter;
 projektionMidi::projektionMidi *projektionMidiPlayer;

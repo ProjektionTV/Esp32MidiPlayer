@@ -1,5 +1,8 @@
+#include "settings.h"
 #include "interface.h"
 #include "main.h"
+
+#include <ArduinoJson.h>
 
 void sendIrcMessage(String &s) {
   if (s.length() > 500) {
