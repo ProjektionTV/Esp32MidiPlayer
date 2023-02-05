@@ -1,6 +1,8 @@
 #include "settings.h"
 #if RUN_TEST
 
+#define PROJEKTION_MIDI_TEST_ANSI TEST_ANSI_COLOR
+
 #include "arduinoTestOutAdapter.hpp"
 #include "core/test/tests.hpp"
 

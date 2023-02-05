@@ -19,6 +19,7 @@
 //#define DEBUG 0
 //#define RUN_TEST 0 // if 1 test will be runn
 //#define TEST_COUNT 5 // max count of test runs, canncled if all tests passed
+//#define TEST_ANSI_COLOR 0 // if 1 test out will have ansi colors
 
 //#define MAX_PLAYREQUESTS 0 // if 0 the que is unlimeted
 //#define DEFAULT_MIDI_CHANNEL 1

@@ -47,6 +47,9 @@
 #ifndef TEST_COUNT
 #define TEST_COUNT 5
 #endif
+#ifndef TEST_ANSI_COLOR
+#define TEST_ANSI_COLOR 0
+#endif
 
 #ifndef MAX_PLAYREQUESTS
 #define MAX_PLAYREQUESTS 0

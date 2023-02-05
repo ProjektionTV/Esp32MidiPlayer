@@ -1,3 +1,5 @@
+#define PROJEKTION_MIDI_TEST_ANSI 1
+
 #include "src/core/test/stdTestOut.hpp"
 #include "src/core/test/tests.hpp"
 
