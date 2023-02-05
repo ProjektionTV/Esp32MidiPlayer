@@ -97,10 +97,10 @@ Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
 `-piano A k2 iorgan H 4 s`
 
-###### Lauststärke ändern
-`v<Neue Lautstärke>`
-Mit `v` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
-`-piano A1 v64 A1`
+###### Anschlagsgeschwindigkeit ändern
+`v<Neue Geschwindigkeit>`
+Mit `v` wird die Anschlagsgeschwindigkeit in  geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1l v64 A1l`
 
 ###### zuletzt genannte Note Stoppen
 `l`
@@ -150,6 +150,7 @@ Noten die nach dem ersten Spielen gespielt werden
 * `cw d ew g` → `c d e d e g`
 * `cw d en fw g` → `c d e f d e g`
 * `cw d en fu dw g` → `c d e f d e d d e g`
+* `cw dnu-3w e` → `c d d d d d e`
 
 ### Puffer (optional)
 `;...` falls keine unten genannten Pufferaktionen folgen werden folgende Noten in den Puffer geschrieben.
