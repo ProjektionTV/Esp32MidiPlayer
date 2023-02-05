@@ -138,9 +138,12 @@ Noten die nach dem ersten Spielen gespielt werden
 `...w<0>n<1>w...`→`...<0><1><0>...`
 
 #### u
-`u` wird nach `n` genutzt um weitere Wiederholungen anzuhängen mit optionalen Noten
+`u` wird nach `n` genutzt um weitere Wiederholungen anzuhängen mit optionalen Noten. Wird nach einem `u` direkt ein `-<zahl>` geschrieben, so wird das `u` als zahl\*`u` gewärtet.
 * `...w<0>n<1>u[2]w...`→`...<0><1><0>[2]<0>...`
 * `...w<0>n<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
+* `...w<0>n<1>u-1[2]w...`→`...<0><1><0>[2]<0>...`
+* `...w<0>n<1>u-2[2]w...`→`...<0><1><0><0>[2]<0>...`
+* `...w<0>n<1>u-3[2]w...`→`...<0><1><0><0><0>[2]<0>...`
 * ...
 
 #### Beispiele

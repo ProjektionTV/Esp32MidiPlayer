@@ -56,6 +56,10 @@ WDH_WALKER_TEST(wdhTextWalker_24_loopWithNU_loopAfter, "wa nDuCwFwe w", "a Da Ca
 WDH_WALKER_TEST(wdhTextWalker_25_loopWithN2U_loopAfter, "wa nDuCuH'wEwe w", "a Da Ca H'a Ee e ")
 WDH_WALKER_TEST(wdhTextWalker_26_loopWithSimpleN2U_loopAfter, "wa nuuwcwe w", "a a a a ce e ")
 
+WDH_WALKER_TEST(wdhTextWalker_27_loopWithUCount, "wa nu-1w", "a a a ")
+WDH_WALKER_TEST(wdhTextWalker_28_loopWithUCount, "wa nu-2w", "a a a a ")
+WDH_WALKER_TEST(wdhTextWalker_29_loopWithUCount, "wa nu-3w", "a a a a a ")
+
 TESTS_SUB(wdhTextWalkerTests)
     TEST(testOut, wdhTextWalker_00_checkSingleChar)
     TEST(testOut, wdhTextWalker_01_checkMultiChar)
@@ -86,6 +90,10 @@ TESTS_SUB(wdhTextWalkerTests)
     TEST(testOut, wdhTextWalker_24_loopWithNU_loopAfter)
     TEST(testOut, wdhTextWalker_25_loopWithN2U_loopAfter)
     TEST(testOut, wdhTextWalker_26_loopWithSimpleN2U_loopAfter)
+
+    TEST(testOut, wdhTextWalker_27_loopWithUCount)
+    TEST(testOut, wdhTextWalker_28_loopWithUCount)
+    TEST(testOut, wdhTextWalker_29_loopWithUCount)
 TEST_SUB_END
 
 #endif /* PROJEKTION_MIDI_TEST_WDH_TEXT_WALKER_TESTS_HPP_ */

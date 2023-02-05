@@ -1,6 +1,7 @@
 #include "wdhTextWalker.hpp"
 
 #include <cstdlib>
+#include "textWalkerUtil.hpp"
 
 char projektionMidi::wdhTextWalker::peek() {
     char curr = '\0';
@@ -41,13 +42,16 @@ char projektionMidi::wdhTextWalker::peek() {
                     state.wdh_rtndo = state.wdh_do ? true : false;
                     if(!state.wdh_rtndo && state.wdh_rtn_out) state.wdh_rdy = false;
                 } else {
+                    state.wdh_rtndo = true;
+                    state.wdh_do = 1;
                     text->skip();
+                    if(text->peek() == '-') {
+                        text->skip();
+                        state.wdh_do = textWalkerUtil::readUInt32(text);
+                    }
                     text->deleteAddress(state.wdh_rtn);
                     state.wdh_rtn = text->getAddress();
                     text->setAddress(state.wdh_start);
-                    state.wdh_rtndo = true;
-                    state.wdh_do = 1;
-                    // TODO: read u[-<num>]
                     state.wdh_do--;
                 }
                 break;
