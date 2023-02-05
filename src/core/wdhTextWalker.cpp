@@ -48,6 +48,7 @@ char projektionMidi::wdhTextWalker::peek() {
                     if(text->peek() == '-') {
                         text->skip();
                         state.wdh_do = textWalkerUtil::readUInt32(text);
+                        if(state.wdh_do == 0) state.wdh_do = 1; // TODO: tests to ensure
                     }
                     text->deleteAddress(state.wdh_rtn);
                     state.wdh_rtn = text->getAddress();
