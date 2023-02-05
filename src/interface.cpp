@@ -95,6 +95,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           sendText = true;
           text += " Du hast bereits einen Puffer.";
           break;
+        case 3:
+          sendText = true;
+          text += " Es konnte kein Puffer erschaffen werden.";
+          break;
         default:
           break;
         }
@@ -107,11 +111,18 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           text += maxBufferSize;
           text += ")";
         }
+        // faild enqueue
+        if((out >> 6) & 1) {
+          sendText = true;
+          text += " Die Warteschlange ist voll!";
+        }
 
         if(sendText) sendIrcMessage(text);
       }
     } else {
-      projektionMidiPlayer->enqueue(midi.c_str(), length);
+      if(!projektionMidiPlayer->enqueue(midi.c_str(), length)) {
+        sendIrcMessage("(MIDI) Die Warteschlange ist voll!");
+      }
     }
   } else if(strTopic.equals(MQTT_KILLMIDI)) {
     payload[length] = '\0';

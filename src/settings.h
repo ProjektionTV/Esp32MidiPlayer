@@ -3,10 +3,6 @@
 
 #include "mysettings.h"
 
-#ifndef SONG_NOT_EXISTS
-#define SONG_NOT_EXISTS "H' E'"
-#endif
-
 #ifndef OTA_HOST
 #define OTA_HOST "playmidi"
 #endif
@@ -39,10 +35,6 @@
 #define MQTT_KILLMIDI "killmidi"
 #endif
 
-#ifndef LOOP_PULL_MS
-#define LOOP_PULL_MS 2500
-#endif
-
 #ifndef INDEV
 #define INDEV 0
 #endif
@@ -57,7 +49,7 @@
 #endif
 
 #ifndef MAX_PLAYREQUESTS
-#define MAX_PLAYREQUESTS 2
+#define MAX_PLAYREQUESTS 0
 #endif
 #ifndef DEFAULT_MIDI_CHANNEL
 #define DEFAULT_MIDI_CHANNEL 1
@@ -65,23 +57,11 @@
 #ifndef DEFAULT_BPM
 #define DEFAULT_BPM 240
 #endif
-#ifndef ALLOW_MULTI_CHANNEL_MIDI
-#define ALLOW_MULTI_CHANNEL_MIDI 1
+#ifndef MAX_BUFFERS
+#define MAX_BUFFERS 0
 #endif
-#ifndef ENABLE_PARSER_1_1
-#define ENABLE_PARSER_1_1 1
-#endif
-#ifndef ALLOW_PARSER_2
-#define ALLOW_PARSER_2 1
-#endif
-#ifndef NOTES_BUFFER_LENGTH
-#define NOTES_BUFFER_LENGTH 8
-#endif
-#ifndef AMOUNT_PRESET_SONGS
-#define AMOUNT_PRESET_SONGS 16
-#endif
-#ifndef AMOUNT_PRESET_INSTRUMENTS
-#define AMOUNT_PRESET_INSTRUMENTS 8
+#ifndef MAX_TRACKS
+#define MAX_TRACKS 0
 #endif
 
 #endif

@@ -91,7 +91,7 @@ void projektionMidi::parser1(projektionMidi *midi, playStack *stack, uint64_t us
     if(pause) play = false;
     if(play) {
         stack->lastNamedNote = note;
-        midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->current->midiChannel);
+        midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->midiChannel);
         if(channel.handler != nullptr)
             channel.handler->note(channel.channel, note, stack->current->velocity);
     }
@@ -106,7 +106,7 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
         return;
     }
     stack->current->walker->skip();
-    midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->current->midiChannel);
+    midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->midiChannel);
     bool hasMidi = channel.handler != nullptr;
     char c2;
     switch(c) {
@@ -124,6 +124,7 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
         c2 = stack->current->walker->peek();
         if(c2 < '9' && c2 > '0') {
             uint32_t newV = textWalkerUtil::readUInt32(stack->current->walker.get());
+            if(newV == 0) newV = midi->getSettings()->defaultBpm;
             midi->fourBeatTime = (uint32_t) (240'000'000.0f / ((float) newV));
         }
         break;
@@ -181,7 +182,7 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
         c2 = stack->current->walker->peek();
         if(c2 < '9' && c2 > '0') {
             uint32_t channel = textWalkerUtil::readUInt32(stack->current->walker.get());
-            stack->current->midiChannel = channel;
+            stack->midiChannel = channel;
         }
         break;
     // TODO: add t // paralel playing
@@ -190,7 +191,7 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
         uint8_t note = readNote(c, stack->current->walker.get());
         if(note != 128) {
             stack->lastNamedNote = note;
-            midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->current->midiChannel);
+            midiHandler::channelMapEntry channel = midi->getMidiChannel(stack->midiChannel);
             if(channel.handler != nullptr)
                 channel.handler->note(channel.channel, note, stack->current->velocity);
         }

@@ -110,9 +110,14 @@ void setup()
     memcpy(out, prefix, prefixLen);
     memcpy(out + prefixLen, msg, len + 1);
     sendIrcMessage(out);
-    Serial.printf("MIDI:ERR: %s\n", out); // TODO: rmme
+    Serial.printf("MIDI:ERR: %s\n", out);
     free(out);
   });
+  projektionMidiPlayer->getSettings()->defaultBpm = DEFAULT_BPM;
+  projektionMidiPlayer->getSettings()->maxQueueSize = MAX_PLAYREQUESTS;
+  projektionMidiPlayer->getSettings()->maxBuffers = MAX_BUFFERS;
+  projektionMidiPlayer->getSettings()->maxTracks = MAX_TRACKS;
+  projektionMidiPlayer->getSettings()->defaultMidiChannel = DEFAULT_MIDI_CHANNEL;
 
   MIDI.begin(4);
   midiAdapter = new arduinoMidiAdapter(&MIDI, 16);

@@ -11,7 +11,6 @@
 #include "textWalker.hpp"
 
 #define PROJEKTION_MIDI_MAX_MIDI_STACK_SIZE 3
-#define PROJEKTION_MIDI_DEFAULT_BPM 240
 
 #define PROJEKTION_MIDI_MODE_1 false
 #define PROJEKTION_MIDI_MODE_2 true
@@ -33,7 +32,6 @@ namespace projektionMidi {
 
         // stack player info
         bool mode = PROJEKTION_MIDI_MODE_1;
-        uint16_t midiChannel = 1;
         uint8_t velocity = 127;
     };
 
@@ -54,6 +52,7 @@ namespace projektionMidi {
         bool pauseOnSpace = false;
         bool jumpToCommand = false;
         uint8_t lastNamedNote = 0;
+        uint16_t midiChannel = 1;
     };
 
     struct playTrackInfo {
@@ -79,6 +78,15 @@ namespace projektionMidi {
         std::string name;
     };
 
+    struct projektionMidiSettings {
+        uint16_t defaultBpm = 240;
+        bool defaultMode = PROJEKTION_MIDI_MODE_1;
+        std::size_t maxQueueSize = 0; // 0: unlimeted
+        std::size_t maxBuffers = 0; // 0: unlimeted
+        uint16_t maxTracks = 0; // 0: unlimeted
+        uint16_t defaultMidiChannel = 1;
+    };
+
     class projektionMidi {
         private:
         std::deque<playInfo> queue;
@@ -97,6 +105,8 @@ namespace projektionMidi {
 
         bool playing = false;
 
+        projektionMidiSettings settings;
+
         void playNext(uint64_t us);
         void cleanUpPlay();
 
@@ -112,28 +122,34 @@ namespace projektionMidi {
         void setMusicStatusReciever(::projektionMidi::musicStatusReciever musicStatusReciever_);
 
         void addMidiChannel(uint32_t textChannel, midiHandler::eventHandler *handler, uint8_t eventChannel);
+        projektionMidiSettings *getSettings();
 
-        void enqueue(std::string text, uint16_t time);
+        /**
+         * @returns if the enqueueing was successful
+         */
+        bool enqueue(std::string text, uint16_t time);
         void kill();
         void tick(uint64_t us);
 
         /**
-         * 0: buffer deleted 0
-         * 1: buffer deleted 1
-         * 2: buffer created 0
-         * 3: buffer created 1
-         * 4: buffer modified
+         * 0: buffer deleted 0,
+         * 1: buffer deleted 1,
+         * 2: buffer created 0,
+         * 3: buffer created 1,
+         * 4: buffer modified,
          * 5: refund
+         * 6: failed enqueue
          *
          * buffer deleted:
-         * 0: no delete
-         * 1: success
+         * 0: no delete,
+         * 1: success,
          * 2: no buffer
          *
          * buffer created:
-         * 0: no create
-         * 1: success
-         * 2: has alredy an buffer (append)
+         * 0: no create,
+         * 1: success,
+         * 2: has alredy an buffer (append),
+         * 3: no bufferslots free (canceled)
          * 
          * @param directText will be copied
          * @param name will be copied

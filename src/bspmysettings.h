@@ -3,8 +3,6 @@
 
 // uncomment the "#define" lines to set the value
 
-//#define SONG_NOT_EXISTS "H' E'"
-
 //#define OTA_HOST "playmidi"
 //#define OTA_PORT 0 // if 0 ignored
 
@@ -17,21 +15,15 @@
 //#define MQTT_MUSIC_OFF_MESSAGE "off"
 //#define MQTT_KILLMIDI "killmidi"
 
-//#define LOOP_PULL_MS 2500
-
 //#define INDEV 0
 //#define DEBUG 0
 //#define RUN_TEST 0 // if 1 test will be runn
 //#define TEST_COUNT 5 // max count of test runs, canncled if all tests passed
 
-//#define MAX_PLAYREQUESTS 2
+//#define MAX_PLAYREQUESTS 0 // if 0 the que is unlimeted
 //#define DEFAULT_MIDI_CHANNEL 1
 //#define DEFAULT_BPM 240
-//#define ALLOW_MULTI_CHANNEL_MIDI 1
-//#define ENABLE_PARSER_1_1 1
-//#define ALLOW_PARSER_2 1
-//#define NOTES_BUFFER_LENGTH 8
-//#define AMOUNT_PRESET_SONGS 16
-//#define AMOUNT_PRESET_INSTRUMENTS 8
+//#define MAX_BUFFERS 0 // if 0 there is no limit of buffers
+//#define MAX_TRACKS 0 // if 0 there is no limit to the track count
 
 #endif /* MY_SETTINGS_H_ */

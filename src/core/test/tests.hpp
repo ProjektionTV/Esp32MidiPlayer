@@ -2,6 +2,7 @@
 #define PROJEKTION_MIDI_TEST_TESTS_HPP_
 
 #include "bufferTests.hpp"
+#include "limitTests.hpp"
 #include "midiTestUtil.hpp"
 #include "parserUtilTests.hpp"
 #include "projektionMidiTests.hpp"
@@ -30,6 +31,7 @@ bool test(TESTS_TYPE_OUT *testOut) {
     else TEST_success--;
     TESTS_SUB_CALL_IF_PASSED(testOut, projektionMidiTests, allForProjektionMidi)
     TESTS_SUB_CALL_IF_SUB_PASSED(testOut, bufferTests, projektionMidiTests)
+    TESTS_SUB_CALL_IF_SUB_PASSED(testOut, limitTests, bufferTests)
     TESTS_REPORT_STATS(testOut)
     return TESTS_FAILED;
 }

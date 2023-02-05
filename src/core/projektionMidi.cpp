@@ -36,8 +36,10 @@ void projektionMidi::playStack::popUnsafe() {
     }
 }
 
-void projektionMidi::projektionMidi::enqueue(std::string text, uint16_t time) {
+bool projektionMidi::projektionMidi::enqueue(std::string text, uint16_t time) {
+    if(settings.maxQueueSize != 0 && queue.size() >= settings.maxQueueSize) return false;
     queue.push_back({ .text = std::move(text), .time_seconds = time });
+    return true;
 }
 
 void projektionMidi::projektionMidi::tick(uint64_t us) {
@@ -64,7 +66,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                         break;
                     }
                     if(player[i].current->mode == PROJEKTION_MIDI_MODE_1) {
-                        midiHandler::channelMapEntry channel = getMidiChannel(player[i].current->midiChannel);
+                        midiHandler::channelMapEntry channel = getMidiChannel(player[i].midiChannel);
                         if(channel.handler != nullptr)
                             channel.handler->allOff(channel.channel);
                     }
@@ -78,7 +80,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                         break;
                     }
                     if(player[i].current->mode == PROJEKTION_MIDI_MODE_1) {
-                        midiHandler::channelMapEntry channel = getMidiChannel(player[i].current->midiChannel);
+                        midiHandler::channelMapEntry channel = getMidiChannel(player[i].midiChannel);
                         if(channel.handler != nullptr)
                             channel.handler->allOff(channel.channel);
                     }
@@ -130,7 +132,13 @@ void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo) {
             return;
         }
     }
-    playTrack(trackInfo, &player.emplace_back());
+    if(settings.maxTracks != 0 && player.size() >= settings.maxTracks) {
+        if(errorReciever) errorReciever("To many simultaneous tracks");
+        return;
+    }
+    playStack *stack = &player.emplace_back();
+    stack->midiChannel = settings.defaultMidiChannel;
+    playTrack(trackInfo, stack);
 }
 
 void projektionMidi::projektionMidi::playTrack(uint16_t track, playStack *stack) {
@@ -152,7 +160,7 @@ void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo, playSta
     new (&psf->walker) std::unique_ptr(std::make_unique<wdhTextWalker>(psf->walkerBackend.get()));
 
     // read instrument
-    readInstrument(psf->walker.get(), getMidiChannel(psf->midiChannel));
+    readInstrument(psf->walker.get(), getMidiChannel(stack->midiChannel));
     textWalkerUtil::skipAfterSpaces(psf->walker.get());
 
     stack->push(psf, errorReciever);
@@ -216,10 +224,10 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
     }
 
     textWalkerUtil::skipAfterSpaces(walker);
-    baseMode = PROJEKTION_MIDI_MODE_1;
+    baseMode = settings.defaultMode;
     if(walker->peek() == '-') {
         walker->skip();
-        baseMode = PROJEKTION_MIDI_MODE_2;
+        baseMode = otherMode(settings.defaultMode);
     }
 
     textWalkerUtil::skipAfterSpaces(walker);
@@ -229,7 +237,7 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
         bpm = textWalkerUtil::readUInt32(walker);
     }
     if(bpm == 0) {
-        bpm = PROJEKTION_MIDI_DEFAULT_BPM;
+        bpm = settings.defaultBpm;
     }
 
     textWalkerUtil::skipAfterSpaces(walker);
@@ -349,10 +357,16 @@ uint8_t projektionMidi::projektionMidi::bufferOperation(const char *directText, 
         if(i < textLen && directText[i] == 'n') { // buffer create operation
             i++;
             if(buffer == nullptr) { // create buffer
-                buffer = &buffers.emplace_back();
-                buffer->name = name;
-                append = true;
-                out |= (1 & 3) << 2;
+                if(settings.maxBuffers != 0 && buffers.size() >= settings.maxBuffers) {
+                    out |= (3 & 3) << 2;
+                    out |= 1 << 5; // refund
+                    return out;
+                } else {
+                    buffer = &buffers.emplace_back();
+                    buffer->name = name;
+                    append = true;
+                    out |= (1 & 3) << 2;
+                }
                 currSize = 0;
             } else { // no create
                 out |= (2 & 3) << 2;
@@ -365,16 +379,29 @@ uint8_t projektionMidi::projektionMidi::bufferOperation(const char *directText, 
             out |= 1 << 5; // refund
             currSize = buffer->data.size();
         } else { // play
-            enqueue(directText + i, playLength);
+            if(!enqueue(directText + i, playLength)) {
+                out |= 1 << 5; // refund
+                out |= 1 << 6; // failed enqueued
+            }
         }
     } else if(buffer != nullptr) { // play "buffer + this"
         buffer->data += directText + i;
-        enqueue(buffer->data, playLength);
+        if(!enqueue(buffer->data, playLength)) {
+            out |= 1 << 5; // refund
+            out |= 1 << 6; // failed enqueued
+        }
         // delete buffer
         buffers.erase(std::remove_if(buffers.begin(), buffers.end(), [name](const auto &e){ return e.name == name; }), buffers.end());
         buffer = nullptr;
     } else { // play "this"
-        enqueue(directText + i, playLength);
+        if(!enqueue(directText + i, playLength)) {
+            out |= 1 << 5; // refund
+            out |= 1 << 6; // failed enqueued
+        }
     }
     return out;
+}
+
+projektionMidi::projektionMidiSettings *projektionMidi::projektionMidi::getSettings() {
+    return &settings;
 }
