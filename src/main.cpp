@@ -149,6 +149,6 @@ void loop()
   psClient.loop();
   ArduinoOTA.handle();
 
-  projektionMidiPlayer->tick(millis() * 1000);
+  projektionMidiPlayer->tick(micros64());
 }
 #endif /* RUN_TEST */
