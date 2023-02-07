@@ -1,5 +1,6 @@
 #include "wdhTextWalker.hpp"
 
+#include <utility>
 #include <cstdlib>
 #include "textWalkerUtil.hpp"
 
@@ -48,7 +49,7 @@ char projektionMidi::wdhTextWalker::peek() {
                     if(text->peek() == '-') {
                         text->skip();
                         state.wdh_do = textWalkerUtil::readUInt32(text);
-                        if(state.wdh_do == 0) state.wdh_do = 1; // TODO: tests to ensure
+                        if(state.wdh_do == 0) state.wdh_do = 1;
                     }
                     text->deleteAddress(state.wdh_rtn);
                     state.wdh_rtn = text->getAddress();
@@ -95,6 +96,19 @@ projektionMidi::wdhTextWalker::wdhTextWalker(addressableTextWalker *text):
 projektionMidi::wdhTextWalker::~wdhTextWalker() {
     text->deleteAddress(state.wdh_rtn);
     text->deleteAddress(state.wdh_start);
+}
+
+projektionMidi::wdhTextWalker::wdhTextWalker(wdhTextWalker &&other):
+        text(other.text),
+        state(other.state) {
+    other.state.wdh_rtn = textWalkerAddressHandle();
+    other.state.wdh_start = textWalkerAddressHandle();
+}
+
+projektionMidi::wdhTextWalker &projektionMidi::wdhTextWalker::operator=(projektionMidi::wdhTextWalker &&other) {
+    text = other.text;
+    std::swap(state, other.state);
+    return *this;
 }
 
 projektionMidi::textWalkerAddressHandle projektionMidi::wdhTextWalker::getAddress() {

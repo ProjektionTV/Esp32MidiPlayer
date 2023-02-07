@@ -29,6 +29,10 @@ namespace projektionMidi {
         char peek() override;
         char next() override;
         wdhTextWalker(addressableTextWalker *text);
+        wdhTextWalker(const wdhTextWalker &) = delete;
+        wdhTextWalker &operator=(const wdhTextWalker &) = delete;
+        wdhTextWalker(wdhTextWalker &&);
+        wdhTextWalker &operator=(wdhTextWalker &&);
         ~wdhTextWalker();
     }; /* class wdhTextWalker */
 } /* namespace projektionMidi */

@@ -19,6 +19,10 @@ namespace projektionMidi {
         char peek() override;
         void skip(uint16_t a = 1) override;
         stringTextWalker(std::string *text);
+        stringTextWalker(const stringTextWalker &) = delete;
+        stringTextWalker &operator=(const stringTextWalker &) = delete;
+        stringTextWalker(stringTextWalker &&);
+        stringTextWalker &operator=(stringTextWalker &&);
         ~stringTextWalker();
     }; /* class stringTextWalker */
 } /* namespace projektionMidi */

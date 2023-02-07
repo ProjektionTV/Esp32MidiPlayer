@@ -128,12 +128,13 @@ void projektionMidi::projektionMidi::playTrack(uint16_t track) {
 void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo) {
     for(uint16_t i = 0; i < player.size(); i++) {
         if(!player[i].playing) {
+            player[i].midiChannel = settings.defaultMidiChannel;
             playTrack(trackInfo, &player[i]);
             return;
         }
     }
     if(settings.maxTracks != 0 && player.size() >= settings.maxTracks) {
-        if(errorReciever) errorReciever("To many simultaneous tracks");
+        if(errorReciever) errorReciever("Too many simultaneous tracks");
         return;
     }
     playStack *stack = &player.emplace_back();
@@ -148,7 +149,7 @@ void projektionMidi::projektionMidi::playTrack(uint16_t track, playStack *stack)
 void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo, playStack *stack) {
     stack->haltedTill = 0;
 
-    // init frame: bpm & mode
+    // init frame: mode
     playStackFrame *psf = new playStackFrame();
     psf->mode = trackInfo->otherMode ? otherMode(baseMode) : baseMode;
 
@@ -317,14 +318,46 @@ void projektionMidi::projektionMidi::setMusicStatusReciever(::projektionMidi::mu
     musicStatusReciever = musicStatusReciever_;
 }
 
-projektionMidi::playStackFrame::~playStackFrame() {}
-
 projektionMidi::playStack::~playStack() {
     while(stackIndex) popUnsafe();
 }
 
+projektionMidi::playStack::playStack(playStack &&other) {
+    playing = other.playing;
+    haltedTill = other.haltedTill;
+    pauseOnSpace = other.pauseOnSpace;
+    jumpToCommand = other.jumpToCommand;
+    lastNamedNote = other.lastNamedNote;
+    midiChannel = other.midiChannel;
+    stackIndex = other.stackIndex;
+    std::swap(frames, other.frames);
+    current = other.current;
+    other.stackIndex = 0;
+}
+
+projektionMidi::playStack &projektionMidi::playStack::operator=(playStack &&other) {
+    playing = other.playing;
+    haltedTill = other.haltedTill;
+    pauseOnSpace = other.pauseOnSpace;
+    jumpToCommand = other.jumpToCommand;
+    lastNamedNote = other.lastNamedNote;
+    midiChannel = other.midiChannel;
+    stackIndex = other.stackIndex;
+    std::swap(frames, other.frames);
+    std::swap(current, other.current);
+    std::swap(stackIndex, other.stackIndex);
+    return *this;
+}
+
 projektionMidi::playTrackInfo::~playTrackInfo() {
-    // walkerAddress // TODO: use string textwalker impl
+    // walkerAddress // TODO: use string textwalker impl & impl constructors
+}
+
+projektionMidi::playTrackInfo::playTrackInfo(playTrackInfo &&other) {
+    playOnStart = other.playOnStart;
+    otherMode = other.otherMode;
+    walkerAddress = other.walkerAddress;
+    other.walkerAddress = textWalkerAddressHandle();
 }
 
 uint8_t projektionMidi::projektionMidi::bufferOperation(const char *directText, const char *name, uint16_t playLength, uint32_t maxSize, uint32_t &currSize) {

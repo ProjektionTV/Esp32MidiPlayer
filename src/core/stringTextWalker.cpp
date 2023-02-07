@@ -34,3 +34,13 @@ projektionMidi::stringTextWalker::stringTextWalker(std::string *text):
 }
 projektionMidi::stringTextWalker::~stringTextWalker() {
 }
+
+projektionMidi::stringTextWalker::stringTextWalker(stringTextWalker &&other):
+        text(other.text),
+        i(other.i) {
+}
+projektionMidi::stringTextWalker &projektionMidi::stringTextWalker::operator=(stringTextWalker &&other) {
+    text = other.text;
+    i = other.i;
+    return *this;
+}

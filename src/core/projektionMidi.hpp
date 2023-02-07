@@ -28,7 +28,6 @@ namespace projektionMidi {
     struct playStackFrame {
         std::unique_ptr<addressableTextWalker> walkerBackend;
         std::unique_ptr<addressableTextWalker> walker;
-        ~playStackFrame();
 
         // stack player info
         bool mode = PROJEKTION_MIDI_MODE_1;
@@ -40,6 +39,11 @@ namespace projektionMidi {
         uint8_t stackIndex = 0;
         void popUnsafe();
         public:
+        playStack() = default;
+        playStack(const playStack &) = delete;
+        playStack(playStack &&);
+        playStack &operator=(const playStack &) = delete;
+        playStack &operator=(playStack &&);
         playStackFrame *frames[PROJEKTION_MIDI_MAX_MIDI_STACK_SIZE];
         playStackFrame *current = nullptr;
         void push(playStackFrame *frame, ::projektionMidi::errorReciever errorReciever);
@@ -59,6 +63,11 @@ namespace projektionMidi {
         ::projektionMidi::textWalkerAddressHandle walkerAddress;
         bool playOnStart;
         bool otherMode;
+        playTrackInfo() = default;
+        playTrackInfo(playTrackInfo &&);
+        playTrackInfo(const playTrackInfo &) = delete;
+        playTrackInfo &operator=(const playTrackInfo &) = delete;
+        playTrackInfo &operator=(playTrackInfo &&) = delete;
         ~playTrackInfo();
     };
 

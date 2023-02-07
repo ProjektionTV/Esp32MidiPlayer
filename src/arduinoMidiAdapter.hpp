@@ -14,6 +14,27 @@ class arduinoMidiAdapter {
             low((uint64_t *) malloc(sizeof(uint64_t) * channelCount)),
             high((uint64_t *) malloc(sizeof(uint64_t) * channelCount)) {};
     ~arduinoMidiAdapter() { free(low); free(high); }
+    arduinoMidiAdapter(const arduinoMidiAdapter &) = delete;
+    arduinoMidiAdapter &operator=(const arduinoMidiAdapter &) = delete;
+    arduinoMidiAdapter(arduinoMidiAdapter &&other) {
+        interface = other.interface;
+        channelCount = other.channelCount;
+        low = other.low;
+        high = other.high;
+        other.low = nullptr;
+        other.high = nullptr;
+    }
+    arduinoMidiAdapter &operator=(arduinoMidiAdapter &&other) {
+        free(high);
+        free(low);
+        interface = other.interface;
+        channelCount = other.channelCount;
+        low = other.low;
+        high = other.high;
+        other.low = nullptr;
+        other.high = nullptr;
+        return *this;
+    }
 
     void toggle(uint8_t channel, uint8_t note, uint8_t velocity) {
         uint64_t inType = note - (note >= 64 ? 64 : 0);
