@@ -73,7 +73,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                     player[i].current->walker->skip();
                     break;
                 case '\0':
-                /*case ':':*/ // TODO: readd when addig segments
+                case ':':
                     if(player[i].pauseOnSpace) {
                         player[i].haltedTill = us + (fourBeatTime / 4);
                         player[i].pauseOnSpace = false;
@@ -86,7 +86,6 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                     }
                     player[i].jumpToCommand = false;
                     player[i].pop(errorReciever);
-                    if(player[i].current != nullptr) player[i].current->walker->skip();
                     break;
                 default:
                     if(player[i].jumpToCommand) { player[i].current->walker->skip(); break; }
@@ -116,7 +115,7 @@ void projektionMidi::projektionMidi::kill() {
 projektionMidi::playTrackInfo *projektionMidi::projektionMidi::getTrack(uint16_t track) {
     if(track < 0 || track >= tracks.size()) {
         if(errorReciever) errorReciever("Invalid Track");
-        return &tracks[0];
+        return nullptr;
     }
     return &tracks[track];
 }
@@ -147,6 +146,7 @@ void projektionMidi::projektionMidi::playTrack(uint16_t track, playStack *stack)
 }
 
 void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo, playStack *stack) {
+    if(trackInfo == nullptr) return;
     stack->haltedTill = 0;
 
     // init frame: mode
@@ -249,13 +249,30 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
     if(musicStatusReciever) musicStatusReciever(false);
     playing = true;
 
-    // TODO: handle segments
-    playTrackInfo pti;
-    pti.otherMode = false;
-    pti.playOnStart = true;
-    pti.walkerAddress = walker->getAddress();
-    tracks.emplace_back(pti);
-    playTrack(&pti);
+    uint16_t tracki = 0;
+    while(walker->peek() != '\0') {
+        // register track
+        playTrackInfo &pti = tracks.emplace_back();
+        // collect data
+        // play on start
+        pti.playOnStart = walker->peek() != '!';
+        if(!pti.playOnStart) walker->skip();
+        // mode
+        pti.otherMode = walker->peek() == '-';
+        if(pti.otherMode) walker->skip();
+        // addres
+        pti.walkerAddress = walker->getAddress();
+        // start track when it should
+        if(pti.playOnStart) playTrack(tracki);
+        // skip to next track or end
+        char c = walker->peek();
+        while(c != '\0' && c != ':') {
+            walker->skip();
+            c = walker->peek();
+        }
+        walker->skip();
+        tracki++;
+    }
     delete walker;
 }
 

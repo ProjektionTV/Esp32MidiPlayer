@@ -19,8 +19,17 @@ Benutzte Bibliotheken:
 
 ## Playmidi-Syntax
 
-`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`/`~<lied Preset>`
+`[;[l][n]][-][bpm<BPM>] <Segment>[:<Segment>][:<Segment>]...`/`~<lied Preset>`
 
+### Segment (optional)
+`[!][-][<INSTRUMENT>] <NOTEN...>`
+
+Segmente sind dazu da, um mehrere Spuren einfach gleichzeitig zu Spielen.
+Alle Segmente werden von beginn des Stückes gespielt, außer vor dem Segment steht ein `!`.
+Falls vor einem Segment ein `-` steht wird dieses Segment im entgegengesetztem Modus zu dem Lied Start Modus gespielt.
+Segmente werden von 0 aufwertzt indiziert
+
+**Achtung**: Es ist zu beachten, dass ein Segment, wenn dieses vom Start an gespielt wird, im ersten Midi-Kanal gespielt wird, und man somit zuerst den Kanal wechseln muss, wenn man mehrere Instrumente will.
 
 ### Flag Erweiterter Modus (optional)
 
@@ -58,10 +67,12 @@ Eine Note setzt sich zusammen aus der **Tonhöhe**, einem **Oktavzeichen** (opti
 
 Beispiele für Noten sehen folgendermaßen aus: `C` oder `d''#4`
 ##### Tonhöhe
-Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung steht (`#`, `b`).
+Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung bzw. der Oktavenzeichen steht (`#`, `b`).
 Die Oktave ergibt sich aus bis zu drei Oktavzeichen (`'`)
 Die Reihenfolge der Oktaven von tief nach hoch sieht folgendermaßen aus:  
 `C''' C'' C' C c c' c'' c'''`.
+
+Ein tiefes Cis schreibt man zum Beispiel so: `C''#`
 ##### Notenwert (optional)
 Die Länge ist eine Ganzzahl und gibt den Kehrwert der Notenlänge an.
 * 1 entspricht einer ganzen Note
@@ -120,6 +131,14 @@ Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 
 ###### controllchange 73 attack standard: 63
 `o<neuer Wert>`
+
+###### Segment paralel abspielen
+beim parallelen abspielen wird das Segment während dem Akktuellem Segment Abgespielt
+`t<segment nummer>`
+
+###### Segment abspielen
+bei diesem abspielen wird das akktuelle Segment pausiert, bis das Andere fertig ist
+`T<segment nummer>`
 
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  

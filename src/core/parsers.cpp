@@ -185,8 +185,20 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
             stack->midiChannel = channel;
         }
         break;
-    // TODO: add t // paralel playing
-    // TODO: add T // new stack frame
+    case 't':
+        c2 = stack->current->walker->peek();
+        if(c2 < '9' && c2 > '0') {
+            uint32_t track = textWalkerUtil::readUInt32(stack->current->walker.get());
+            midi->playTrack(track);
+        }
+        break;
+    case 'T':
+        c2 = stack->current->walker->peek();
+        if(c2 < '9' && c2 > '0') {
+            uint32_t track = textWalkerUtil::readUInt32(stack->current->walker.get());
+            midi->playTrack(track, stack);
+        }
+        break;
     default:
         uint8_t note = readNote(c, stack->current->walker.get());
         if(note != 128) {

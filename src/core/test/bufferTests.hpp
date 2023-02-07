@@ -37,7 +37,6 @@ PROJEKTION_MIDI_TEST_START(buffer_02_delno)
 
     PROJEKTION_MIDI_TEST_BUFFER(";l", "test0", 16, 50, 0, 2, 0, 0, 0, 0)
 
-    projektionMidi::test::testMidiOut::expectOff(0);
     expectMidiEnd(0);
     PROJEKTION_MIDI_TEST_TICK(0, 0)
 PROJEKTION_MIDI_TEST_END
