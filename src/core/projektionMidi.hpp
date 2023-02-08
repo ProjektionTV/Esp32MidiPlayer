@@ -94,6 +94,7 @@ namespace projektionMidi {
         std::size_t maxQueueSize = 0; // 0: unlimeted
         std::size_t maxBuffers = 0; // 0: unlimeted
         uint16_t maxTracks = 0; // 0: unlimeted
+        std::size_t maxTokensToParse = 0; // 0: unlimeted
         uint16_t defaultMidiChannel = 1;
     };
 

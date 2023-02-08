@@ -123,6 +123,7 @@ void setup()
   projektionMidiPlayer->getSettings()->maxQueueSize = MAX_PLAYREQUESTS;
   projektionMidiPlayer->getSettings()->maxBuffers = MAX_BUFFERS;
   projektionMidiPlayer->getSettings()->maxTracks = MAX_TRACKS;
+  projektionMidiPlayer->getSettings()->maxTokensToParse = MAX_TOKENS_PER_TICK;
   projektionMidiPlayer->getSettings()->defaultMidiChannel = DEFAULT_MIDI_CHANNEL;
 
   MIDI.begin(4);

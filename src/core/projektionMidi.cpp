@@ -48,9 +48,11 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
     }
     if(playing) {
         if(fxHandler != nullptr) fxHandler->tick(us);
+        std::size_t parsedTokens = 0;
         bool hasplaying = false;
         for(uint16_t i = 0; i < player.size(); i++) {
             while(player[i].playing && (player[i].haltedTill <= us)) {
+                if(settings.maxTokensToParse != 0 && parsedTokens >= settings.maxTokensToParse) return;
                 char c = player[i].current->walker->peek();
                 switch(c) {
                 case 'M':
@@ -98,6 +100,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                     }
                     break;
                 }
+                parsedTokens++;
             }
             hasplaying |= player[i].playing;
         }

@@ -66,6 +66,9 @@
 #ifndef MAX_TRACKS
 #define MAX_TRACKS 0
 #endif
+#ifndef MAX_TOKENS_PER_TICK
+#define MAX_TOKENS_PER_TICK 0
+#endif
 
 #ifndef USE_PROJEKTION_FX
 #define USE_PROJEKTION_FX 0
