@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "fxHandler.hpp"
 #include "midiHandler.hpp"
 #include "textWalker.hpp"
 
@@ -106,6 +107,8 @@ namespace projektionMidi {
         std::vector<midiHandler::channelMapEntry> midiChannel;
         std::vector<midiPreset> presets;
 
+        FXHandler *fxHandler = nullptr;
+
         std::vector<playStack> player;
         std::vector<playTrackInfo> tracks;
         std::string text;
@@ -129,6 +132,8 @@ namespace projektionMidi {
         void addInstrument(midiInstrument instrument);
         void setErrorReciever(::projektionMidi::errorReciever errorReciever_);
         void setMusicStatusReciever(::projektionMidi::musicStatusReciever musicStatusReciever_);
+        void setFXHandler(FXHandler *fxHandler_);
+        FXHandler *getFXHandler();
 
         void addMidiChannel(uint32_t textChannel, midiHandler::eventHandler *handler, uint8_t eventChannel);
         projektionMidiSettings *getSettings();

@@ -47,6 +47,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
         playNext(us);
     }
     if(playing) {
+        if(fxHandler != nullptr) fxHandler->tick(us);
         bool hasplaying = false;
         for(uint16_t i = 0; i < player.size(); i++) {
             while(player[i].playing && (player[i].haltedTill <= us)) {
@@ -183,7 +184,10 @@ void projektionMidi::projektionMidi::cleanUpPlay() {
         channel.handler->controlChange(channel.channel, 72, 63);
         channel.handler->controlChange(channel.channel, 73, 63);
     }
-    if(musicStatusReciever) musicStatusReciever(true);
+    if(queue.size() == 0) {
+        if(musicStatusReciever) musicStatusReciever(true);
+        if(fxHandler != nullptr) fxHandler->stop();
+    }
 }
 
 void projektionMidi::projektionMidi::stopAllMidi() {
@@ -244,6 +248,7 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
     textWalkerUtil::skipAfterSpaces(walker);
 
     fourBeatTime = (uint32_t) (240'000'000.0f / ((float) bpm));
+    if(fxHandler != nullptr) fxHandler->setBpm(bpm);
     textWalkerUtil::skipAfterSpaces(walker);
 
     if(musicStatusReciever) musicStatusReciever(false);
@@ -274,6 +279,7 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
         tracki++;
     }
     delete walker;
+    if(fxHandler != nullptr) fxHandler->start();
 }
 
 void projektionMidi::projektionMidi::addMidiChannel(uint32_t textChannel, midiHandler::eventHandler *handler, uint8_t eventChannel) {
@@ -454,4 +460,12 @@ uint8_t projektionMidi::projektionMidi::bufferOperation(const char *directText, 
 
 projektionMidi::projektionMidiSettings *projektionMidi::projektionMidi::getSettings() {
     return &settings;
+}
+
+void projektionMidi::projektionMidi::setFXHandler(FXHandler *fxHandler_) {
+    fxHandler = fxHandler_;
+}
+
+projektionMidi::FXHandler *projektionMidi::projektionMidi::getFXHandler() {
+    return fxHandler;
 }

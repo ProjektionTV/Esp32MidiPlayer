@@ -67,4 +67,11 @@
 #define MAX_TRACKS 0
 #endif
 
+#ifndef USE_PROJEKTION_FX
+#define USE_PROJEKTION_FX 0
+#endif
+#ifndef PROJEKTION_FX_LEDS
+#define PROJEKTION_FX_LEDS 60
+#endif
+
 #endif

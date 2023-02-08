@@ -45,6 +45,10 @@ void loop() {
 #include "interface.h"
 #include "wifictrl.h"
 
+#if USE_PROJEKTION_FX
+#include "projektionFXIntigration.hpp"
+#endif
+
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 arduinoMidiAdapter<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> *midiAdapter;
@@ -133,6 +137,10 @@ void setup()
 
   fillPresetSongs(projektionMidiPlayer);
   fillPresetInstruments(projektionMidiPlayer);
+
+#if USE_PROJEKTION_FX
+  projektionMidiPlayer->setFXHandler(&projektionFxHandler);
+#endif
 
   setMusicStatus(true);
 

@@ -126,6 +126,7 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
             uint32_t newV = textWalkerUtil::readUInt32(stack->current->walker.get());
             if(newV == 0) newV = midi->getSettings()->defaultBpm;
             midi->fourBeatTime = (uint32_t) (240'000'000.0f / ((float) newV));
+            if(midi->getFXHandler() != nullptr) midi->getFXHandler()->setBpm(newV);
         }
         break;
     case 'v':
