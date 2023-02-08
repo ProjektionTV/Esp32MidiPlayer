@@ -111,6 +111,12 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
           text += maxBufferSize;
           text += ")";
         }
+        // refund
+        if((out >> 5) & 1) {
+          if(data.containsKey("refundID") && data.containsKey("refundTopic")) {
+            psClient.publish(data["refundTopic"], data["refundID"]);
+          }
+        }
         // faild enqueue
         if((out >> 6) & 1) {
           sendText = true;
@@ -122,6 +128,9 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     } else {
       if(!projektionMidiPlayer->enqueue(midi.c_str(), length)) {
         sendIrcMessage("(MIDI) Die Warteschlange ist voll!");
+        if(data.containsKey("refundID") && data.containsKey("refundTopic")) {
+          psClient.publish(data["refundTopic"], data["refundID"]);
+        }
       }
     }
   } else if(strTopic.equals(MQTT_KILLMIDI)) {

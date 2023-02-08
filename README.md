@@ -212,3 +212,5 @@ optional:
 Bei aktiviertem Buffer werden folgende Tags benötigt:
 * `user` / `nutzer` - Name des Users
 * `maxBufferSize` / `maximaleBufferGroesse` - die maximale Größe des Puffers
+folgende sind optional:
+* `refundTopic` mit `refundID`: sendet auf `refundTopic` die Nachricht `refundID`, wenn die Aktion refundet werden soll (Puffer schreiben, Warteschlange voll). Die Felder müssen Strings seien
