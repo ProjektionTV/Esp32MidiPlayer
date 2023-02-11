@@ -11,8 +11,6 @@
 #include "midiHandler.hpp"
 #include "textWalker.hpp"
 
-#define PROJEKTION_MIDI_MAX_MIDI_STACK_SIZE 3
-
 #define PROJEKTION_MIDI_MODE_1 false
 #define PROJEKTION_MIDI_MODE_2 true
 
@@ -38,14 +36,15 @@ namespace projektionMidi {
     struct playStack {
         private:
         uint8_t stackIndex = 0;
+        uint8_t stackSize;
         void popUnsafe();
         public:
-        playStack() = default;
+        playStack(uint8_t stackSize);
         playStack(const playStack &) = delete;
         playStack(playStack &&);
         playStack &operator=(const playStack &) = delete;
         playStack &operator=(playStack &&);
-        playStackFrame *frames[PROJEKTION_MIDI_MAX_MIDI_STACK_SIZE];
+        playStackFrame **frames;
         playStackFrame *current = nullptr;
         void push(playStackFrame *frame, ::projektionMidi::errorReciever errorReciever);
         void pop(::projektionMidi::errorReciever errorReciever);
@@ -96,6 +95,7 @@ namespace projektionMidi {
         uint16_t maxTracks = 0; // 0: unlimeted
         std::size_t maxTokensToParse = 0; // 0: unlimeted
         uint16_t defaultMidiChannel = 1;
+        uint8_t midiStackSize = 3;
     };
 
     class projektionMidi {

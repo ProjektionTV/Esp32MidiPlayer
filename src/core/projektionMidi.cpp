@@ -9,7 +9,7 @@
 #include "wdhTextWalker.hpp"
 
 void projektionMidi::playStack::push(playStackFrame *frame, errorReciever errorReciever) {
-    if(stackIndex >= PROJEKTION_MIDI_MAX_MIDI_STACK_SIZE) {
+    if(stackIndex >= stackSize) {
         if(errorReciever) errorReciever("Stack overflow");
         return;
     }
@@ -140,7 +140,7 @@ void projektionMidi::projektionMidi::playTrack(playTrackInfo *trackInfo) {
         if(errorReciever) errorReciever("Too many simultaneous tracks");
         return;
     }
-    playStack *stack = &player.emplace_back();
+    playStack *stack = &player.emplace_back(settings.midiStackSize);
     stack->midiChannel = settings.defaultMidiChannel;
     playTrack(trackInfo, stack);
 }
@@ -346,6 +346,12 @@ void projektionMidi::projektionMidi::setMusicStatusReciever(::projektionMidi::mu
 
 projektionMidi::playStack::~playStack() {
     while(stackIndex) popUnsafe();
+    free(frames);
+}
+
+projektionMidi::playStack::playStack(uint8_t stackSize) :
+        stackSize(stackSize) {
+    frames = (playStackFrame **) malloc(sizeof(playStackFrame *) * stackSize);
 }
 
 projektionMidi::playStack::playStack(playStack &&other) {
@@ -356,6 +362,7 @@ projektionMidi::playStack::playStack(playStack &&other) {
     lastNamedNote = other.lastNamedNote;
     midiChannel = other.midiChannel;
     stackIndex = other.stackIndex;
+    std::swap(stackSize, other.stackSize);
     std::swap(frames, other.frames);
     current = other.current;
     other.stackIndex = 0;
@@ -369,6 +376,7 @@ projektionMidi::playStack &projektionMidi::playStack::operator=(playStack &&othe
     lastNamedNote = other.lastNamedNote;
     midiChannel = other.midiChannel;
     stackIndex = other.stackIndex;
+    std::swap(stackSize, other.stackSize);
     std::swap(frames, other.frames);
     std::swap(current, other.current);
     std::swap(stackIndex, other.stackIndex);

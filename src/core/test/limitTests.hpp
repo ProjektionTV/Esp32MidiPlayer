@@ -62,6 +62,22 @@ PROJEKTION_MIDI_TEST_START(limit_05_token)
     PROJEKTION_MIDI_TEST_TICK(0, 0)
 PROJEKTION_MIDI_TEST_END
 
+PROJEKTION_MIDI_TEST_START(limit_06_stackSize)
+    PROJEKTION_MIDI_TEST_ADD_CHANNEL(1, 0)
+    PROJEKTION_MIDI_TEST_MATCH_MIDI(0)
+
+    midi->setErrorReciever(nullptr);
+
+    midi->getSettings()->midiStackSize = 1;
+    midi->enqueue("-AT1 4:!H", 16);
+
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    PROJEKTION_MIDI_TEST_TICK(0, 0)
+
+    expectMidiEnd(0);
+    PROJEKTION_MIDI_TEST_TICK(250'000, 0)
+PROJEKTION_MIDI_TEST_END
+
 TESTS_SUB(limitTests)
     TEST(testOut, limit_00_queue)
     TEST(testOut, limit_01_bufferQueuePassthrough)
@@ -69,6 +85,7 @@ TESTS_SUB(limitTests)
     TEST(testOut, limit_03_bufferPlayQueuePassthrough)
     TEST(testOut, limit_04_buffer)
     TEST(testOut, limit_05_token)
+    TEST(testOut, limit_06_stackSize)
 TEST_SUB_END
 
 #endif /* PROJEKTION_MIDI_TEST_LIMIT_TESTS_HPP_ */

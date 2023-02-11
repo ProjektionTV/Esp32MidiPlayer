@@ -69,6 +69,9 @@
 #ifndef MAX_TOKENS_PER_TICK
 #define MAX_TOKENS_PER_TICK 0
 #endif
+#ifndef MIDI_STACK_SIZE
+#define MIDI_STACK_SIZE 3
+#endif
 
 #ifndef USE_PROJEKTION_FX
 #define USE_PROJEKTION_FX 0
