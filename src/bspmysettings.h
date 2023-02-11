@@ -27,6 +27,7 @@
 //#define MAX_BUFFERS 0 // if 0 there is no limit of buffers
 //#define MAX_TRACKS 0 // if 0 there is no limit to the track count
 //#define MAX_TOKENS_PER_TICK 0 // if 0 there is no limit to the tokens parsed in a tick
+//#define MIDI_STACK_SIZE 3
 
 //#define USE_PROJEKTION_FX 0 // if 1 projektionfx e1.31 output is enabled
 //#define PROJEKTION_FX_LEDS 60 // num of leds projektion fx should output
