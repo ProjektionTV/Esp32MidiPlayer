@@ -13,6 +13,7 @@ namespace projektionMidi {
             bool wdh_rdy;
             bool wdh_rtndo;
             bool wdh_rtn_out;
+            bool wdh_hasData;
         };
         struct wdhTextWalkerAddress {
             textWalkerAddressHandle i;
