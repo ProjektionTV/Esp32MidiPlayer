@@ -422,6 +422,16 @@ PROJEKTION_MIDI_TEST_START(projektionMidi_33)
     PROJEKTION_MIDI_TEST_TICK(250'000, 0)
 PROJEKTION_MIDI_TEST_END
 
+PROJEKTION_MIDI_TEST_START(projektionMidi_34)
+    PROJEKTION_MIDI_TEST_ADD_CHANNEL(1, 0)
+    PROJEKTION_MIDI_TEST_MATCH_MIDI(0)
+    midi->enqueue("-z63", 16);
+
+    projektionMidi::test::testMidiOut::expectControl(0, 7, 63);
+    expectMidiEnd(0);
+    PROJEKTION_MIDI_TEST_TICK(0, 0)
+PROJEKTION_MIDI_TEST_END
+
 TESTS_SUB(projektionMidiTests)
     TEST(testOut, projektionMidi_00)
     TEST(testOut, projektionMidi_01)
@@ -457,6 +467,7 @@ TESTS_SUB(projektionMidiTests)
     TEST(testOut, projektionMidi_31)
     TEST(testOut, projektionMidi_32)
     TEST(testOut, projektionMidi_33)
+    TEST(testOut, projektionMidi_34)
 TEST_SUB_END
 
 #endif /* PROJEKTION_MIDI_TEST_PROJEKTION_MIDI_TESTS_HPP_ */

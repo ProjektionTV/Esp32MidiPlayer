@@ -110,8 +110,13 @@ Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere
 
 ###### Anschlagsgeschwindigkeit ändern
 `v<Neue Geschwindigkeit>`
-Mit `v` wird die Anschlagsgeschwindigkeit in  geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+Mit `v` wird die Anschlagsgeschwindigkeit geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
 `-piano A1l v64 A1l`
+
+###### Lautstärke ändern
+`z<Neue Lautstärke>`
+Mit `z` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1l z64 A1l`
 
 ###### zuletzt genannte Note Stoppen
 `l`

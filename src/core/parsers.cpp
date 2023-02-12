@@ -200,6 +200,14 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
             midi->playTrack(track, stack);
         }
         break;
+    case 'z':
+        c2 = stack->current->walker->peek();
+        if(c2 < '9' && c2 > '0') {
+            uint32_t newV = textWalkerUtil::readUInt32(stack->current->walker.get());
+            if(newV >= 0 && newV < 128 && hasMidi)
+                channel.handler->controlChange(channel.channel, 7, newV);
+        }
+        break;
     default:
         uint8_t note = readNote(c, stack->current->walker.get());
         if(note != 128) {
