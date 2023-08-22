@@ -96,6 +96,8 @@ namespace projektionMidi {
         std::size_t maxTokensToParse = 0; // 0: unlimeted
         uint16_t defaultMidiChannel = 1;
         uint8_t midiStackSize = 3;
+        uint8_t midi_gm_bank_lsb = 0;
+        uint8_t midi_gm_bank_msb = 0;
     };
 
     class projektionMidi {

@@ -17,9 +17,11 @@ void fillPresetSongs(projektionMidi::projektionMidi *midi) {
 }
 
 void fillPresetInstruments(projektionMidi::projektionMidi *midi) {
-    midi->addInstrument({ .name = "piano", .program = 0, .bankLsb = 0, .bankMsb = 0 });
-    midi->addInstrument({ .name = "vibes", .program = 11, .bankLsb = 0, .bankMsb = 0 });
-    midi->addInstrument({ .name = "organ", .program = 19, .bankLsb = 0, .bankMsb = 0 });
-    midi->addInstrument({ .name = "guitar", .program = 30, .bankLsb = 0, .bankMsb = 0 });
-    midi->addInstrument({ .name = "brass", .program = 62, .bankLsb = 0, .bankMsb = 0 });
+    uint8_t msb = midi->getSettings()->midi_gm_bank_msb;
+    uint8_t lsb = midi->getSettings()->midi_gm_bank_lsb;
+    midi->addInstrument({ .name = "piano", .program = 0, .bankLsb = lsb, .bankMsb = msb });
+    midi->addInstrument({ .name = "vibes", .program = 11, .bankLsb = lsb, .bankMsb = msb });
+    midi->addInstrument({ .name = "organ", .program = 19, .bankLsb = lsb, .bankMsb = msb });
+    midi->addInstrument({ .name = "guitar", .program = 30, .bankLsb = lsb, .bankMsb = msb });
+    midi->addInstrument({ .name = "brass", .program = 62, .bankLsb = lsb, .bankMsb = msb });
 }

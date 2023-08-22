@@ -126,6 +126,8 @@ void setup()
   projektionMidiPlayer->getSettings()->maxTokensToParse = MAX_TOKENS_PER_TICK;
   projektionMidiPlayer->getSettings()->defaultMidiChannel = DEFAULT_MIDI_CHANNEL;
   projektionMidiPlayer->getSettings()->midiStackSize = MIDI_STACK_SIZE;
+  projektionMidiPlayer->getSettings()->midi_gm_bank_msb = MIDI_GM_BANK_MSB;
+  projektionMidiPlayer->getSettings()->midi_gm_bank_lsb = MIDI_GM_BANK_LSB;
 
   MIDI.begin(4);
   midiAdapter = new arduinoMidiAdapter(&MIDI, 16);

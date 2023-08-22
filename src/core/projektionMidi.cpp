@@ -180,8 +180,8 @@ void projektionMidi::projektionMidi::cleanUpPlay() {
         midiHandler::channelMapEntry channel = getMidiChannel(ch);
         if(channel.handler == nullptr) continue;
         channel.handler->allOff(channel.channel);
-        channel.handler->controlChange(channel.channel, 0, 0);
-        channel.handler->controlChange(channel.channel, 32, 0);
+        channel.handler->controlChange(channel.channel, 0, settings.midi_gm_bank_msb);
+        channel.handler->controlChange(channel.channel, 32, settings.midi_gm_bank_lsb);
         channel.handler->programChange(channel.channel, 0);
         channel.handler->controlChange(channel.channel, 7, 127);
         channel.handler->controlChange(channel.channel, 72, 63);
@@ -290,8 +290,8 @@ void projektionMidi::projektionMidi::addMidiChannel(uint32_t textChannel, midiHa
     midiChannel[textChannel] = { .handler = handler, .channel = eventChannel };
     if(handler != nullptr) {
         handler->allOff(eventChannel);
-        handler->controlChange(eventChannel, 0, 0);
-        handler->controlChange(eventChannel, 32, 0);
+        handler->controlChange(eventChannel, 0, settings.midi_gm_bank_msb);
+        handler->controlChange(eventChannel, 32, settings.midi_gm_bank_lsb);
         handler->programChange(eventChannel, 0);
         handler->controlChange(eventChannel, 7, 127);
         handler->controlChange(eventChannel, 72, 63);
