@@ -2,25 +2,20 @@
 #define PROJEKTION_MIDI_MIDI_HANDLER_HPP_
 
 #include <cinttypes>
-#include <functional>
 
 namespace projektionMidi {
     namespace midiHandler {
-        typedef std::function<void(uint8_t channel, uint8_t note, uint8_t velocity)> noteToggFunc;
-        typedef std::function<void(uint8_t channel)> allOffFunc;
-        typedef std::function<void(uint8_t channel, uint8_t program)> programFunc;
-        typedef std::function<void(uint8_t channel, uint8_t control, uint8_t value)> controlFunc;
-        struct eventHandler {
-            noteToggFunc note;
-            allOffFunc allOff;
-            programFunc programChange;
-            controlFunc controlChange;
+        class midiEventHandler {
+            public:
+            virtual void note(uint8_t channel, uint8_t note, uint8_t velocity) = 0;
+            virtual void allOff(uint8_t channel) = 0;
+            virtual void programChange(uint8_t channel, uint8_t program) = 0;
+            virtual void controlChange(uint8_t channel, uint8_t control, uint8_t value) = 0;
         };
         struct channelMapEntry {
-            eventHandler *handler;
+            midiEventHandler *handler;
             uint8_t channel;
         };
-
     } /* namespace midiHandler */
 } /* namespace projektionMidi */
 

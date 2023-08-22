@@ -206,12 +206,21 @@ namespace projektionMidi {
                 received.clear();
             }
         }; /* namespace testMidiOut */
-        midiHandler::eventHandler midiTestHandler{
-            .note = testMidiOut::toggle,
-            .allOff = testMidiOut::off,
-            .programChange = testMidiOut::program,
-            .controlChange = testMidiOut::control
-        };
+        class midiTestHandler : public midiHandler::midiEventHandler {
+            public:
+            void note(uint8_t channel, uint8_t note, uint8_t velocity) override {
+                testMidiOut::toggle(channel, note, velocity);
+            }
+            void allOff(uint8_t channel) override {
+                testMidiOut::off(channel);
+            }
+            void programChange(uint8_t channel, uint8_t program) override {
+                testMidiOut::program(channel, program);
+            }
+            void controlChange(uint8_t channel, uint8_t control, uint8_t value) override {
+                testMidiOut::control(channel, control, value);
+            }
+        } midiTestHandler;
     } /* namespace test */
 } /* namespace projektionMidi */
 

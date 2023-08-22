@@ -285,7 +285,7 @@ void projektionMidi::projektionMidi::playNext(uint64_t us) {
     if(fxHandler != nullptr) fxHandler->start();
 }
 
-void projektionMidi::projektionMidi::addMidiChannel(uint32_t textChannel, midiHandler::eventHandler *handler, uint8_t eventChannel) {
+void projektionMidi::projektionMidi::addMidiChannel(uint32_t textChannel, midiHandler::midiEventHandler *handler, uint8_t eventChannel) {
     if(midiChannel.size() <= textChannel) midiChannel.resize(textChannel + 1);
     midiChannel[textChannel] = { .handler = handler, .channel = eventChannel };
     if(handler != nullptr) {
