@@ -480,3 +480,17 @@ void projektionMidi::projektionMidi::setFXHandler(FXHandler *fxHandler_) {
 projektionMidi::FXHandler *projektionMidi::projektionMidi::getFXHandler() {
     return fxHandler;
 }
+
+void projektionMidi::projektionMidi::addPresetsFromOther(projektionMidi *other) {
+    std::size_t ts = presets.size();
+    std::size_t os = other->presets.size();
+    presets.resize(ts + os);
+    for(std::size_t ti = ts, oi = 0; oi < os; oi++, ti++) presets[ti] = other->presets[oi];
+}
+
+void projektionMidi::projektionMidi::addInstrumentsFromOther(projektionMidi *other) {
+    std::size_t ts = instruments.size();
+    std::size_t os = other->instruments.size();
+    instruments.resize(ts + os);
+    for(std::size_t ti = ts, oi = 0; oi < os; oi++, ti++) instruments[ti] = other->instruments[oi];
+}

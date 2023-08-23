@@ -138,6 +138,9 @@ namespace projektionMidi {
         void setFXHandler(FXHandler *fxHandler_);
         FXHandler *getFXHandler();
 
+        void addPresetsFromOther(projektionMidi *other);
+        void addInstrumentsFromOther(projektionMidi *other);
+
         void addMidiChannel(uint32_t textChannel, midiHandler::midiEventHandler *handler, uint8_t eventChannel);
         projektionMidiSettings *getSettings();
 
