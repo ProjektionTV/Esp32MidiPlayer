@@ -151,6 +151,10 @@ namespace projektionMidi {
         bool enqueue(std::string text, uint16_t time);
         void kill();
         void tick(uint64_t us);
+        /**
+         * @returns 0 if nothing is playing, the next us when waiting on something
+         */
+        uint64_t getWaitTarget();
 
         /**
          * 0: buffer deleted 0,

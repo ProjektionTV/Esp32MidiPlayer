@@ -42,6 +42,19 @@ bool projektionMidi::projektionMidi::enqueue(std::string text, uint16_t time) {
     return true;
 }
 
+uint64_t projektionMidi::projektionMidi::getWaitTarget() {
+    if(!playing || (player.size() == 0)) return 0;
+    uint64_t rtn = -1;
+    bool doRtn = false;
+    for(uint16_t i = 0; i < player.size(); i++) {
+        if(player[i].playing) {
+            rtn = std::min(rtn, player[i].haltedTill);
+            doRtn = true;
+        }
+    }
+    return doRtn ? rtn : 0;
+}
+
 void projektionMidi::projektionMidi::tick(uint64_t us) {
     if(!playing && !queue.empty()) {
         playNext(us);
