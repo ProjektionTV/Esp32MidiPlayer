@@ -494,3 +494,19 @@ void projektionMidi::projektionMidi::addInstrumentsFromOther(projektionMidi *oth
     instruments.resize(ts + os);
     for(std::size_t ti = ts, oi = 0; oi < os; oi++, ti++) instruments[ti] = other->instruments[oi];
 }
+
+void projektionMidi::projektionMidi::addMidiChannels(uint32_t textChannel, midiHandler::midiEventHandler *handler, uint8_t eventChannel, uint8_t count) {
+    if(midiChannel.size() < textChannel + count) midiChannel.resize(textChannel + count);
+    for(uint8_t i = 0; i < count; i++) midiChannel[textChannel + i] = { .handler = handler, .channel = (uint8_t) (eventChannel + i) };
+    if(handler != nullptr) {
+        for(uint8_t i = 0; i < count; i++) {
+            handler->allOff(eventChannel + i);
+            handler->controlChange(eventChannel + i, 0, settings.midi_gm_bank_msb);
+            handler->controlChange(eventChannel + i, 32, settings.midi_gm_bank_lsb);
+            handler->programChange(eventChannel + i, 0);
+            handler->controlChange(eventChannel + i, 7, 127);
+            handler->controlChange(eventChannel + i, 72, 63);
+            handler->controlChange(eventChannel + i, 73, 63);
+        }
+    }
+}

@@ -64,9 +64,7 @@ class arduinoMidiAdapter : public projektionMidi::midiHandler::midiEventHandler 
     }
 
     void apply(projektionMidi::projektionMidi *midi, uint8_t textBaseChannel) {
-        for(uint8_t i = channelCount ; i > 0; i--) {
-            midi->addMidiChannel(textBaseChannel + i - 1, this, i);
-        }
+        midi->addMidiChannels(textBaseChannel, this, 1, channelCount);
     }
 
     private:

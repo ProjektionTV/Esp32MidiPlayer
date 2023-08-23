@@ -142,6 +142,7 @@ namespace projektionMidi {
         void addInstrumentsFromOther(projektionMidi *other);
 
         void addMidiChannel(uint32_t textChannel, midiHandler::midiEventHandler *handler, uint8_t eventChannel);
+        void addMidiChannels(uint32_t textChannel, midiHandler::midiEventHandler *handler, uint8_t eventChannel, uint8_t count = 1);
         projektionMidiSettings *getSettings();
 
         /**
