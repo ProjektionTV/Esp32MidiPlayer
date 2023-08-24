@@ -52,6 +52,7 @@ uint64_t projektionMidi::projektionMidi::getWaitTarget() {
             doRtn = true;
         }
     }
+    rtn = std::min(rtn, time_end_us);
     return doRtn ? rtn : 0;
 }
 
