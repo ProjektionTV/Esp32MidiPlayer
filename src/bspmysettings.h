@@ -31,6 +31,9 @@
 
 //#define MIDI_GM_BANK_MSB 0 // general midi bank
 //#define MIDI_GM_BANK_LSB 0
+//#define MIDI_GM_DRUMS_BANK_MSB 127 // settings for idrums
+//#define MIDI_GM_DRUMS_BANK_LSB 0
+//#define MIDI_GM_DRUMS 0 // drumms programm
 
 //#define USE_PROJEKTION_FX 0 // if 1 projektionfx e1.31 output is enabled
 //#define PROJEKTION_FX_LEDS 60 // num of leds projektion fx should output

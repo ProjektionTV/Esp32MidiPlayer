@@ -24,4 +24,8 @@ void fillPresetInstruments(projektionMidi::projektionMidi *midi) {
     midi->addInstrument({ .name = "organ", .program = 19, .bankLsb = lsb, .bankMsb = msb });
     midi->addInstrument({ .name = "guitar", .program = 30, .bankLsb = lsb, .bankMsb = msb });
     midi->addInstrument({ .name = "brass", .program = 62, .bankLsb = lsb, .bankMsb = msb });
+    midi->addInstrument({ .name = "drums",
+            .program = midi->getSettings()->midi_gm_drums,
+            .bankLsb = midi->getSettings()->midi_gm_bank_drums_lsb,
+            .bankMsb = midi->getSettings()->midi_gm_bank_drums_msb });
 }

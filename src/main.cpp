@@ -127,6 +127,9 @@ void setup() {
     projektionMidiPlayer->getSettings()->midiStackSize = MIDI_STACK_SIZE;
     projektionMidiPlayer->getSettings()->midi_gm_bank_msb = MIDI_GM_BANK_MSB;
     projektionMidiPlayer->getSettings()->midi_gm_bank_lsb = MIDI_GM_BANK_LSB;
+    projektionMidiPlayer->getSettings()->midi_gm_bank_drums_msb = MIDI_GM_DRUMS_BANK_MSB;
+    projektionMidiPlayer->getSettings()->midi_gm_bank_drums_lsb = MIDI_GM_DRUMS_BANK_LSB;
+    projektionMidiPlayer->getSettings()->midi_gm_drums = MIDI_GM_DRUMS;
 
     MIDI.begin(4);
     midiAdapter = new arduinoMidiAdapter(&MIDI, 16);

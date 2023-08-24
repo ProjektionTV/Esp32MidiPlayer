@@ -79,6 +79,15 @@
 #ifndef MIDI_GM_BANK_LSB
 #define MIDI_GM_BANK_LSB 0
 #endif
+#ifndef MIDI_GM_DRUMS_BANK_MSB
+#define MIDI_GM_DRUMS_BANK_MSB 127
+#endif
+#ifndef MIDI_GM_DRUMS_BANK_LSB
+#define MIDI_GM_DRUMS_BANK_LSB 0
+#endif
+#ifndef MIDI_GM_DRUMS
+#define MIDI_GM_DRUMS 0
+#endif
 
 #ifndef USE_PROJEKTION_FX
 #define USE_PROJEKTION_FX 0

@@ -53,7 +53,14 @@ Liste der verfügbaren Instrumente:
 * `organ` (Orgel)
 * `guitar` (Gitarre)
 * `brass` (Bläser)
+* `drums` (Schlagzeug)
 * oder Nummer des Midi-Instruments
+
+#### Schlagzeug
+Nach General MIDI ist das Schlagzeugt auf `k10` jedoch kann es seien,
+dass einige Synthesizer das nicht beachten,
+und ein Instrument anbieten, deswegen gibt es `idrums`.
+Und es wird empholen nur `k10` für Schlagzeug zu verwenden und mit `idrums`.
 
 ### Noten
 

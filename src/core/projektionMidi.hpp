@@ -98,6 +98,9 @@ namespace projektionMidi {
         uint8_t midiStackSize = 3;
         uint8_t midi_gm_bank_lsb = 0;
         uint8_t midi_gm_bank_msb = 0;
+        uint8_t midi_gm_bank_drums_lsb = 0;
+        uint8_t midi_gm_bank_drums_msb = 0;
+        uint8_t midi_gm_drums = 0;
     };
 
     class projektionMidi {
