@@ -1,13 +1,35 @@
 # Esp32MidiPlayer
-Benötigte Bibliotheken:
-* fortyseveneffects/MIDI Library
-* knolleary/PubSubClient
-* bblanchon/ArduinoJson
+Benutzte Bibliotheken:
+* fortyseveneffects/MIDI Library@^5.0.2
+* knolleary/PubSubClient@^2.8
+* bblanchon/ArduinoJson@^6.17.3
+* https://github.com/tzapu/WiFiManager.git#v2.0.11-beta
+
+## Platformen
+* ESP32
+* ESP8266
+
+## Setup
+1. copy `src/bspmyauth.h` to `../myauth.h`
+1. modify `../myauth.h` (the relaive paths are given to this Readme file)
+1. copy `src/bspmysettings.h` to `src/mysettings.h` (optional)
+1. modify `src/mysettings.h` (optional)
+1. compile and flash
+1. setup wifi
 
 ## Playmidi-Syntax
 
-`[;[l][n]][-][bpm<BPM>] [<INSTRUMENT>] <NOTEN...>`/`~<lied Preset>`
+`[;[l][n]][-][bpm<BPM>] <Segment>[:<Segment>][:<Segment>]...`/`~<lied Preset>`
 
+### Segment (optional)
+`[!][-][<INSTRUMENT>] <NOTEN...>`
+
+Segmente sind dazu da, um mehrere Spuren einfach gleichzeitig zu Spielen.
+Alle Segmente werden von beginn des Stückes gespielt, außer vor dem Segment steht ein `!`.
+Falls vor einem Segment ein `-` steht wird dieses Segment im entgegengesetztem Modus zu dem Lied Start Modus gespielt.
+Segmente werden von 0 aufwertzt indiziert
+
+**Achtung**: Es ist zu beachten, dass ein Segment, wenn dieses vom Start an gespielt wird, im ersten Midi-Kanal gespielt wird, und man somit zuerst den Kanal wechseln muss, wenn man mehrere Instrumente will.
 
 ### Flag Erweiterter Modus (optional)
 
@@ -31,7 +53,14 @@ Liste der verfügbaren Instrumente:
 * `organ` (Orgel)
 * `guitar` (Gitarre)
 * `brass` (Bläser)
+* `drums` (Schlagzeug)
 * oder Nummer des Midi-Instruments
+
+#### Schlagzeug
+Nach General MIDI ist das Schlagzeugt auf `k10` jedoch kann es seien,
+dass einige Synthesizer das nicht beachten,
+und ein Instrument anbieten, deswegen gibt es `idrums`.
+Und es wird empholen nur `k10` für Schlagzeug zu verwenden und mit `idrums`.
 
 ### Noten
 
@@ -45,10 +74,12 @@ Eine Note setzt sich zusammen aus der **Tonhöhe**, einem **Oktavzeichen** (opti
 
 Beispiele für Noten sehen folgendermaßen aus: `C` oder `d''#4`
 ##### Tonhöhe
-Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung steht (`#`, `b`).
+Die Tonhöhe ergibt sich aus den deutschen Notenbezeichnungen (`CDEFGAH`) und einem optionalen Vorzeichen, welches nach der Notenbezeichnung bzw. der Oktavenzeichen steht (`#`, `b`).
 Die Oktave ergibt sich aus bis zu drei Oktavzeichen (`'`)
 Die Reihenfolge der Oktaven von tief nach hoch sieht folgendermaßen aus:  
 `C''' C'' C' C c c' c'' c'''`.
+
+Ein tiefes Cis schreibt man zum Beispiel so: `C''#`
 ##### Notenwert (optional)
 Die Länge ist eine Ganzzahl und gibt den Kehrwert der Notenlänge an.
 * 1 entspricht einer ganzen Note
@@ -84,10 +115,22 @@ Mit `s` werden alle Noten gestoppt, die zur Zeit klingen.
 Mit `k` kann der aktuelle Midi-Kanal von 1-16 gewechselt werden, um z.B. mehrere Instrumente gleichzeitig spielen zu können.
 `-piano A k2 iorgan H 4 s`
 
-###### Lauststärke ändern
-`v<Neue Lautstärke>`
-Mit `v` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
-`-piano A1 v64 A1`
+###### Anschlagsgeschwindigkeit ändern
+`v<Neue Geschwindigkeit>`
+Mit `v` wird die Anschlagsgeschwindigkeit geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1l v64 A1l`
+
+###### Lautstärke ändern
+`z<Neue Lautstärke>`
+Mit `z` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
+`-piano A1l z64 A1l`
+
+###### Spuren synchronisieren
+`r[<Sync-Kanal>][-[<Zahl>]]`
+Mit `r` kann man Spuren synchronisieren. Wenn der `Sync-Kanal` oder die `Zahl` nicht angegeben ist, ist jener Parameter 0.
+Die Spur wartet ab diesem Befehl auf ein Sync-Signal auf dem `Sync-Kanal`, sobald dieses empfangen wird wird die Spur weiter bearbeitet.
+Wenn das `-` gegeben wird, wird ebenfals auf ein Sync-Signal gewartet, jedoch wenn mehr oder gleich viele Spuren als mit `Zahl` warten \(diese Spur eingeschlossen\), wird ein solches Sync-Signal gessendet.
+`-ArlC:G4r-lF4`
 
 ###### zuletzt genannte Note Stoppen
 `l`
@@ -108,6 +151,14 @@ Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
 ###### controllchange 73 attack standard: 63
 `o<neuer Wert>`
 
+###### Segment paralel abspielen
+beim parallelen abspielen wird das Segment während dem Akktuellem Segment Abgespielt
+`t<segment nummer>`
+
+###### Segment abspielen
+bei diesem abspielen wird das akktuelle Segment pausiert, bis das Andere fertig ist
+`T<segment nummer>`
+
 ###### Ton
 Wenn der erweiterte Modus aktiv ist, wird ein Ton bis zur nächsten Erwähnung im gleichen Kanal oder bis zum nächsten `s` gespielt.  
 `a (a wird gespielt) 4 (a wird gespielt) a (a wird nicht mehr gespielt)
@@ -125,15 +176,19 @@ Noten die nach dem ersten Spielen gespielt werden
 `...w<0>n<1>w...`→`...<0><1><0>...`
 
 #### u
-`u` wird nach `n` genutzt um weitere Wiederholungen anzuhängen mit optionalen Noten
+`u` wird nach `n` genutzt um weitere Wiederholungen anzuhängen mit optionalen Noten. Wird nach einem `u` direkt ein `-<zahl>` geschrieben, so wird das `u` als zahl\*`u` gewärtet.
 * `...w<0>n<1>u[2]w...`→`...<0><1><0>[2]<0>...`
 * `...w<0>n<1>u[2]u[3]w...`→`...<0><1><0>[2]<0>[3]<0>...`
+* `...w<0>n<1>u-1[2]w...`→`...<0><1><0>[2]<0>...`
+* `...w<0>n<1>u-2[2]w...`→`...<0><1><0><0>[2]<0>...`
+* `...w<0>n<1>u-3[2]w...`→`...<0><1><0><0><0>[2]<0>...`
 * ...
 
 #### Beispiele
 * `cw d ew g` → `c d e d e g`
 * `cw d en fw g` → `c d e f d e g`
 * `cw d en fu dw g` → `c d e f d e d d e g`
+* `cw dnu-3w e` → `c d d d d d e`
 
 ### Puffer (optional)
 `;...` falls keine unten genannten Pufferaktionen folgen werden folgende Noten in den Puffer geschrieben.
@@ -167,101 +222,14 @@ Wenn eine Nachricht vom MQTT-topic `killmidi` emfangen wird, wird das aktuelle l
 ## JSON
 
 Es handelt sich um ein JSON-Objekt mit folgenden Tags:
-* `laenge` - maximale Liedlänge
+* `length` / `laenge` - maximale Liedlänge
 * `midi` - Daten des Liedes
 
 optional:
-* `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
-* `adminModus` - falls vorhanden und der Wert `true` ist, wird die Adminfunktion aktiviert.
+* `allowBuffer` / `aktiviereBuffer` - falls vorhanden und der Wert `true` ist, wird die Bufferfunktion aktiviert.
 
 Bei aktiviertem Buffer werden folgende Tags benötigt:
-* `nutzer` - Name des Users
-* `prioritaet` - Priorität endscheidet welche Buffer zuerst gelöscht werden, kleinere Zahlen werden eher gelöscht. z.B.: der Buffer ist mit Priorität 1 gefüllt, dann würde, wenn einer mit Priorität 1 einen Puffer erstellen möchte ein Fehler ausgegeben, einer mit Priorität 2 nicht, da dies einen Buffer mit Priorität 1 überschreibt.
-* `maximaleBufferGroesse` - die maximale Größe des Puffers
-
-
-Bei aktiviertem Adminmodus werden folgende Tags benötigt:
-* `nutzer` - Name des Users
-
-## Adminmodus MIDI syntax
-`command;[command;...]`
-
-### p
-Spielt die folgenden Daten. Es können keine weiteren Befehle angehängt werden.
-`p <noten>`
-
-### ~
-Spielt den Puffer und löscht diesen.
-`~ <Puffer id>`
-
-### q
-Spielt den Puffer.
-`q <Puffer id>`
-
-### i
-
-Instrument Optionen
-
-#### l
-Listet die Instrumente.
-`il`
-
-#### i
-Setzt die Instrumentnummer des Instrumentes
-`ii<interne instrument id> <instrument id>`
-
-#### m
-Setzt die msb des Instrumentes
-`im<interne instrument id> <msb>`
-
-#### d
-Setzt die lsb des Instrumentes
-`id<interne instrument id> <lsb>`
-
-#### n
-Setzt den Namen des Instrumentes, mit welchen man dies ereicht
-`in<interne instrument id> <name ohne lerzeichen>`
-
-### l
-
-#### l
-Listet alle Lieder und deren Daten
-`ll`
-
-#### d
-Setzt die Daten des Liedes. Es können keine weiteren Befehle angehängt werden.
-`ld<lied id> <noten>`
-
-#### a
-Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
-`la<lied id> <noten>`
-
-#### c
-Löscht die Daten des Liedes
-`lc<lied id>`
-
-### b
-
-#### l
-Listet alle Puffer und deren Besitzer
-`bl`
-
-#### d
-Setzt die Daten des Puffer. Es können keine weiteren Befehle angehängt werden.
-`bd<puffer id> <noten>`
-
-#### a
-Fügt die folgenden Daten zum Lied hinzu. Es können keine weiteren Befehle angehängt werden.
-`ba<puffer id> <noten>`
-
-#### c
-Löscht die Daten des Puffers.
-`bc<puffer id>`
-
-#### o
-Setzt den Besitzer des Puffers.
-`bo<puffer id> <neuer Besitzer ohne Leerzeichen>`
-
-#### p
-Listet die Daten des Puffers.
-`bp<puffer id>`
+* `user` / `nutzer` - Name des Users
+* `maxBufferSize` / `maximaleBufferGroesse` - die maximale Größe des Puffers
+folgende sind optional:
+* `refundTopic` mit `refundID`: sendet auf `refundTopic` die Nachricht `refundID`, wenn die Aktion refundet werden soll (Puffer schreiben, Warteschlange voll). Die Felder müssen Strings seien
