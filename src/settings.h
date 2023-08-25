@@ -80,7 +80,7 @@
 #define MIDI_GM_BANK_LSB 0
 #endif
 #ifndef MIDI_GM_DRUMS_BANK_MSB
-#define MIDI_GM_DRUMS_BANK_MSB 127
+#define MIDI_GM_DRUMS_BANK_MSB 0
 #endif
 #ifndef MIDI_GM_DRUMS_BANK_LSB
 #define MIDI_GM_DRUMS_BANK_LSB 0
