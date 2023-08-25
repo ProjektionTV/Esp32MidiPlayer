@@ -44,7 +44,7 @@ namespace projektionMidi {
         playStack(playStack &&);
         playStack &operator=(const playStack &) = delete;
         playStack &operator=(playStack &&);
-        playStackFrame **frames;
+        playStackFrame **frames = nullptr;
         playStackFrame *current = nullptr;
         void push(playStackFrame *frame, ::projektionMidi::errorReciever errorReciever);
         void pop(::projektionMidi::errorReciever errorReciever);
