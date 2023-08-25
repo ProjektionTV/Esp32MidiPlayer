@@ -432,6 +432,56 @@ PROJEKTION_MIDI_TEST_START(projektionMidi_34)
     PROJEKTION_MIDI_TEST_TICK(0, 0)
 PROJEKTION_MIDI_TEST_END
 
+PROJEKTION_MIDI_TEST_START(projektionMidi_35)
+    PROJEKTION_MIDI_TEST_ADD_CHANNEL(1, 0)
+    PROJEKTION_MIDI_TEST_MATCH_MIDI(0)
+    midi->enqueue("-r A1", 16);
+
+    expectMidiEnd(0);
+    PROJEKTION_MIDI_TEST_TICK(0, 0)
+PROJEKTION_MIDI_TEST_END
+
+PROJEKTION_MIDI_TEST_START(projektionMidi_36)
+    SET_MIDI_ERR
+    PROJEKTION_MIDI_TEST_ADD_CHANNEL(1, 0)
+    PROJEKTION_MIDI_TEST_MATCH_MIDI(0)
+    midi->enqueue("-ArlF:G4r-lA4", 16);
+
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    projektionMidi::test::testMidiOut::expectToggle(0, 55, 127);
+    PROJEKTION_MIDI_TEST_TICK(0, 0)
+
+    PROJEKTION_MIDI_TEST_TICK(125'000, 0)
+
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    projektionMidi::test::testMidiOut::expectToggle(0, 55, 127);
+    PROJEKTION_MIDI_TEST_TICK(250'000, 0)
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    projektionMidi::test::testMidiOut::expectToggle(0, 53, 127);
+    PROJEKTION_MIDI_TEST_TICK(250'000, 0)
+
+    expectMidiEnd(0);
+    PROJEKTION_MIDI_TEST_TICK(500'000, 0)
+PROJEKTION_MIDI_TEST_END
+
+PROJEKTION_MIDI_TEST_START(projektionMidi_37)
+    PROJEKTION_MIDI_TEST_ADD_CHANNEL(1, 0)
+    PROJEKTION_MIDI_TEST_MATCH_MIDI(0)
+    midi->enqueue("-Ar1lF:G4r-lA4", 16);
+
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    projektionMidi::test::testMidiOut::expectToggle(0, 55, 127);
+    PROJEKTION_MIDI_TEST_TICK(0, 0)
+
+    PROJEKTION_MIDI_TEST_TICK(125'000, 0)
+    projektionMidi::test::testMidiOut::expectToggle(0, 55, 127);
+    projektionMidi::test::testMidiOut::expectToggle(0, 57, 127);
+    PROJEKTION_MIDI_TEST_TICK(250'000, 0)
+
+    expectMidiEnd(0);
+    PROJEKTION_MIDI_TEST_TICK(500'000, 0)
+PROJEKTION_MIDI_TEST_END
+
 TESTS_SUB(projektionMidiTests)
     TEST(testOut, projektionMidi_00)
     TEST(testOut, projektionMidi_01)
@@ -468,6 +518,9 @@ TESTS_SUB(projektionMidiTests)
     TEST(testOut, projektionMidi_32)
     TEST(testOut, projektionMidi_33)
     TEST(testOut, projektionMidi_34)
+    TEST(testOut, projektionMidi_35)
+    TEST(testOut, projektionMidi_36)
+    TEST(testOut, projektionMidi_37)
 TEST_SUB_END
 
 #endif /* PROJEKTION_MIDI_TEST_PROJEKTION_MIDI_TESTS_HPP_ */

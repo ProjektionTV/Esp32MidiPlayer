@@ -47,7 +47,7 @@ uint64_t projektionMidi::projektionMidi::getWaitTarget() {
     uint64_t rtn = -1;
     bool doRtn = false;
     for(uint16_t i = 0; i < player.size(); i++) {
-        if(player[i].playing) {
+        if(player[i].playing && !player[i].resyncWait) {
             rtn = std::min(rtn, player[i].haltedTill);
             doRtn = true;
         }
@@ -65,7 +65,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
         std::size_t parsedTokens = 0;
         bool hasplaying = false;
         for(uint16_t i = 0; i < player.size(); i++) {
-            while(player[i].playing && (player[i].haltedTill <= us)) {
+            while(player[i].playing && (player[i].haltedTill <= us) && !player[i].resyncWait) {
                 if(settings.maxTokensToParse != 0 && parsedTokens >= settings.maxTokensToParse) return;
                 char c = player[i].current->walker->peek();
                 switch(c) {
@@ -116,7 +116,7 @@ void projektionMidi::projektionMidi::tick(uint64_t us) {
                 }
                 parsedTokens++;
             }
-            hasplaying |= player[i].playing;
+            hasplaying |= player[i].playing & (!player[i].resyncWait);
         }
         if(!hasplaying || us >= time_end_us) {
             cleanUpPlay();
@@ -522,5 +522,16 @@ void projektionMidi::projektionMidi::addMidiChannels(uint32_t textChannel, midiH
             handler->controlChange(eventChannel + i, 72, 63);
             handler->controlChange(eventChannel + i, 73, 63);
         }
+    }
+}
+
+void projektionMidi::projektionMidi::resync(uint16_t channel, uint16_t count) {
+    uint16_t ctr = 0;
+    for(uint16_t i = 0; i < player.size(); i++) {
+        if(player[i].playing && player[i].resyncWait && player[i].resyncChannel == channel) ctr++;
+    }
+    if(ctr < count) return;
+    for(uint16_t i = 0; i < player.size(); i++) {
+        if(player[i].playing && player[i].resyncWait && player[i].resyncChannel == channel) player[i].resyncWait = false;
     }
 }

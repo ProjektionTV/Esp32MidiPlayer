@@ -57,6 +57,8 @@ namespace projektionMidi {
         bool jumpToCommand = false;
         uint8_t lastNamedNote = 0;
         uint16_t midiChannel = 1;
+        uint16_t resyncChannel = 0;
+        bool resyncWait = false;
     };
 
     struct playTrackInfo {
@@ -199,6 +201,8 @@ namespace projektionMidi {
         void playTrack(playTrackInfo *trackInfo);
         void playTrack(uint16_t track, playStack *stack);
         void playTrack(playTrackInfo *trackInfo, playStack *stack);
+
+        void resync(uint16_t channel = 0, uint16_t count = 0);
 
     }; /* class projektionMidi */
 

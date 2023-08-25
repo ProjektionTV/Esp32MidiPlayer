@@ -208,6 +208,28 @@ void projektionMidi::parser2(projektionMidi *midi, playStack *stack, uint64_t us
                 channel.handler->controlChange(channel.channel, 7, newV);
         }
         break;
+    case 'r':
+        // mark waiting
+        stack->resyncChannel = 0;
+        stack->resyncWait = true;
+        c2 = stack->current->walker->peek();
+        if(c2 < '9' && c2 > '0') {
+            uint32_t newV = textWalkerUtil::readUInt32(stack->current->walker.get());
+            stack->resyncChannel = newV & 0xFFFF;
+        }
+        // resume
+        c2 = stack->current->walker->peek();
+        if(c2 == '-') {
+            stack->current->walker->skip();
+            c2 = stack->current->walker->peek();
+            uint16_t num = 0;
+            if(c2 < '9' && c2 > '0') {
+                uint32_t newV = textWalkerUtil::readUInt32(stack->current->walker.get());
+                num = newV & 0xFFFF;
+            }
+            midi->resync(stack->resyncChannel, num);
+        }
+        break;
     default:
         uint8_t note = readNote(c, stack->current->walker.get());
         if(note != 128) {

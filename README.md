@@ -125,6 +125,13 @@ Mit `v` wird die Anschlagsgeschwindigkeit geändert \(0-127\) \(Keine Garantie d
 Mit `z` wird die Lautstärke in dem aktuellen Midi-Kanal geändert \(0-127\) \(Keine Garantie da nicht jeder Midi-Synthesizer diese Funktion unterstützt\);
 `-piano A1l z64 A1l`
 
+###### Spuren synchronisieren
+`r[<Sync-Kanal>][-[<Zahl>]]`
+Mit `r` kann man Spuren synchronisieren. Wenn der `Sync-Kanal` oder die `Zahl` nicht angegeben ist, ist jener Parameter 0.
+Die Spur wartet ab diesem Befehl auf ein Sync-Signal auf dem `Sync-Kanal`, sobald dieses empfangen wird wird die Spur weiter bearbeitet.
+Wenn das `-` gegeben wird, wird ebenfals auf ein Sync-Signal gewartet, jedoch wenn mehr oder gleich viele Spuren als mit `Zahl` warten \(diese Spur eingeschlossen\), wird ein solches Sync-Signal gessendet.
+`-ArlC:G4r-lF4`
+
 ###### zuletzt genannte Note Stoppen
 `l`
 Mit `l` wird die zuletzt genannte Note gestoppt oder gestartet.
